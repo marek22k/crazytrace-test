@@ -28,6 +28,7 @@ Second common identifier: src addr/port + dest addr
 ### ICMP-based methods
 
 | Trace method | Constant source address | Constant destination address | Constant ICMP identifier | Constant ICMP sequence | Identifier |
+| --- | --- | --- | --- | --- | --- |
 | traceroute (icmp) | Yes | Yes | Yes | No | src addr + dest addr + icmp identifier |
 | scamper (icmp, icmp-paris) | Yes | Yes | Yes | No | src addr + dest addr + icmp identifier |
 
