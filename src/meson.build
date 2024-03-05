@@ -1,5 +1,5 @@
 project(
-    'tuntap_experiments',
+    'crazytrace',
     'cpp',
     license: ['GPL-3.0-or-later'],
     default_options: [
@@ -20,7 +20,7 @@ if not libtuntap_dep.found()
 endif
 
 executable(
-    'tuntap_experiments',
+    'crazytrace',
     ['main.cpp', 'tun_tap.cpp'],
     dependencies: [libtuntap_dep]
 )
