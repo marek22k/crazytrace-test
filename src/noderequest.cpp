@@ -1,61 +1,154 @@
 #include "noderequest.hpp"
+#include <iostream>
 
 NodeRequest::NodeRequest(Tins::EthernetII packet)
 {
+    this->_source_mac = packet.src_addr();
+    this->_destination_mac = packet.dst_addr();
 
+    if (packet.find_pdu<Tins::IPv6>())
+    {
+        const Tins::IPv6& ipv6 = packet.rfind_pdu<Tins::IPv6>();
+
+        this->_source_address = ipv6.src_addr();
+        this->_destination_address = ipv6.dst_addr();
+        this->_hoplimit = static_cast<int>(ipv6.hop_limit());
+
+        switch (ipv6.next_header())
+        {
+            case Tins::Constants::IP::PROTO_ICMPV6:
+            {
+                const Tins::ICMPv6& icmpv6 = packet.rfind_pdu<Tins::ICMPv6>();
+                switch (icmpv6.type())
+                {
+                    case Tins::ICMPv6::Types::NEIGHBOUR_SOLICIT:
+                        this->_type = NodeRequestType::ICMP_NDP;
+                        this->_destination_address = icmpv6.target_addr();
+                        break;
+                    case Tins::ICMPv6::Types::ECHO_REQUEST:
+                        this->_type = NodeRequestType::ICMP_ECHO_REQUEST;
+                        this->_icmp_identifier = icmpv6.identifier();
+                        this->_icmp_sequence = icmpv6.sequence();
+                        break;
+                    default:
+                        this->_type = NodeRequestType::UNKNOWN;
+                        break;
+                }
+                break;
+            }
+            case Tins::Constants::IP::PROTO_UDP:
+            {
+                const Tins::UDP& udp = packet.rfind_pdu<Tins::UDP>();
+                const Tins::RawPDU& raw_udp = udp.rfind_pdu<Tins::RawPDU>();
+                this->_type = NodeRequestType::UDP;
+                this->_udp_dport = udp.dport();
+                this->_udp_sport = udp.sport();
+                this->_udp_content = raw_udp.payload();
+                break;
+            }
+            default:
+                this->_type = NodeRequestType::UNKNOWN;
+                break;
+        }
+    }
+    else
+    {
+        this->_type = NodeRequestType::UNKNOWN;
+    }
 }
 
 NodeRequestType NodeRequest::get_type()
 {
-
+    return this->_type;
 }
 
-Tins::IPv6Address NodeRequest::get_target_address()
+const Tins::HWAddress<6>& NodeRequest::get_source_mac()
 {
+    return this->_source_mac;
+}
 
+const Tins::HWAddress<6>& NodeRequest::get_destination_mac()
+{
+    return this->_destination_mac;
+}
+
+const Tins::IPv6Address& NodeRequest::get_source_address()
+{
+    return this->_source_address;
+}
+
+const Tins::IPv6Address& NodeRequest::get_destination_address()
+{
+    return this->_destination_address;
 }
 
 int NodeRequest::get_hoplimit()
 {
-
+    return this->_hoplimit;
 }
 
-
-int NodeRequest::get_udp_content()
+const Tins::RawPDU::payload_type& NodeRequest::get_udp_content()
 {
-
+    return this->_udp_content;
 }
 
 int NodeRequest::get_udp_sport()
 {
-
+    return this->_udp_sport;
 }
 
 int NodeRequest::get_udp_dport()
 {
-
+    return this->_udp_dport;
 }
-
 
 int NodeRequest::get_icmp_identifier()
 {
-
+    return this->_icmp_identifier;
 }
 
 int NodeRequest::get_icmp_sequence()
 {
-
+    return this->_icmp_sequence;
 }
-
-
-NodeReply NodeRequest::get_reply(NodeContainer root)
-{
-
-}
-
 
 std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
 {
+    std::string type_string;
+    switch (noderequest._type)
+    {
+        case NodeRequestType::UNKNOWN:
+            type_string = "UNKNOWN";
+            break;
+        case NodeRequestType::ICMP_ECHO_REQUEST:
+            type_string = "ICMP_ECHO_REQUEST";
+            break;
+        case NodeRequestType::ICMP_NDP:
+            type_string = "ICMP_NDP";
+            break;
+        case NodeRequestType::UDP:
+            type_string = "UDP";
+            break;
+    }
+    os << type_string << ": " <<
+          noderequest._source_address << " (" << noderequest._source_mac << ") -> " <<
+          noderequest._destination_address << " (" << noderequest._destination_mac << ") " <<
+          "Hoplimit=" << noderequest._hoplimit;
 
+    switch (noderequest._type)
+    {
+        case NodeRequestType::ICMP_ECHO_REQUEST:
+            os << ": ID=" << noderequest._icmp_identifier << " SEQ=" << noderequest._icmp_sequence;
+            break;
+        case NodeRequestType::ICMP_NDP:
+            os << ": Looking for " << noderequest._destination_address;
+            break;
+        case NodeRequestType::UDP:
+            
+            break;
+        default:
+            break;
+    }
+    return os;
 }
 

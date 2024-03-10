@@ -19,6 +19,7 @@ class NodeInfo
 
     private:
         std::unordered_set<Tins::IPv6Address> _addresses;
+        Tins::HWAddress<6> _mac_address;
         int _hoplimit;
         std::unordered_set<std::shared_ptr<NodeInfo>> _nodes;
 };

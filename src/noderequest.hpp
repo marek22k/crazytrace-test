@@ -3,37 +3,41 @@
 
 #include <ostream>
 #include <tins/tins.h>
+#include <tins/constants.h>
 
 #include "nodecontainer.hpp"
-#include "nodereply.hpp"
 
-enum class NodeRequestType { ICMP, UDP, UNKNOWN };
+enum class NodeRequestType { UNKNOWN, ICMP_ECHO_REQUEST, ICMP_NDP, UDP };
 
 class NodeRequest
 {
     public:
         NodeRequest(Tins::EthernetII packet);
         NodeRequestType get_type();
-        Tins::IPv6Address get_target_address();
+        const Tins::HWAddress<6>& get_source_mac();
+        const Tins::HWAddress<6>& get_destination_mac();
+        const Tins::IPv6Address& get_source_address();
+        const Tins::IPv6Address& get_destination_address();
         int get_hoplimit();
 
-        int get_udp_content();
+        const Tins::RawPDU::payload_type& get_udp_content();
         int get_udp_sport();
         int get_udp_dport();
 
         int get_icmp_identifier();
         int get_icmp_sequence();
 
-        NodeReply get_reply(NodeContainer root);
-
-        friend std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest);
+        friend std::ostream& operator<<(std::ostream& os, const NodeRequest & noderequest);
 
     private:
         NodeRequestType _type;
-        Tins::IPv6Address _address;
+        Tins::HWAddress<6> _source_mac;
+        Tins::HWAddress<6> _destination_mac;
+        Tins::IPv6Address _source_address;
+        Tins::IPv6Address _destination_address;
         int _hoplimit;
 
-        std::string _udp_content;
+        Tins::RawPDU::payload_type /* aka std::vector<uint8_t> */ _udp_content;
         int _udp_dport;
         int _udp_sport;
 
