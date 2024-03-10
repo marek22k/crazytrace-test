@@ -6,6 +6,7 @@
 #include <array>
 #include <cstdlib>
 #include <boost/asio.hpp>
+#include "noderequest.hpp"
 
 class Crazytrace
 {

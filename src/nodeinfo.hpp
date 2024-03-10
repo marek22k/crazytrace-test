@@ -1,0 +1,26 @@
+#ifndef NODEINFO_HPP
+#define NODEINFO_HPP
+
+#include <memory>
+#include <vector>
+#include <unordered_set>
+#include <tins/tins.h>
+
+class NodeInfo
+{
+    public:
+        NodeInfo();
+        std::vector<std::shared_ptr<NodeInfo>> get_route_to(const Tins::IPv6Address& target_address);
+        int get_hoplimit();
+        bool has_address(const Tins::IPv6Address& address);
+        void set_hoplimit(int hoplimit);
+        void add_node(std::shared_ptr<NodeInfo> node);
+        void add_address(Tins::IPv6Address address);
+
+    private:
+        std::unordered_set<Tins::IPv6Address> _addresses;
+        int _hoplimit;
+        std::unordered_set<std::shared_ptr<NodeInfo>> _nodes;
+};
+
+#endif
