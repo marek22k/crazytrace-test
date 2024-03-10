@@ -3,7 +3,8 @@
 #include <iostream>
 #include <tins/tins.h>
 
-Crazytrace::Crazytrace(boost::asio::posix::stream_descriptor& device) : _device(device)
+Crazytrace::Crazytrace(boost::asio::posix::stream_descriptor& device, std::shared_ptr<NodeContainer> nodecontainer) :
+    _device(device), _nodecontainer(nodecontainer)
 {
     
 }
@@ -26,7 +27,7 @@ void Crazytrace::handle_packet(const boost::system::error_code& error, std::size
         std::cerr << "Error in handle_packet: " << error.message() << std::endl;
         return;
     }
-    std::cout << "Received packet of size: " << bytes_transferred << std::endl;
+    // std::cout << "Received packet of size: " << bytes_transferred << std::endl;
 
     try
     {
@@ -34,7 +35,11 @@ void Crazytrace::handle_packet(const boost::system::error_code& error, std::size
         Tins::EthernetII packet(raw_data, bytes_transferred);
 
         NodeRequest request(packet);
-        std::cout << request << std::endl;
+        if (request.get_type() != NodeRequestType::UNKNOWN)
+        {
+            std::cout << request << std::endl;
+            this->_nodecontainer->get_reply(packet);
+        }
     }
     catch (const Tins::malformed_packet&)
     {

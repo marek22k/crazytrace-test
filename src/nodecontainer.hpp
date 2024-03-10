@@ -4,16 +4,18 @@
 #include <memory>
 #include <tins/tins.h>
 #include "nodeinfo.hpp"
+#include "noderequest.hpp"
 #include "nodereply.hpp"
 
 class NodeContainer
 {
     public:
-        NodeReply get_reply(NodeContainer root);
-
+        NodeContainer(std::unordered_set<std::shared_ptr<NodeInfo>> nodes);
+        NodeReply get_reply(NodeRequest request);
+        void set_nodes(std::unordered_set<std::shared_ptr<NodeInfo>> nodes);
 
     private:
-        std::shared_ptr<NodeInfo> _root;
+        std::unordered_set<std::shared_ptr<NodeInfo>> _nodes;
 };
 
 #endif

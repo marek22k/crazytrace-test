@@ -5,8 +5,6 @@
 #include <tins/tins.h>
 #include <tins/constants.h>
 
-#include "nodecontainer.hpp"
-
 enum class NodeRequestType { UNKNOWN, ICMP_ECHO_REQUEST, ICMP_NDP, UDP };
 
 class NodeRequest

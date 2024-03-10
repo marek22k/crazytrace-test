@@ -27,8 +27,8 @@ NodeRequest::NodeRequest(Tins::EthernetII packet)
                         break;
                     case Tins::ICMPv6::Types::ECHO_REQUEST:
                         this->_type = NodeRequestType::ICMP_ECHO_REQUEST;
-                        this->_icmp_identifier = icmpv6.identifier();
-                        this->_icmp_sequence = icmpv6.sequence();
+                        this->_icmp_identifier = static_cast<int>(icmpv6.identifier());
+                        this->_icmp_sequence = static_cast<int>(icmpv6.sequence());
                         break;
                     default:
                         this->_type = NodeRequestType::UNKNOWN;
@@ -151,4 +151,3 @@ std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
     }
     return os;
 }
-

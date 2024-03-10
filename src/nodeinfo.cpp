@@ -25,6 +25,16 @@ int NodeInfo::get_hoplimit()
     return this->_hoplimit;
 }
 
+void NodeInfo::set_mac_address(Tins::HWAddress<6> mac_address)
+{
+    this->_mac_address = mac_address;
+}
+
+const Tins::HWAddress<6>& NodeInfo::get_mac_address()
+{
+    return this->_mac_address;
+}
+
 bool NodeInfo::has_address(const Tins::IPv6Address& address)
 {
     return this->_addresses.contains(address);
