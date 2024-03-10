@@ -54,7 +54,7 @@ NodeReply NodeRequest::get_reply(NodeContainer root)
 }
 
 
-std::ostream& NodeRequest::operator<<(std::ostream& os, NodeRequest const & noderequest)
+std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
 {
 
 }
