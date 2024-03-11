@@ -11,11 +11,12 @@ class NodeReply
     public:
         NodeReply(NodeReplyType type);
         NodeReply(
-            NodeReplyType type, int hoplimit,
+            NodeReplyType type,
             Tins::HWAddress<6> destination_mac, Tins::IPv6Address destination_address,
             Tins::HWAddress<6> source_mac, Tins::IPv6Address source_address
         );
 
+        /* TODO: Set hoplimit */
         void icmp_echo_reply(int icmp_identifier, int icmp_sequence);
         void udp_response(Tins::RawPDU::payload_type udp_content, int udp_dport, int udp_sport);
 

@@ -5,11 +5,11 @@ NodeReply::NodeReply(NodeReplyType type) :
 {}
 
 NodeReply::NodeReply(
-    NodeReplyType type, int hoplimit,
+    NodeReplyType type,
     Tins::HWAddress<6> destination_mac, Tins::IPv6Address destination_address,
     Tins::HWAddress<6> source_mac, Tins::IPv6Address source_address
 ) :
-    _type(type), _hoplimit(hoplimit),
+    _type(type),
     _destination_mac(destination_mac), _destination_address(destination_address),
     _source_mac(source_mac), _source_address(source_address)
 {}
@@ -45,6 +45,7 @@ std::string NodeReply::to_packet()
                                    Tins::IPv6(this->_destination_address, this->_source_address) /
                                    Tins::ICMPv6(Tins::ICMPv6::Types::NEIGHBOUR_ADVERT);
             Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
+            inner_ipv6.hop_limit(255);
             Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
             inner_icmpv6.target_addr(this->_source_address);
             inner_icmpv6.solicited(Tins::small_uint<1>(1));
@@ -98,17 +99,19 @@ std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
     }
     os << "REPLY " << type_string << ": " <<
           nodereply._source_address << " (" << nodereply._source_mac << ") -> " <<
-          nodereply._destination_address << " (" << nodereply._destination_mac << ") " <<
-          "Hoplimit=" << nodereply._hoplimit;
+          nodereply._destination_address << " (" << nodereply._destination_mac << ")";
 
     switch (nodereply._type)
     {
         case NodeReplyType::ICMP_ECHO_REPLY:
-            os << ": ID=" << nodereply._icmp_identifier << " SEQ=" << nodereply._icmp_sequence;
+            os << " Hoplimit=" << nodereply._hoplimit <<
+                  ": ID=" << nodereply._icmp_identifier <<
+                  " SEQ=" << nodereply._icmp_sequence;
             break;
         case NodeReplyType::ICMP_TIME_EXCEEDED:
         case NodeReplyType::ICMP_PORT_UNREACHABLE:
-            os << ": DPORT=" << nodereply._udp_dport <<
+            os << " Hoplimit=" << nodereply._hoplimit <<
+                  ": DPORT=" << nodereply._udp_dport <<
                   " SPORT=" << nodereply._udp_sport <<
                   " LENGTH=" << nodereply._udp_content.size();
             break;

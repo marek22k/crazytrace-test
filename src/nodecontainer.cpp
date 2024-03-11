@@ -24,7 +24,7 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
                     /* We have found a node with the corresponding MAC address.
                        Other nodes with the same MAC address must not exist. */
                     NodeReply reply(
-                        NodeReplyType::ICMP_NDP, (*node)->get_hoplimit(),
+                        NodeReplyType::ICMP_NDP,
                         request.get_source_mac(), request.get_source_address(),
                         (*node)->get_mac_address(), request.get_destination_address()
                     );
