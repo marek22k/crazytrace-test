@@ -33,7 +33,6 @@ NodeRequest::NodeRequest(Tins::EthernetII packet)
                         this->_icmp_sequence = static_cast<int>(icmpv6.sequence());
                         const Tins::RawPDU& raw_icmpv6 = icmpv6.rfind_pdu<Tins::RawPDU>();
                         this->_payload = raw_icmpv6.payload();
-                        std::cout << "Last byte: " << static_cast<int>(raw_icmpv6.payload()[50]) << std::endl;
                         break;
                     }
                     default:

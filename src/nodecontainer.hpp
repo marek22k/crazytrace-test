@@ -15,7 +15,7 @@
 class NodeContainer
 {
     public:
-        NodeReply get_reply(NodeRequest request);
+        NodeReply get_reply(NodeRequest& request);
         void add_node(std::shared_ptr<NodeInfo> node);
 
         void print(std::ostream& os) const;

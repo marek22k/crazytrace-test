@@ -1,6 +1,6 @@
 #include "nodecontainer.hpp"
 
-NodeReply NodeContainer::get_reply(NodeRequest request)
+NodeReply NodeContainer::get_reply(NodeRequest& request)
 {
 
     switch(request.get_type())
@@ -9,7 +9,6 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
         case NodeRequestType::UDP:
         {
             std::vector<std::shared_ptr<NodeInfo>> route = this->get_route_to(request.get_destination_address());
-            BOOST_LOG_TRIVIAL(debug) << "Route length: " << route.size() << std::endl;
             if (route.empty())
             {
                 return NodeReply(NodeReplyType::NOREPLY);
@@ -18,7 +17,6 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
             Tins::HWAddress<6> source_mac = route.back()->get_mac_address();
 
             int hoplimit = request.get_hoplimit();
-            BOOST_LOG_TRIVIAL(trace) << "Check hoplimit: " << hoplimit << " >= " << (route.size()) << "?" << std::endl;
             if (static_cast<::size_t>(hoplimit) >= route.size())
             {
                 /* target reached */

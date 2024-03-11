@@ -36,11 +36,11 @@ void Crazytrace::handle_packet(const boost::system::error_code& error, std::size
         NodeRequest request(packet);
         if (request.get_type() != NodeRequestType::UNKNOWN)
         {
-            BOOST_LOG_TRIVIAL(debug) << request << std::endl;
-            NodeReply reply = this->_nodecontainer->get_reply(packet);
-            BOOST_LOG_TRIVIAL(debug) << reply << std::endl;
+            NodeReply reply = this->_nodecontainer->get_reply(request);
             if (reply.get_type() != NodeReplyType::NOREPLY)
             {
+                BOOST_LOG_TRIVIAL(debug) << request;
+                BOOST_LOG_TRIVIAL(debug) << reply;
                 std::string packet = reply.to_packet();
                 this->_device.async_write_some(boost::asio::buffer(packet, packet.size()), [&](const boost::system::error_code& error, std::size_t bytes_transferred) {
                                     if (error)
