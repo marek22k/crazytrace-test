@@ -1,0 +1,43 @@
+<mxfile host="app.diagrams.net" modified="2024-03-11T20:15:29.371Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:123.0) Gecko/20100101 Firefox/123.0" etag="B5_Cx_T6julqgnpLOBbr" version="24.0.5" type="device">
+  <diagram name="Seite-1" id="xR5hBdEjSpUUSRP_hOSf">
+    <mxGraphModel dx="1993" dy="1387" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="IrR-ydpx4r38Ri29m_Cc-1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shape=link;" parent="1" source="IrR-ydpx4r38Ri29m_Cc-2" target="IrR-ydpx4r38Ri29m_Cc-8" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="IrR-ydpx4r38Ri29m_Cc-2" value="MAC:&amp;nbsp;02:B1:4F:7E:9D:C3&lt;br&gt;IPv6 address:&amp;nbsp;fe80::b1:4fff:fe7e:9dc3&lt;br&gt;Hoplimit: 255" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/networking/Virtual_Router.svg;" parent="1" vertex="1">
+          <mxGeometry x="-15" y="-41" width="68" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="IrR-ydpx4r38Ri29m_Cc-3" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shape=link;" parent="1" source="IrR-ydpx4r38Ri29m_Cc-5" target="IrR-ydpx4r38Ri29m_Cc-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="IrR-ydpx4r38Ri29m_Cc-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shape=link;" parent="1" source="IrR-ydpx4r38Ri29m_Cc-5" target="IrR-ydpx4r38Ri29m_Cc-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="IrR-ydpx4r38Ri29m_Cc-5" value="TAP device" style="image;sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/mscae/NetworkInterfaceCard.svg;" parent="1" vertex="1">
+          <mxGeometry x="-215" y="69" width="79.2" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="IrR-ydpx4r38Ri29m_Cc-6" value="MAC:&amp;nbsp;02:B1:4F:7E:9D:C4&lt;br&gt;IPv6 address:&amp;nbsp;fe80::b1:4fff:fe7e:9dc4&lt;br&gt;Hoplimit: 64 (default)" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/networking/Virtual_Router.svg;" parent="1" vertex="1">
+          <mxGeometry x="-25" y="169" width="68" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="IrR-ydpx4r38Ri29m_Cc-7" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shape=link;" parent="1" source="IrR-ydpx4r38Ri29m_Cc-8" target="IrR-ydpx4r38Ri29m_Cc-10" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="IrR-ydpx4r38Ri29m_Cc-8" value="IPv6 address: fd00::1&lt;br&gt;Hoplimit: 64 (default)" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/networking/Virtual_Router.svg;" parent="1" vertex="1">
+          <mxGeometry x="215" y="-41" width="68" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="IrR-ydpx4r38Ri29m_Cc-9" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shape=link;" parent="1" source="IrR-ydpx4r38Ri29m_Cc-10" target="IrR-ydpx4r38Ri29m_Cc-11" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="IrR-ydpx4r38Ri29m_Cc-10" value="IPv6 addresses:&lt;br&gt;fd00::21,&amp;nbsp;fd00::22,&amp;nbsp;fd00::23&lt;br&gt;Hoplimit: 64 (default)" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/networking/Virtual_Router.svg;" parent="1" vertex="1">
+          <mxGeometry x="465" y="-41" width="68" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="IrR-ydpx4r38Ri29m_Cc-11" value="IPv6 addres:: fd00::3&lt;br&gt;Hoplimit: 64 (default)" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/networking/Virtual_Router.svg;" parent="1" vertex="1">
+          <mxGeometry x="675" y="-41" width="68" height="68" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
