@@ -162,3 +162,22 @@ std::vector<std::shared_ptr<NodeInfo>> NodeContainer::get_route_to(const Tins::I
 
     return std::vector<std::shared_ptr<NodeInfo>>();
 }
+
+void NodeContainer::print(std::ostream& os)
+{
+    os << *this << std::endl;
+    if (! this->_nodes.empty())
+    {
+        os << "Childs:" << std::endl;
+        for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
+        {
+            (*node)->print(os, 1);
+        }
+    }
+}
+
+std::ostream& operator<<(std::ostream& os, NodeContainer const & nodecontainer)
+{
+    os << "NodeContainer: " << nodecontainer._nodes.size() << " childnodes";
+    return os;
+}

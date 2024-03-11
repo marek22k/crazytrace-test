@@ -34,11 +34,11 @@ int main() {
         node1->add_node(node1_node1);
         nodes.insert(node1);
 
-        std::ostringstream nodes_verbose;
-        node1->print(nodes_verbose);
-        BOOST_LOG_TRIVIAL(info) << nodes_verbose.str();
-
         NodeContainer nodecontainer(nodes);
+
+        std::ostringstream nodes_verbose;
+        nodecontainer.print(nodes_verbose);
+        BOOST_LOG_TRIVIAL(info) << nodes_verbose.str();
 
         boost::asio::io_context io;
         const ::size_t mtu = 1500;
@@ -56,7 +56,7 @@ int main() {
 
         io.run();
     } catch (const std::exception &e) {
-        BOOST_LOG_TRIVIAL(error) << "Error: " << e.what() << std::endl << "Exit program.";
+        BOOST_LOG_TRIVIAL(fatal) << "Error: " << e.what() << std::endl << "Exit program.";
         exit(EXIT_FAILURE);
     }
     return EXIT_SUCCESS;
