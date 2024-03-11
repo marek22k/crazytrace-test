@@ -1,5 +1,9 @@
 #include "nodecontainer.hpp"
 
+NodeContainer::NodeContainer() :
+    _nodes()
+{}
+
 NodeContainer::NodeContainer(std::unordered_set<std::shared_ptr<NodeInfo>> nodes) :
     _nodes(nodes)
 {}
@@ -163,7 +167,7 @@ std::vector<std::shared_ptr<NodeInfo>> NodeContainer::get_route_to(const Tins::I
     return std::vector<std::shared_ptr<NodeInfo>>();
 }
 
-void NodeContainer::print(std::ostream& os)
+void NodeContainer::print(std::ostream& os) const
 {
     os << *this << std::endl;
     if (! this->_nodes.empty())

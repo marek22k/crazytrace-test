@@ -12,7 +12,7 @@
 #include "tun_tap.hpp"
 #include "crazytrace.hpp"
 #include "nodecontainer.hpp"
-#include "nodeinfo.hpp"
+#include "configuration.hpp"
 
 int main() {
     try {
@@ -22,19 +22,11 @@ int main() {
         int minor = version & 0xFF;
         BOOST_LOG_TRIVIAL(info) << "libtuntap version: " << major << "." << minor << std::endl;
 
-        std::unordered_set<std::shared_ptr<NodeInfo>> nodes;
-        std::shared_ptr<NodeInfo> node1 = std::make_shared<NodeInfo>();
-        node1->set_mac_address(Tins::HWAddress<6>("02:B1:4F:7E:9D:C3"));
-        node1->add_address(Tins::IPv6Address("fe80::2c0a:baff:fe2c:3d54"));
-        std::shared_ptr<NodeInfo> node1_node1 = std::make_shared<NodeInfo>();
-        node1_node1->add_address(Tins::IPv6Address("fd00::3"));
-        std::shared_ptr<NodeInfo> node1_node1_node1 = std::make_shared<NodeInfo>();
-        node1_node1_node1->add_address(Tins::IPv6Address("fd00::4"));
-        node1_node1->add_node(node1_node1_node1);
-        node1->add_node(node1_node1);
-        nodes.insert(node1);
-
-        NodeContainer nodecontainer(nodes);
+        
+        Configuration config("../config.yaml");
+        config.load();
+        config.apply_log_level();
+        const NodeContainer& nodecontainer = config.get_node_container();
 
         std::ostringstream nodes_verbose;
         nodecontainer.print(nodes_verbose);

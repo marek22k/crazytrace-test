@@ -40,7 +40,8 @@ executable(
         'nodeinfo.cpp',
         'nodecontainer.cpp',
         'noderequest.cpp',
-        'nodereply.cpp'
+        'nodereply.cpp',
+        'configuration.cpp'
     ],
     dependencies: [libtuntap_dep, boost_dep, libtins_dep, yamlcpp_dep]
 )

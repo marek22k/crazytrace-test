@@ -15,11 +15,12 @@
 class NodeContainer
 {
     public:
+        NodeContainer();
         NodeContainer(std::unordered_set<std::shared_ptr<NodeInfo>> nodes);
         NodeReply get_reply(NodeRequest request);
         void set_nodes(std::unordered_set<std::shared_ptr<NodeInfo>> nodes);
 
-        void print(std::ostream& os);
+        void print(std::ostream& os) const;
         friend std::ostream& operator<<(std::ostream& os, NodeContainer const & nodecontainer);
 
     private:
