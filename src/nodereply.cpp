@@ -47,8 +47,15 @@ std::string NodeReply::to_packet()
             Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
             Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
             inner_icmpv6.target_addr(this->_source_address);
-            // inner_icmpv6.solicited(Tins::small_uint<1>(1));
+            inner_icmpv6.solicited(Tins::small_uint<1>(1));
             inner_icmpv6.router(Tins::small_uint<1>(1));
+            inner_icmpv6.override(Tins::small_uint<1>(1));
+            Tins::ICMPv6::option address_option(
+                Tins::ICMPv6::OptionTypes::TARGET_ADDRESS,
+                this->_source_mac.size(),
+                &(*this->_source_mac.begin())
+            );
+            inner_icmpv6.add_option(address_option);
             Tins::PDU::serialization_type serialized_packet = packet.serialize();
             std::string raw_packet(serialized_packet.begin(), serialized_packet.end());
             return raw_packet;
