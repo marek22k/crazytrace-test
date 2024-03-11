@@ -23,13 +23,18 @@ NodeRequest::NodeRequest(Tins::EthernetII packet)
                 {
                     case Tins::ICMPv6::Types::NEIGHBOUR_SOLICIT:
                         this->_type = NodeRequestType::ICMP_NDP;
+                        /* TODO: Check with has_target_addr */
                         this->_destination_address = icmpv6.target_addr();
                         break;
                     case Tins::ICMPv6::Types::ECHO_REQUEST:
+                    {
                         this->_type = NodeRequestType::ICMP_ECHO_REQUEST;
                         this->_icmp_identifier = static_cast<int>(icmpv6.identifier());
                         this->_icmp_sequence = static_cast<int>(icmpv6.sequence());
+                        const Tins::RawPDU& raw_icmpv6 = icmpv6.rfind_pdu<Tins::RawPDU>();
+                        this->_payload = raw_icmpv6.payload();
                         break;
+                    }
                     default:
                         this->_type = NodeRequestType::UNKNOWN;
                         break;
@@ -43,7 +48,7 @@ NodeRequest::NodeRequest(Tins::EthernetII packet)
                 this->_type = NodeRequestType::UDP;
                 this->_udp_dport = udp.dport();
                 this->_udp_sport = udp.sport();
-                this->_udp_content = raw_udp.payload();
+                this->_payload = raw_udp.payload();
                 break;
             }
             default:
@@ -87,11 +92,6 @@ int NodeRequest::get_hoplimit()
     return this->_hoplimit;
 }
 
-const Tins::RawPDU::payload_type& NodeRequest::get_udp_content()
-{
-    return this->_udp_content;
-}
-
 int NodeRequest::get_udp_sport()
 {
     return this->_udp_sport;
@@ -112,8 +112,16 @@ int NodeRequest::get_icmp_sequence()
     return this->_icmp_sequence;
 }
 
+
+const Tins::RawPDU::payload_type& NodeRequest::get_payload()
+{
+    return this->_payload;
+}
+
 std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
 {
+    auto os_flags = os.flags();
+
     std::string type_string;
     switch (noderequest._type)
     {
@@ -138,16 +146,30 @@ std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
     switch (noderequest._type)
     {
         case NodeRequestType::ICMP_ECHO_REQUEST:
-            os << ": ID=" << noderequest._icmp_identifier << " SEQ=" << noderequest._icmp_sequence;
+        {
+            os << ": ID=" << noderequest._icmp_identifier <<
+                  " SEQ=" << noderequest._icmp_sequence <<
+                  " Payload:" << std::hex;
+                  auto byte = noderequest._payload.begin();
+                  int counter = 0;
+                  while (counter < 4 && byte != noderequest._payload.end())
+                  {
+                    os << " " << static_cast<int>(*byte);
+                    byte++;
+                    counter++;
+                  }
             break;
+        }
         case NodeRequestType::ICMP_NDP:
             os << ": Looking for " << noderequest._destination_address;
             break;
         case NodeRequestType::UDP:
             os << ": DPORT=" << noderequest._udp_dport <<
                   " SPORT=" << noderequest._udp_sport <<
-                  " LENGTH=" << noderequest._udp_content.size();
+                  " LENGTH=" << noderequest._payload.size();
             break;
     }
+
+    os.flags(os_flags);
     return os;
 }

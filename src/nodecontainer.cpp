@@ -11,7 +11,44 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
     switch(request.get_type())
     {
         case NodeRequestType::ICMP_ECHO_REQUEST:
+        {
+            std::vector<std::shared_ptr<NodeInfo>> route = this->get_route_to(request.get_destination_address());
+            if (route.empty())
+            {
+                return NodeReply(NodeReplyType::NOREPLY);
+            }
+
+            Tins::HWAddress<6> source_mac = route.back()->get_mac_address();
+
+            int hoplimit = request.get_hoplimit();
+            if (hoplimit >= (this->_nodes.size() + 1))
+            {
+                /* target reached */
+                std::shared_ptr<NodeInfo> reached_node = route[0];
+                NodeReply reply(
+                    NodeReplyType::ICMP_ECHO_REPLY,
+                    request.get_source_mac(), request.get_source_address(),
+                    source_mac, reached_node->get_address()
+                );
+                reply.icmp_echo_reply(request.get_icmp_identifier(), request.get_icmp_sequence(), request.get_payload());
+                reply.set_hoplimit(reached_node->get_hoplimit());
+                return reply;
+            }
+            else
+            {
+                /* hoplimit exceeded */
+                int reached_node_number = hoplimit - 1;
+                std::shared_ptr<NodeInfo> reached_node = route[reached_node_number];
+                NodeReply reply(
+                    NodeReplyType::ICMP_TIME_EXCEEDED,
+                    request.get_source_mac(), request.get_source_address(),
+                    source_mac, reached_node->get_address()
+                );
+                reply.set_hoplimit(reached_node->get_hoplimit());
+                return reply;
+            }
             break;
+        }
         case NodeRequestType::ICMP_NDP:
         {
             /* Only the first level of nodes can have MAC addresses, as all
@@ -43,4 +80,29 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
 void NodeContainer::set_nodes(std::unordered_set<std::shared_ptr<NodeInfo>> nodes)
 {
     this->_nodes = nodes;
+}
+
+
+std::vector<std::shared_ptr<NodeInfo>> NodeContainer::get_route_to(const Tins::IPv6Address& destination_address)
+{
+    for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
+    {
+        if ( (*node)->has_address(destination_address) )
+        {
+            std::vector<std::shared_ptr<NodeInfo>> result;
+            result.push_back(*node);
+            return result;
+        }
+        else
+        {
+            std::vector<std::shared_ptr<NodeInfo>> result = (*node)->get_route_to(destination_address);
+            if (! result.empty())
+            {
+                result.push_back(*node);
+                return result;
+            }
+        }
+    }
+
+    return std::vector<std::shared_ptr<NodeInfo>>();
 }

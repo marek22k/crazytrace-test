@@ -5,21 +5,6 @@ NodeInfo::NodeInfo()
     this->_hoplimit = 64;
 }
 
-std::vector<std::shared_ptr<NodeInfo>> NodeInfo::get_route_to(const Tins::IPv6Address& target_address)
-{
-    for (auto child_node = this->_nodes.begin(); child_node != this->_nodes.end(); child_node++)
-    {
-        std::vector<std::shared_ptr<NodeInfo>> result = (*child_node)->get_route_to(target_address);
-        if (! result.empty())
-        {
-            return result;
-        }
-    }
-
-    // return std::move(result); ???
-    return std::vector<std::shared_ptr<NodeInfo>>();
-}
-
 int NodeInfo::get_hoplimit()
 {
     return this->_hoplimit;
@@ -56,3 +41,28 @@ void NodeInfo::add_address(Tins::IPv6Address address)
     this->_addresses.insert(address);
 }
 
+const Tins::IPv6Address& NodeInfo::get_address()
+{
+    return *this->_addresses.begin();
+}
+
+std::vector<std::shared_ptr<NodeInfo>> NodeInfo::get_route_to(const Tins::IPv6Address& destination_address)
+{
+    for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
+    {
+        if ( (*node)->has_address(destination_address) )
+        {
+            std::vector<std::shared_ptr<NodeInfo>> result;
+            result.push_back(*node);
+            return result;
+        }
+        else
+        {
+            std::vector<std::shared_ptr<NodeInfo>> result = (*node)->get_route_to(destination_address);
+            result.push_back(*node);
+            return result;
+        }
+    }
+
+    return std::vector<std::shared_ptr<NodeInfo>>();
+}

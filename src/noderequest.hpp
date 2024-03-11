@@ -2,6 +2,7 @@
 #define NODEREQUEST_HPP
 
 #include <ostream>
+#include <iomanip>
 #include <tins/tins.h>
 #include <tins/constants.h>
 
@@ -18,12 +19,13 @@ class NodeRequest
         const Tins::IPv6Address& get_destination_address();
         int get_hoplimit();
 
-        const Tins::RawPDU::payload_type& get_udp_content();
         int get_udp_sport();
         int get_udp_dport();
 
         int get_icmp_identifier();
         int get_icmp_sequence();
+
+        const Tins::RawPDU::payload_type& get_payload();
 
         friend std::ostream& operator<<(std::ostream& os, const NodeRequest & noderequest);
 
@@ -35,12 +37,14 @@ class NodeRequest
         Tins::IPv6Address _destination_address;
         int _hoplimit;
 
-        Tins::RawPDU::payload_type /* aka std::vector<uint8_t> */ _udp_content;
         int _udp_dport;
         int _udp_sport;
 
         int _icmp_identifier;
         int _icmp_sequence;
+
+        /* Used for UDP and ICMP */
+        Tins::RawPDU::payload_type /* aka std::vector<uint8_t> */ _payload;
 };
 
 #endif

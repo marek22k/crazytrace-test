@@ -10,7 +10,7 @@ class NodeInfo
 {
     public:
         NodeInfo();
-        std::vector<std::shared_ptr<NodeInfo>> get_route_to(const Tins::IPv6Address& target_address);
+        std::vector<std::shared_ptr<NodeInfo>> get_route_to(const Tins::IPv6Address& destination_address);
         int get_hoplimit();
         bool has_address(const Tins::IPv6Address& address);
         void set_hoplimit(int hoplimit);
@@ -18,6 +18,7 @@ class NodeInfo
         const Tins::HWAddress<6>& get_mac_address();
         void add_node(std::shared_ptr<NodeInfo> node);
         void add_address(Tins::IPv6Address address);
+        const Tins::IPv6Address& get_address();
 
     private:
         std::unordered_set<Tins::IPv6Address> _addresses;

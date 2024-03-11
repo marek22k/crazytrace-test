@@ -16,9 +16,9 @@ class NodeReply
             Tins::HWAddress<6> source_mac, Tins::IPv6Address source_address
         );
 
-        /* TODO: Set hoplimit */
-        void icmp_echo_reply(int icmp_identifier, int icmp_sequence);
-        void udp_response(Tins::RawPDU::payload_type udp_content, int udp_dport, int udp_sport);
+        void set_hoplimit(int hoplimit);
+        void icmp_echo_reply(int icmp_identifier, int icmp_sequence, Tins::RawPDU::payload_type payload);
+        void udp_response(Tins::RawPDU::payload_type payload, int udp_dport, int udp_sport);
 
         std::string to_packet();
         NodeReplyType get_type();
@@ -38,7 +38,7 @@ class NodeReply
         int _icmp_sequence;
 
         /* ICMP_TIME_EXCEEDED + ICMP_PORT_UNREACHABLE */
-        Tins::RawPDU::payload_type /* aka std::vector<uint8_t> */ _udp_content;
+        Tins::RawPDU::payload_type /* aka std::vector<uint8_t> */ _payload;
         int _udp_dport;
         int _udp_sport;
 };
