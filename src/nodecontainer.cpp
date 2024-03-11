@@ -9,6 +9,7 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
         case NodeRequestType::UDP:
         {
             std::vector<std::shared_ptr<NodeInfo>> route = this->get_route_to(request.get_destination_address());
+            BOOST_LOG_TRIVIAL(debug) << "Route length: " << route.size() << std::endl;
             if (route.empty())
             {
                 return NodeReply(NodeReplyType::NOREPLY);
@@ -132,9 +133,7 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
 
 void NodeContainer::add_node(std::shared_ptr<NodeInfo> node)
 {
-    std::cout << "insert node" << std::endl;
     this->_nodes.insert(node);
-    std::cout << "node inserted" << std::endl;
 }
 
 std::vector<std::shared_ptr<NodeInfo>> NodeContainer::get_route_to(const Tins::IPv6Address& destination_address)

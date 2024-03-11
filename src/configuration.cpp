@@ -72,7 +72,6 @@ void Configuration::load_nodes(YAML::Node nodes_config, std::shared_ptr<T> nodes
 
         for (auto node_config = nodes_config.begin(); node_config != nodes_config.end(); node_config++)
         {
-            std::cout << (*node_config).Type() << std::endl;
             if ( (*node_config).IsNull() )
                 continue;
 
@@ -98,8 +97,6 @@ void Configuration::load_nodes(YAML::Node nodes_config, std::shared_ptr<T> nodes
             YAML::Node addresses_config = (*node_config)["addresses"];
             for (auto address_config = addresses_config.begin(); address_config != addresses_config.end(); address_config++)
                 node->add_address(Tins::IPv6Address((*address_config).as<std::string>()));
-                
-            std::cout << "Address: " << node->get_address() << std::endl;
 
             YAML::Node hoplimit_config = (*node_config)["hoplimit"];
             if (hoplimit_config.IsDefined())
@@ -108,10 +105,6 @@ void Configuration::load_nodes(YAML::Node nodes_config, std::shared_ptr<T> nodes
             load_nodes((*node_config)["nodes"], node, false);
             nodes->add_node(node);
         }
-    }
-    else
-    {
-        std::cout << "I should load empty nodes" << std::endl;
     }
 }
 

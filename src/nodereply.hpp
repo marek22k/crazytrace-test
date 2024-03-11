@@ -2,6 +2,7 @@
 #define NODEREPLY_HPP
 
 #include <ostream>
+#include <iomanip>
 #include <string>
 #include <stdexcept>
 #include <tins/tins.h>

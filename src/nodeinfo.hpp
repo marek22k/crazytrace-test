@@ -6,7 +6,10 @@
 #include <memory>
 #include <vector>
 #include <unordered_set>
+#include <algorithm>
+#include <stdexcept>
 #include <tins/tins.h>
+#include "randomgenerator.hpp"
 
 class NodeInfo
 {
@@ -26,10 +29,12 @@ class NodeInfo
         friend std::ostream& operator<<(std::ostream& os, NodeInfo const & nodeinfo);
 
     private:
-        std::unordered_set<Tins::IPv6Address> _addresses;
+        std::vector<Tins::IPv6Address> _addresses;
         Tins::HWAddress<6> _mac_address;
         int _hoplimit;
         std::unordered_set<std::shared_ptr<NodeInfo>> _nodes;
+        RandomGenerator _randomgenerator;
+        bool _addressadded;
 };
 
 #endif

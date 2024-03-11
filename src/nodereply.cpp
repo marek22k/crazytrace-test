@@ -204,14 +204,10 @@ std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
             os << " Hoplimit=" << nodereply._hoplimit <<
                   ": ID=" << nodereply._icmp_identifier <<
                   " SEQ=" << nodereply._icmp_sequence <<
-                  " Payload:" << std::hex;
-                  auto byte = nodereply._payload.begin();
-                  int counter = 0;
-                  while (counter < 4 && byte != nodereply._payload.end())
+                  " Payload:" << std::hex << std::setw(2);
+                  for (auto byte = nodereply._payload.begin(); byte != nodereply._payload.end(); byte++)
                   {
                     os << " " << static_cast<int>(*byte);
-                    byte++;
-                    counter++;
                   }
             break;
         }

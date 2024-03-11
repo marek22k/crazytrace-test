@@ -33,6 +33,7 @@ NodeRequest::NodeRequest(Tins::EthernetII packet)
                         this->_icmp_sequence = static_cast<int>(icmpv6.sequence());
                         const Tins::RawPDU& raw_icmpv6 = icmpv6.rfind_pdu<Tins::RawPDU>();
                         this->_payload = raw_icmpv6.payload();
+                        std::cout << "Last byte: " << static_cast<int>(raw_icmpv6.payload()[50]) << std::endl;
                         break;
                     }
                     default:
@@ -149,14 +150,10 @@ std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
         {
             os << ": ID=" << noderequest._icmp_identifier <<
                   " SEQ=" << noderequest._icmp_sequence <<
-                  " Payload:" << std::hex;
-                  auto byte = noderequest._payload.begin();
-                  int counter = 0;
-                  while (counter < 4 && byte != noderequest._payload.end())
+                  " Payload:" << std::hex << std::setw(2);
+                  for (auto byte = noderequest._payload.begin(); byte != noderequest._payload.end(); byte++)
                   {
                     os << " " << static_cast<int>(*byte);
-                    byte++;
-                    counter++;
                   }
             break;
         }

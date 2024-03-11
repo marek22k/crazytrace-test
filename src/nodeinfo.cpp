@@ -1,6 +1,7 @@
 #include "nodeinfo.hpp"
 
 NodeInfo::NodeInfo()
+    : _randomgenerator(0), _addressadded(false)
 {
     this->_hoplimit = 64;
 }
@@ -22,7 +23,7 @@ const Tins::HWAddress<6>& NodeInfo::get_mac_address()
 
 bool NodeInfo::has_address(const Tins::IPv6Address& address)
 {
-    return this->_addresses.contains(address);
+    return std::binary_search(this->_addresses.begin(), this->_addresses.end(), address);
 }
 
 void NodeInfo::set_hoplimit(int hoplimit)
@@ -39,12 +40,27 @@ void NodeInfo::add_node(std::shared_ptr<NodeInfo> node)
 
 void NodeInfo::add_address(Tins::IPv6Address address)
 {
-    this->_addresses.insert(address);
+    this->_addressadded = true;
+    this->_addresses.push_back(address);
 }
 
 const Tins::IPv6Address& NodeInfo::get_address()
 {
-    return *this->_addresses.begin();
+    if (this->_addressadded)
+    {
+        /* Is called up each time the number of addresses is changed. However,
+           it is not called after each address is added to allow multiple
+           addresses to be added quickly. */
+        int max_address = this->_addresses.size() - 1;
+        if (max_address < 0)
+            std::invalid_argument("Despite adding an address, none is available.");
+
+        this->_randomgenerator = RandomGenerator(max_address);
+        std::sort(this->_addresses.begin(), this->_addresses.end());
+        this->_addressadded = false;
+    }
+    int address_number = this->_randomgenerator.generate();
+    return this->_addresses[address_number];
 }
 
 std::vector<std::shared_ptr<NodeInfo>> NodeInfo::get_route_to(const Tins::IPv6Address& destination_address)
@@ -60,8 +76,11 @@ std::vector<std::shared_ptr<NodeInfo>> NodeInfo::get_route_to(const Tins::IPv6Ad
         else
         {
             std::vector<std::shared_ptr<NodeInfo>> result = (*node)->get_route_to(destination_address);
-            result.push_back(*node);
-            return result;
+            if (! result.empty())
+            {
+                result.push_back(*node);
+                return result;
+            }
         }
     }
 
