@@ -11,6 +11,7 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
     switch(request.get_type())
     {
         case NodeRequestType::ICMP_ECHO_REQUEST:
+        case NodeRequestType::UDP:
         {
             std::vector<std::shared_ptr<NodeInfo>> route = this->get_route_to(request.get_destination_address());
             if (route.empty())
@@ -31,14 +32,32 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
                 if (reply_hoplimit <= 0)
                     return NodeReply(NodeReplyType::NOREPLY);
 
-                NodeReply reply(
-                    NodeReplyType::ICMP_ECHO_REPLY,
-                    request.get_source_mac(), request.get_source_address(),
-                    source_mac, reached_node->get_address()
-                );
-                reply.icmp_echo_reply(request.get_icmp_identifier(), request.get_icmp_sequence(), request.get_payload());
-                reply.set_hoplimit(reply_hoplimit);
-                return reply;
+                switch (request.get_type())
+                {
+                    case NodeRequestType::ICMP_ECHO_REQUEST:
+                    {
+                        NodeReply reply(
+                            NodeReplyType::ICMP_ECHO_REPLY,
+                            request.get_source_mac(), request.get_source_address(),
+                            source_mac, reached_node->get_address()
+                        );
+                        reply.icmp_echo_reply(request.get_icmp_identifier(), request.get_icmp_sequence(), request.get_payload());
+                        reply.set_hoplimit(reply_hoplimit);
+                        return reply;
+                    }
+                    case NodeRequestType::UDP:
+                    {
+                        NodeReply reply(
+                            NodeReplyType::ICMP_PORT_UNREACHABLE,
+                            request.get_source_mac(), request.get_source_address(),
+                            source_mac, reached_node->get_address()
+                        );
+                        reply.udp_response(request.get_payload(), request.get_udp_dport(), request.get_udp_sport());
+                        reply.packet_reassembly(request.get_destination_address());
+                        reply.set_hoplimit(reply_hoplimit);
+                        return reply;
+                    }
+                }
             }
             else
             {
@@ -50,15 +69,34 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
                 if (reply_hoplimit <= 0)
                     return NodeReply(NodeReplyType::NOREPLY);
 
-                NodeReply reply(
-                    NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST,
-                    request.get_source_mac(), request.get_source_address(),
-                    source_mac, reached_node->get_address()
-                );
-                reply.icmp_echo_reply(request.get_icmp_identifier(), request.get_icmp_sequence(), request.get_payload());
-                reply.icmp_time_exceeded(request.get_destination_address());
-                reply.set_hoplimit(reply_hoplimit);
-                return reply;
+
+                switch (request.get_type())
+                {
+                    case NodeRequestType::ICMP_ECHO_REQUEST:
+                    {
+                        NodeReply reply(
+                            NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST,
+                            request.get_source_mac(), request.get_source_address(),
+                            source_mac, reached_node->get_address()
+                        );
+                        reply.icmp_echo_reply(request.get_icmp_identifier(), request.get_icmp_sequence(), request.get_payload());
+                        reply.packet_reassembly(request.get_destination_address());
+                        reply.set_hoplimit(reply_hoplimit);
+                        return reply;
+                    }
+                    case NodeRequestType::UDP:
+                    {
+                        NodeReply reply(
+                            NodeReplyType::ICMP_TIME_EXCEEDED_UDP,
+                            request.get_source_mac(), request.get_source_address(),
+                            source_mac, reached_node->get_address()
+                        );
+                        reply.udp_response(request.get_payload(), request.get_udp_dport(), request.get_udp_sport());
+                        reply.packet_reassembly(request.get_destination_address());
+                        reply.set_hoplimit(reply_hoplimit);
+                        return reply;
+                    }
+                }
             }
             break;
         }
@@ -83,8 +121,6 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
             }
             return NodeReply(NodeReplyType::NOREPLY);
         }
-        case NodeRequestType::UDP:
-            break;
         default:
             return NodeReply(NodeReplyType::NOREPLY);
     }

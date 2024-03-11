@@ -26,7 +26,7 @@ void NodeReply::icmp_echo_reply(int icmp_identifier, int icmp_sequence, Tins::Ra
     this->_payload = payload;
 }
 
-void NodeReply::icmp_time_exceeded(Tins::IPv6Address original_destination_address)
+void NodeReply::packet_reassembly(Tins::IPv6Address original_destination_address)
 {
     this->_original_destination_address = original_destination_address;
 }
@@ -57,39 +57,70 @@ std::string NodeReply::to_packet()
             Tins::PDU::serialization_type serialized_packet = packet.serialize();
             std::string raw_packet(serialized_packet.begin(), serialized_packet.end());
             return raw_packet;
-
-            break;
         }
         case NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST:
+        case NodeReplyType::ICMP_TIME_EXCEEDED_UDP:
+        case NodeReplyType::ICMP_PORT_UNREACHABLE:
         {
             /* Recreation of the receiving packet */
-            Tins::IPv6 receiving_ipv6 = Tins::IPv6(this->_original_destination_address, this->_destination_address) /
-                                        Tins::ICMPv6(Tins::ICMPv6::Types::ECHO_REQUEST);
+            Tins::IPv6 receiving_ipv6 = Tins::IPv6(this->_original_destination_address, this->_destination_address);
             receiving_ipv6.hop_limit(1);
-            Tins::ICMPv6& receiving_icmpv6 = receiving_ipv6.rfind_pdu<Tins::ICMPv6>();
-            receiving_icmpv6.identifier(this->_icmp_identifier);
-            receiving_icmpv6.sequence(this->_icmp_sequence);
-            receiving_icmpv6.inner_pdu(Tins::RawPDU(this->_payload));
+            switch (this->_type)
+            {
+                case NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST:
+                {
+                    Tins::ICMPv6 receiving_icmpv6 = Tins::ICMPv6(Tins::ICMPv6::Types::ECHO_REQUEST);
+                    receiving_icmpv6.identifier(this->_icmp_identifier);
+                    receiving_icmpv6.sequence(this->_icmp_sequence);
+                    receiving_icmpv6.inner_pdu(Tins::RawPDU(this->_payload));
+                    receiving_ipv6.inner_pdu(receiving_icmpv6);
+                    break;
+                }
+                case NodeReplyType::ICMP_TIME_EXCEEDED_UDP:
+                case NodeReplyType::ICMP_PORT_UNREACHABLE:
+                {
+                    Tins::UDP receiving_udp = Tins::UDP(this->_udp_dport, this->_udp_sport);
+                    receiving_udp.inner_pdu(Tins::RawPDU(this->_payload));
+                    receiving_ipv6.inner_pdu(receiving_udp);
+                    break;
+                }
+            }
             Tins::PDU::serialization_type serialized_receiving_packet = receiving_ipv6.serialize();
 
+            switch (this->_type)
+            {
+                case NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST:
+                case NodeReplyType::ICMP_TIME_EXCEEDED_UDP:
+                {
+                    Tins::EthernetII packet = Tins::EthernetII(this->_destination_mac, this->_source_mac) /
+                                              Tins::IPv6(this->_destination_address, this->_source_address) /
+                                              Tins::ICMPv6(Tins::ICMPv6::Types::TIME_EXCEEDED);
+                    Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
+                    inner_ipv6.hop_limit(this->_hoplimit);
+                    Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
+                    inner_icmpv6.inner_pdu(Tins::RawPDU(serialized_receiving_packet));
 
-            Tins::EthernetII packet = Tins::EthernetII(this->_destination_mac, this->_source_mac) /
-                                      Tins::IPv6(this->_destination_address, this->_source_address) /
-                                      Tins::ICMPv6(Tins::ICMPv6::Types::TIME_EXCEEDED);
-            Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
-            inner_ipv6.hop_limit(this->_hoplimit);
-            Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
-            inner_icmpv6.inner_pdu(Tins::RawPDU(serialized_receiving_packet));
+                    Tins::PDU::serialization_type serialized_packet = packet.serialize();
+                    std::string raw_packet(serialized_packet.begin(), serialized_packet.end());
+                    return raw_packet;
+                }
+                case NodeReplyType::ICMP_PORT_UNREACHABLE:
+                {
+                    Tins::EthernetII packet = Tins::EthernetII(this->_destination_mac, this->_source_mac) /
+                                              Tins::IPv6(this->_destination_address, this->_source_address) /
+                                              Tins::ICMPv6(Tins::ICMPv6::Types::DEST_UNREACHABLE);
+                    Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
+                    inner_ipv6.hop_limit(this->_hoplimit);
+                    Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
+                    inner_icmpv6.code(4);
+                    inner_icmpv6.inner_pdu(Tins::RawPDU(serialized_receiving_packet));
 
-            Tins::PDU::serialization_type serialized_packet = packet.serialize();
-            std::string raw_packet(serialized_packet.begin(), serialized_packet.end());
-            return raw_packet;
-
-            break;
+                    Tins::PDU::serialization_type serialized_packet = packet.serialize();
+                    std::string raw_packet(serialized_packet.begin(), serialized_packet.end());
+                    return raw_packet;
+                }
+            }
         }
-        case NodeReplyType::ICMP_PORT_UNREACHABLE:
-
-            break;
         case NodeReplyType::ICMP_NDP:
         {
             Tins::EthernetII packet = Tins::EthernetII(this->_destination_mac, this->_source_mac) /
@@ -112,8 +143,6 @@ std::string NodeReply::to_packet()
             Tins::PDU::serialization_type serialized_packet = packet.serialize();
             std::string raw_packet(serialized_packet.begin(), serialized_packet.end());
             return raw_packet;
-
-            break;
         }
     }
 

@@ -25,7 +25,7 @@ class NodeReply
 
         void set_hoplimit(int hoplimit);
         void icmp_echo_reply(int icmp_identifier, int icmp_sequence, Tins::RawPDU::payload_type payload);
-        void icmp_time_exceeded(Tins::IPv6Address original_destination_address);
+        void packet_reassembly(Tins::IPv6Address original_destination_address);
         void udp_response(Tins::RawPDU::payload_type payload, int udp_dport, int udp_sport);
 
         std::string to_packet();
