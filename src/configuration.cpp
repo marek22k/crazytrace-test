@@ -1,6 +1,6 @@
 #include "configuration.hpp"
 
-Configuration::Configuration(std::string filename) :
+Configuration::Configuration(const std::string& filename) :
     _filename(filename), _node_container(std::make_shared<NodeContainer>())
 {}
 
@@ -21,7 +21,7 @@ void Configuration::load()
     }
 }
 
-void Configuration::load_log_level(YAML::Node node)
+void Configuration::load_log_level(const YAML::Node& node)
 {
     if (! node.IsDefined())
     {
@@ -63,7 +63,7 @@ void Configuration::load_log_level(YAML::Node node)
 }
 
 template <typename T, typename std::enable_if<std::is_same<T, NodeInfo>::value || std::is_same<T, NodeContainer>::value, int>::type>
-void Configuration::load_nodes(YAML::Node nodes_config, std::shared_ptr<T> nodes, bool mac)
+void Configuration::load_nodes(const YAML::Node& nodes_config, std::shared_ptr<T> nodes, bool mac)
 {
     if (nodes_config.IsDefined() && !nodes_config.IsNull())
     {

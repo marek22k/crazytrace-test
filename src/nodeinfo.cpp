@@ -6,17 +6,17 @@ NodeInfo::NodeInfo()
     this->_hoplimit = 64;
 }
 
-int NodeInfo::get_hoplimit()
+int NodeInfo::get_hoplimit() const noexcept
 {
     return this->_hoplimit;
 }
 
-void NodeInfo::set_mac_address(Tins::HWAddress<6> mac_address)
+void NodeInfo::set_mac_address(Tins::HWAddress<6> mac_address) noexcept
 {
     this->_mac_address = mac_address;
 }
 
-const Tins::HWAddress<6>& NodeInfo::get_mac_address()
+const Tins::HWAddress<6>& NodeInfo::get_mac_address() const noexcept
 {
     return this->_mac_address;
 }
@@ -87,7 +87,7 @@ std::vector<std::shared_ptr<NodeInfo>> NodeInfo::get_route_to(const Tins::IPv6Ad
     return std::vector<std::shared_ptr<NodeInfo>>();
 }
 
-void NodeInfo::print(std::ostream& os, int layer)
+void NodeInfo::print(std::ostream& os, int layer) const
 {
     std::string tabs(layer, '\t');
 

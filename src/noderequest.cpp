@@ -1,7 +1,7 @@
 #include "noderequest.hpp"
 #include <iostream>
 
-NodeRequest::NodeRequest(Tins::EthernetII packet)
+NodeRequest::NodeRequest(const Tins::EthernetII& packet)
 {
     this->_source_mac = packet.src_addr();
     this->_destination_mac = packet.dst_addr();
@@ -62,58 +62,58 @@ NodeRequest::NodeRequest(Tins::EthernetII packet)
     }
 }
 
-NodeRequestType NodeRequest::get_type()
+NodeRequestType NodeRequest::get_type() const noexcept
 {
     return this->_type;
 }
 
-const Tins::HWAddress<6>& NodeRequest::get_source_mac()
+const Tins::HWAddress<6>& NodeRequest::get_source_mac() const noexcept
 {
     return this->_source_mac;
 }
 
-const Tins::HWAddress<6>& NodeRequest::get_destination_mac()
+const Tins::HWAddress<6>& NodeRequest::get_destination_mac() const noexcept
 {
     return this->_destination_mac;
 }
 
-const Tins::IPv6Address& NodeRequest::get_source_address()
+const Tins::IPv6Address& NodeRequest::get_source_address() const noexcept
 {
     return this->_source_address;
 }
 
-const Tins::IPv6Address& NodeRequest::get_destination_address()
+const Tins::IPv6Address& NodeRequest::get_destination_address() const noexcept
 {
     return this->_destination_address;
 }
 
-int NodeRequest::get_hoplimit()
+int NodeRequest::get_hoplimit() const noexcept
 {
     return this->_hoplimit;
 }
 
-int NodeRequest::get_udp_sport()
+int NodeRequest::get_udp_sport() const noexcept
 {
     return this->_udp_sport;
 }
 
-int NodeRequest::get_udp_dport()
+int NodeRequest::get_udp_dport() const noexcept
 {
     return this->_udp_dport;
 }
 
-int NodeRequest::get_icmp_identifier()
+int NodeRequest::get_icmp_identifier() const noexcept
 {
     return this->_icmp_identifier;
 }
 
-int NodeRequest::get_icmp_sequence()
+int NodeRequest::get_icmp_sequence() const noexcept
 {
     return this->_icmp_sequence;
 }
 
 
-const Tins::RawPDU::payload_type& NodeRequest::get_payload()
+const Tins::RawPDU::payload_type& NodeRequest::get_payload() const noexcept
 {
     return this->_payload;
 }

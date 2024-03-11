@@ -11,21 +11,21 @@ enum class NodeRequestType { UNKNOWN, ICMP_ECHO_REQUEST, ICMP_NDP, UDP };
 class NodeRequest
 {
     public:
-        NodeRequest(Tins::EthernetII packet);
-        NodeRequestType get_type();
-        const Tins::HWAddress<6>& get_source_mac();
-        const Tins::HWAddress<6>& get_destination_mac();
-        const Tins::IPv6Address& get_source_address();
-        const Tins::IPv6Address& get_destination_address();
-        int get_hoplimit();
+        NodeRequest(const Tins::EthernetII& packet);
+        NodeRequestType get_type() const noexcept;
+        const Tins::HWAddress<6>& get_source_mac() const noexcept;
+        const Tins::HWAddress<6>& get_destination_mac() const noexcept;
+        const Tins::IPv6Address& get_source_address() const noexcept;
+        const Tins::IPv6Address& get_destination_address() const noexcept;
+        int get_hoplimit() const noexcept;
 
-        int get_udp_sport();
-        int get_udp_dport();
+        int get_udp_sport() const noexcept;
+        int get_udp_dport() const noexcept;
 
-        int get_icmp_identifier();
-        int get_icmp_sequence();
+        int get_icmp_identifier() const noexcept;
+        int get_icmp_sequence() const noexcept;
 
-        const Tins::RawPDU::payload_type& get_payload();
+        const Tins::RawPDU::payload_type& get_payload() const noexcept;
 
         friend std::ostream& operator<<(std::ostream& os, const NodeRequest & noderequest);
 

@@ -6,8 +6,8 @@
 class RandomGenerator
 {
     public:
-        RandomGenerator(int max, int min = 0);
-        int generate();
+        RandomGenerator(int max, int min = 0) noexcept;
+        int generate() noexcept;
     
     private:
         std::default_random_engine _rng;

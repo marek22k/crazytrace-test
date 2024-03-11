@@ -1,6 +1,6 @@
 #include "nodecontainer.hpp"
 
-NodeReply NodeContainer::get_reply(NodeRequest& request)
+NodeReply NodeContainer::get_reply(const NodeRequest& request)
 {
 
     switch(request.get_type())
@@ -129,7 +129,7 @@ NodeReply NodeContainer::get_reply(NodeRequest& request)
 }
 
 
-void NodeContainer::add_node(std::shared_ptr<NodeInfo> node)
+void NodeContainer::add_node(std::shared_ptr<NodeInfo> node) noexcept
 {
     this->_nodes.insert(node);
 }

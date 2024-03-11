@@ -14,31 +14,31 @@ NodeReply::NodeReply(
     _source_mac(source_mac), _source_address(source_address)
 {}
 
-void NodeReply::set_hoplimit(int hoplimit)
+void NodeReply::set_hoplimit(int hoplimit) noexcept
 {
     this->_hoplimit = hoplimit;
 }
 
-void NodeReply::icmp_echo_reply(int icmp_identifier, int icmp_sequence, Tins::RawPDU::payload_type payload)
+void NodeReply::icmp_echo_reply(int icmp_identifier, int icmp_sequence, Tins::RawPDU::payload_type payload) noexcept
 {
     this->_icmp_identifier = icmp_identifier;
     this->_icmp_sequence = icmp_sequence;
     this->_payload = payload;
 }
 
-void NodeReply::packet_reassembly(Tins::IPv6Address original_destination_address)
+void NodeReply::packet_reassembly(Tins::IPv6Address original_destination_address) noexcept
 {
     this->_original_destination_address = original_destination_address;
 }
 
-void NodeReply::udp_response(Tins::RawPDU::payload_type payload, int udp_dport, int udp_sport)
+void NodeReply::udp_response(Tins::RawPDU::payload_type payload, int udp_dport, int udp_sport) noexcept
 {
     this->_payload = payload;
     this->_udp_dport = udp_dport;
     this->_udp_sport = udp_sport;
 }
 
-std::string NodeReply::to_packet()
+std::string NodeReply::to_packet() const
 {
     switch(this->_type)
     {
@@ -158,7 +158,7 @@ std::string NodeReply::to_packet()
 }
 
 
-NodeReplyType NodeReply::get_type()
+NodeReplyType NodeReply::get_type() const noexcept
 {
     return this->_type;
 }
