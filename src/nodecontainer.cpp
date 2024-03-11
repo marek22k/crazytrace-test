@@ -1,5 +1,4 @@
 #include "nodecontainer.hpp"
-#include <iostream>
 
 NodeContainer::NodeContainer(std::unordered_set<std::shared_ptr<NodeInfo>> nodes) :
     _nodes(nodes)
@@ -22,7 +21,7 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
             Tins::HWAddress<6> source_mac = route.back()->get_mac_address();
 
             int hoplimit = request.get_hoplimit();
-            // std::cout << "Check: " << hoplimit << " >= " << (route.size()) << "?" << std::endl;
+            BOOST_LOG_TRIVIAL(trace) << "Check hoplimit: " << hoplimit << " >= " << (route.size()) << "?" << std::endl;
             if (static_cast<::size_t>(hoplimit) >= route.size())
             {
                 /* target reached */

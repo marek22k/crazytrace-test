@@ -3,10 +3,12 @@
 
 #define CRAZYTRACE_BUFFER_SIZE 1500
 
+#include <iostream>
 #include <array>
 #include <memory>
 #include <cstdlib>
 #include <boost/asio.hpp>
+#include <boost/log/trivial.hpp>
 #include "noderequest.hpp"
 #include "nodecontainer.hpp"
 

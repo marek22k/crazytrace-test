@@ -1,6 +1,5 @@
 #include "crazytrace.hpp"
 
-#include <iostream>
 #include <tins/tins.h>
 
 Crazytrace::Crazytrace(boost::asio::posix::stream_descriptor& device, NodeContainer nodecontainer) :
@@ -24,10 +23,10 @@ void Crazytrace::handle_packet(const boost::system::error_code& error, std::size
 {
     if (error)
     {
-        std::cerr << "Error in handle_packet: " << error.message() << std::endl;
+        BOOST_LOG_TRIVIAL(error) << "Error in handle_packet: " << error.message() << std::endl;
         return;
     }
-    // std::cout << "Received packet of size: " << bytes_transferred << std::endl;
+    BOOST_LOG_TRIVIAL(trace) << "Received packet of size: " << bytes_transferred << std::endl;
 
     try
     {
@@ -37,20 +36,20 @@ void Crazytrace::handle_packet(const boost::system::error_code& error, std::size
         NodeRequest request(packet);
         if (request.get_type() != NodeRequestType::UNKNOWN)
         {
-            std::cout << request << std::endl;
+            BOOST_LOG_TRIVIAL(debug) << request << std::endl;
             NodeReply reply = this->_nodecontainer.get_reply(packet);
-            std::cout << reply << std::endl;
+            BOOST_LOG_TRIVIAL(debug) << reply << std::endl;
             if (reply.get_type() != NodeReplyType::NOREPLY)
             {
                 std::string packet = reply.to_packet();
                 this->_device.async_write_some(boost::asio::buffer(packet, packet.size()), [&](const boost::system::error_code& error, std::size_t bytes_transferred) {
                                     if (error)
                                     {
-                                        std::cerr << "Failed to write packet" << std::endl;
+                                        BOOST_LOG_TRIVIAL(warning) << "Failed to write packet: " << error.message() << std::endl;
                                     }
                                     else
                                     {
-                                        std::cout << "Packet written, " << bytes_transferred << " bytes" << std::endl;
+                                        BOOST_LOG_TRIVIAL(trace) << "Packet written, " << bytes_transferred << " bytes" << std::endl;
                                     }
                                 });
             }
@@ -58,10 +57,10 @@ void Crazytrace::handle_packet(const boost::system::error_code& error, std::size
     }
     catch (const Tins::malformed_packet&)
     {
-        std::cerr << "Malformed packet" << std::endl;
+        BOOST_LOG_TRIVIAL(warning) << "Malformed packet" << std::endl;
     }
     catch (const std::exception& e)
     {
-        std::cerr << "Error: " << e.what() << std::endl;
+        BOOST_LOG_TRIVIAL(error) << "Error: " << e.what() << std::endl;
     }
 }

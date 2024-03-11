@@ -4,6 +4,8 @@
 #include <vector>
 #include <unordered_set>
 #include <memory>
+#include <iostream>
+#include <boost/log/trivial.hpp>
 #include <tins/tins.h>
 #include "nodeinfo.hpp"
 #include "noderequest.hpp"
