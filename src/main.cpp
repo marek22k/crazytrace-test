@@ -27,6 +27,9 @@ int main() {
         node1->add_address(Tins::IPv6Address("fe80::2c0a:baff:fe2c:3d54"));
         std::shared_ptr<NodeInfo> node1_node1 = std::make_shared<NodeInfo>();
         node1_node1->add_address(Tins::IPv6Address("fd00::3"));
+        std::shared_ptr<NodeInfo> node1_node1_node1 = std::make_shared<NodeInfo>();
+        node1_node1_node1->add_address(Tins::IPv6Address("fd00::4"));
+        node1_node1->add_node(node1_node1_node1);
         node1->add_node(node1_node1);
         nodes.insert(node1);
 

@@ -21,7 +21,8 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
             Tins::HWAddress<6> source_mac = route.back()->get_mac_address();
 
             int hoplimit = request.get_hoplimit();
-            if (hoplimit >= (this->_nodes.size() + 1))
+            // std::cout << "Check: " << hoplimit << " >= " << (route.size()) << "?" << std::endl;
+            if (static_cast<::size_t>(hoplimit) >= route.size())
             {
                 /* target reached */
                 std::shared_ptr<NodeInfo> reached_node = route[0];
