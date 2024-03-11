@@ -29,6 +29,7 @@ endif
 
 boost_dep = dependency('boost', modules : ['log'])
 libtins_dep = dependency('libtins')
+yamlcpp_dep = dependency('yaml-cpp')
 
 executable(
     'crazytrace',
@@ -41,5 +42,5 @@ executable(
         'noderequest.cpp',
         'nodereply.cpp'
     ],
-    dependencies: [libtuntap_dep, boost_dep, libtins_dep]
+    dependencies: [libtuntap_dep, boost_dep, libtins_dep, yamlcpp_dep]
 )

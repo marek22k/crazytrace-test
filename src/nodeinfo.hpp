@@ -1,6 +1,8 @@
 #ifndef NODEINFO_HPP
 #define NODEINFO_HPP
 
+#include <iostream>
+#include <ostream>
 #include <memory>
 #include <vector>
 #include <unordered_set>
@@ -19,6 +21,9 @@ class NodeInfo
         void add_node(std::shared_ptr<NodeInfo> node);
         void add_address(Tins::IPv6Address address);
         const Tins::IPv6Address& get_address();
+        void print(std::ostream& os, int layer = 0);
+
+        friend std::ostream& operator<<(std::ostream& os, NodeInfo const & nodeinfo);
 
     private:
         std::unordered_set<Tins::IPv6Address> _addresses;

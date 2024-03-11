@@ -1,6 +1,7 @@
 #ifndef NODEREPLY_HPP
 #define NODEREPLY_HPP
 
+#include <ostream>
 #include <string>
 #include <stdexcept>
 #include <tins/tins.h>

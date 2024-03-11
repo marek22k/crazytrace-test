@@ -27,7 +27,8 @@ bool NodeInfo::has_address(const Tins::IPv6Address& address)
 
 void NodeInfo::set_hoplimit(int hoplimit)
 {
-    // TODO: Check limits
+    if (hoplimit < 0 || hoplimit > 255)
+        throw std::invalid_argument("Hop limit outside the permitted value range");
     this->_hoplimit = hoplimit;
 }
 
@@ -65,4 +66,35 @@ std::vector<std::shared_ptr<NodeInfo>> NodeInfo::get_route_to(const Tins::IPv6Ad
     }
 
     return std::vector<std::shared_ptr<NodeInfo>>();
+}
+
+void NodeInfo::print(std::ostream& os, int layer)
+{
+    std::string tabs(layer, '\t');
+
+    os << tabs << *this << std::endl;
+    if (! this->_nodes.empty())
+    {
+        os << tabs << "Childs:" << std::endl;
+        for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
+        {
+            (*node)->print(os, layer + 1);
+        }
+    }
+}
+
+std::ostream& operator<<(std::ostream& os, NodeInfo const & nodeinfo)
+{
+    os << "NodeInfo: hoplimit=" << nodeinfo._hoplimit;
+    for (auto address = nodeinfo._addresses.begin(); address != nodeinfo._addresses.end(); address++)
+    {
+        os << " " << *address;
+    }
+    if (nodeinfo._mac_address != Tins::HWAddress<6>())
+    {
+        /* Is not empty address? */
+        os << " " << nodeinfo._mac_address;
+    }
+
+    return os;
 }

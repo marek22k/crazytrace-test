@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <memory>
 #include <stdexcept>
 #include <cstdlib>
@@ -32,6 +33,10 @@ int main() {
         node1_node1->add_node(node1_node1_node1);
         node1->add_node(node1_node1);
         nodes.insert(node1);
+
+        std::ostringstream nodes_verbose;
+        node1->print(nodes_verbose);
+        BOOST_LOG_TRIVIAL(info) << nodes_verbose.str();
 
         NodeContainer nodecontainer(nodes);
 
