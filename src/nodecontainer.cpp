@@ -57,6 +57,9 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
                         reply.set_hoplimit(reply_hoplimit);
                         return reply;
                     }
+                    default: [[unlikely]]
+                        throw std::runtime_error("An impossible error has occurred. A reply was requested for ICMP_ECHO_REQUEST or UDP, but the request has suddenly changed.");
+                        break;
                 }
             }
             else
@@ -96,6 +99,9 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
                         reply.set_hoplimit(reply_hoplimit);
                         return reply;
                     }
+                    default: [[unlikely]]
+                        throw std::runtime_error("An impossible error has occurred. A reply was requested for ICMP_ECHO_REQUEST or UDP, but the request has suddenly changed.");
+                        break;
                 }
             }
             break;
@@ -124,6 +130,8 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
         default:
             return NodeReply(NodeReplyType::NOREPLY);
     }
+
+    return NodeReply(NodeReplyType::NOREPLY);
 }
 
 void NodeContainer::set_nodes(std::unordered_set<std::shared_ptr<NodeInfo>> nodes)

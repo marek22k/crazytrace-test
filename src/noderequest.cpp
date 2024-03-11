@@ -125,9 +125,6 @@ std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
     std::string type_string;
     switch (noderequest._type)
     {
-        case NodeRequestType::UNKNOWN:
-            type_string = "UNKNOWN";
-            break;
         case NodeRequestType::ICMP_ECHO_REQUEST:
             type_string = "ICMP_ECHO_REQUEST";
             break;
@@ -136,6 +133,9 @@ std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
             break;
         case NodeRequestType::UDP:
             type_string = "UDP";
+            break;
+        default:
+            type_string = "UNKNOWN";
             break;
     }
     os << "REQUEST " << type_string << ": " <<
@@ -167,6 +167,8 @@ std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
             os << ": DPORT=" << noderequest._udp_dport <<
                   " SPORT=" << noderequest._udp_sport <<
                   " LENGTH=" << noderequest._payload.size();
+            break;
+        default:
             break;
     }
 

@@ -33,7 +33,7 @@ int main() {
         node1->add_node(node1_node1);
         nodes.insert(node1);
 
-        std::shared_ptr<NodeContainer> nodecontainer = std::make_shared<NodeContainer>(nodes);
+        NodeContainer nodecontainer(nodes);
 
         boost::asio::io_context io;
         const ::size_t mtu = 1500;

@@ -2,6 +2,7 @@
 #define NODEREPLY_HPP
 
 #include <string>
+#include <stdexcept>
 #include <tins/tins.h>
 
 enum class NodeReplyType {
@@ -36,10 +37,10 @@ class NodeReply
     private:
         NodeReplyType _type;
         int _hoplimit;
-        Tins::HWAddress<6> _source_mac;
         Tins::HWAddress<6> _destination_mac;
-        Tins::IPv6Address _source_address; /* Also used for ICMP_NDP */
         Tins::IPv6Address _destination_address;
+        Tins::HWAddress<6> _source_mac;
+        Tins::IPv6Address _source_address; /* Also used for ICMP_NDP */
 
         /* ICMP ECHO REPLY */
         int _icmp_identifier;

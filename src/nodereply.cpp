@@ -84,6 +84,9 @@ std::string NodeReply::to_packet()
                     receiving_ipv6.inner_pdu(receiving_udp);
                     break;
                 }
+                default:
+                    /* Fatal error */
+                    break;
             }
             Tins::PDU::serialization_type serialized_receiving_packet = receiving_ipv6.serialize();
 
@@ -119,6 +122,8 @@ std::string NodeReply::to_packet()
                     std::string raw_packet(serialized_packet.begin(), serialized_packet.end());
                     return raw_packet;
                 }
+                default: [[unlikely]]
+                    throw std::runtime_error("Attempt to create a packet, but the packet type has suddenly changed. As a result, no response could be generated.");
             }
         }
         case NodeReplyType::ICMP_NDP:
@@ -144,9 +149,12 @@ std::string NodeReply::to_packet()
             std::string raw_packet(serialized_packet.begin(), serialized_packet.end());
             return raw_packet;
         }
+        default: [[unlikely]]
+            throw std::runtime_error("Attempt to create a packet, although there is no reply.");
     }
 
-    return std::string("test");
+    [[unlikely]]
+    throw std::runtime_error("Attempt to create a packet, although there is no reply.");
 }
 
 
@@ -181,6 +189,9 @@ std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
         case NodeReplyType::ICMP_NDP:
             type_string = "ICMP_NDP";
             break;
+        default:
+            type_string = "UNKNOWN";
+            break;
     }
     os << "REPLY " << type_string << ": " <<
           nodereply._source_address << " (" << nodereply._source_mac << ") -> " <<
@@ -214,8 +225,11 @@ std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
         case NodeReplyType::ICMP_TIME_EXCEEDED_UDP:
             os << " Hoplimit=" << nodereply._hoplimit <<
                   " LENGTH=" << nodereply._payload.size();
+            break;
         case NodeReplyType::ICMP_NDP:
             os << ": NDP";
+            break;
+        default:
             break;
     }
     return os;

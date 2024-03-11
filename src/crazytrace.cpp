@@ -3,7 +3,7 @@
 #include <iostream>
 #include <tins/tins.h>
 
-Crazytrace::Crazytrace(boost::asio::posix::stream_descriptor& device, std::shared_ptr<NodeContainer> nodecontainer) :
+Crazytrace::Crazytrace(boost::asio::posix::stream_descriptor& device, NodeContainer nodecontainer) :
     _device(device), _nodecontainer(nodecontainer)
 {
     
@@ -38,7 +38,7 @@ void Crazytrace::handle_packet(const boost::system::error_code& error, std::size
         if (request.get_type() != NodeRequestType::UNKNOWN)
         {
             std::cout << request << std::endl;
-            NodeReply reply = this->_nodecontainer->get_reply(packet);
+            NodeReply reply = this->_nodecontainer.get_reply(packet);
             std::cout << reply << std::endl;
             if (reply.get_type() != NodeReplyType::NOREPLY)
             {
