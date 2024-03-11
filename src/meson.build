@@ -3,7 +3,7 @@ project(
     'cpp',
     license: ['GPL-3.0-or-later'],
     default_options: [
-        # 'buildtype=release',
+        'buildtype=release',
         'optimization=2',
         'warning_level=3',
         # 'werror=true',
