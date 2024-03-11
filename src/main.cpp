@@ -26,10 +26,10 @@ int main() {
         Configuration config("../config.yaml");
         config.load();
         config.apply_log_level();
-        const NodeContainer& nodecontainer = config.get_node_container();
+        std::shared_ptr<NodeContainer> nodecontainer = config.get_node_container();
 
         std::ostringstream nodes_verbose;
-        nodecontainer.print(nodes_verbose);
+        nodecontainer->print(nodes_verbose);
         BOOST_LOG_TRIVIAL(info) << nodes_verbose.str();
 
         boost::asio::io_context io;

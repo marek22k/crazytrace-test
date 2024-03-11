@@ -8,3 +8,5 @@ nodes:
       - addresses: [fd00::3]
         nodes:
           - addresses: [fd00::4]
+  - mac: 02:B1:4F:7E:9D:D3
+    addresses: [fe80::2c0a:baff:fe2c:3c54]

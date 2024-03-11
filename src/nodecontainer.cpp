@@ -1,13 +1,5 @@
 #include "nodecontainer.hpp"
 
-NodeContainer::NodeContainer() :
-    _nodes()
-{}
-
-NodeContainer::NodeContainer(std::unordered_set<std::shared_ptr<NodeInfo>> nodes) :
-    _nodes(nodes)
-{}
-
 NodeReply NodeContainer::get_reply(NodeRequest request)
 {
 
@@ -137,11 +129,13 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
     return NodeReply(NodeReplyType::NOREPLY);
 }
 
-void NodeContainer::set_nodes(std::unordered_set<std::shared_ptr<NodeInfo>> nodes)
-{
-    this->_nodes = nodes;
-}
 
+void NodeContainer::add_node(std::shared_ptr<NodeInfo> node)
+{
+    std::cout << "insert node" << std::endl;
+    this->_nodes.insert(node);
+    std::cout << "node inserted" << std::endl;
+}
 
 std::vector<std::shared_ptr<NodeInfo>> NodeContainer::get_route_to(const Tins::IPv6Address& destination_address)
 {

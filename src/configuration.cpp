@@ -1,7 +1,7 @@
 #include "configuration.hpp"
 
 Configuration::Configuration(std::string filename) :
-    _filename(filename)
+    _filename(filename), _node_container(std::make_shared<NodeContainer>())
 {}
 
 void Configuration::load()
@@ -11,10 +11,8 @@ void Configuration::load()
         YAML::Node config = YAML::LoadFile(this->_filename);
         this->load_log_level(config["log_level"]);
 
-        std::unordered_set<std::shared_ptr<NodeInfo>> nodes;
         YAML::Node nodes_config = config["nodes"];
-        this->load_nodes(nodes_config, true, nodes);
-        this->_node_container = NodeContainer(nodes);
+        this->load_nodes(nodes_config, this->_node_container);
     }
     catch (const YAML::Exception& e)
     {
@@ -64,18 +62,24 @@ void Configuration::load_log_level(YAML::Node node)
     }
 }
 
-
-void Configuration::load_nodes(YAML::Node nodes_config, bool mac, std::unordered_set<std::shared_ptr<NodeInfo>>& nodes)
+template <typename T, typename std::enable_if<std::is_same<T, NodeInfo>::value || std::is_same<T, NodeContainer>::value, int>::type>
+void Configuration::load_nodes(YAML::Node nodes_config, std::shared_ptr<T> nodes, bool mac)
 {
-    if (nodes_config.IsDefined())
+    if (nodes_config.IsDefined() && !nodes_config.IsNull())
     {
         if (! nodes_config.IsSequence())
             throw std::runtime_error("Failed to load configuration file: Nodes is not a sequence.");
 
         for (auto node_config = nodes_config.begin(); node_config != nodes_config.end(); node_config++)
         {
-            //if (! (*node_config)["addresses"].IsDefined())
-            //    throw std::runtime_error("Failed to load configuration file: Missing addresses attribute.");
+            std::cout << (*node_config).Type() << std::endl;
+            if ( (*node_config).IsNull() )
+                continue;
+
+            if (! (*node_config).IsMap())
+                throw std::runtime_error("Failed to load configuration file: Node is not a map.");
+            if (! (*node_config)["addresses"].IsDefined())
+                throw std::runtime_error("Failed to load configuration file: Missing addresses attribute.");
             if (! (*node_config)["addresses"].IsSequence())
                 throw std::runtime_error("Failed to load configuration file: Addresses is not a sequence.");
             if (mac)
@@ -94,18 +98,24 @@ void Configuration::load_nodes(YAML::Node nodes_config, bool mac, std::unordered
             YAML::Node addresses_config = (*node_config)["addresses"];
             for (auto address_config = addresses_config.begin(); address_config != addresses_config.end(); address_config++)
                 node->add_address(Tins::IPv6Address((*address_config).as<std::string>()));
+                
+            std::cout << "Address: " << node->get_address() << std::endl;
 
             YAML::Node hoplimit_config = (*node_config)["hoplimit"];
             if (hoplimit_config.IsDefined())
                 node->set_hoplimit(hoplimit_config.as<int>());
 
-            load_nodes(nodes_config["nodes"], false, nodes);
-            nodes.insert(node);
+            load_nodes((*node_config)["nodes"], node, false);
+            nodes->add_node(node);
         }
+    }
+    else
+    {
+        std::cout << "I should load empty nodes" << std::endl;
     }
 }
 
-const NodeContainer& Configuration::get_node_container()
+std::shared_ptr<NodeContainer> Configuration::get_node_container()
 {
     return this->_node_container;
 }

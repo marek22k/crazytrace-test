@@ -15,17 +15,14 @@
 class NodeContainer
 {
     public:
-        NodeContainer();
-        NodeContainer(std::unordered_set<std::shared_ptr<NodeInfo>> nodes);
         NodeReply get_reply(NodeRequest request);
-        void set_nodes(std::unordered_set<std::shared_ptr<NodeInfo>> nodes);
+        void add_node(std::shared_ptr<NodeInfo> node);
 
         void print(std::ostream& os) const;
         friend std::ostream& operator<<(std::ostream& os, NodeContainer const & nodecontainer);
 
     private:
         std::vector<std::shared_ptr<NodeInfo>> get_route_to(const Tins::IPv6Address& destination_address);
-
         std::unordered_set<std::shared_ptr<NodeInfo>> _nodes;
 };
 
