@@ -4,7 +4,14 @@
 #include <string>
 #include <tins/tins.h>
 
-enum class NodeReplyType { NOREPLY, ICMP_ECHO_REPLY, ICMP_TIME_EXCEEDED, ICMP_PORT_UNREACHABLE, ICMP_NDP };
+enum class NodeReplyType {
+    NOREPLY, /* No reply is to be sent. */
+    ICMP_ECHO_REPLY, /* An ICMP ECHO REPLY packet is sent in response. */
+    ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST, /* An ICMP TIME EXCEEDED packet is sent in response to an ICMP ECHO_REQUEST packet. */
+    ICMP_PORT_UNREACHABLE, /* An ICMP PORT UNREACHABLE packet is sent in response. */
+    ICMP_TIME_EXCEEDED_UDP, /* An ICMP TIME EXCEEDED packet is sent in response to an UDP packet. */
+    ICMP_NDP /* A neighbor advertisement is sent. */
+};
 
 class NodeReply
 {
@@ -18,6 +25,7 @@ class NodeReply
 
         void set_hoplimit(int hoplimit);
         void icmp_echo_reply(int icmp_identifier, int icmp_sequence, Tins::RawPDU::payload_type payload);
+        void icmp_time_exceeded(Tins::IPv6Address original_destination_address);
         void udp_response(Tins::RawPDU::payload_type payload, int udp_dport, int udp_sport);
 
         std::string to_packet();
@@ -37,10 +45,13 @@ class NodeReply
         int _icmp_identifier;
         int _icmp_sequence;
 
-        /* ICMP_TIME_EXCEEDED + ICMP_PORT_UNREACHABLE */
+        /* ICMP_PORT_UNREACHABLE */
         Tins::RawPDU::payload_type /* aka std::vector<uint8_t> */ _payload;
         int _udp_dport;
         int _udp_sport;
+
+        /* ICMP TIME EXCEEDED */
+        Tins::IPv6Address _original_destination_address; 
 };
 
 #endif

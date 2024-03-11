@@ -42,18 +42,20 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
             else
             {
                 /* hoplimit exceeded */
-                int reached_node_number = request.get_hoplimit() - 1;
+                int reached_node_number = route.size() - request.get_hoplimit();
                 std::shared_ptr<NodeInfo> reached_node = route[reached_node_number];
 
-                int reply_hoplimit = reached_node->get_hoplimit() - route.size() + 1;
+                int reply_hoplimit = reached_node->get_hoplimit() - hoplimit + 1;
                 if (reply_hoplimit <= 0)
                     return NodeReply(NodeReplyType::NOREPLY);
 
                 NodeReply reply(
-                    NodeReplyType::ICMP_TIME_EXCEEDED,
+                    NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST,
                     request.get_source_mac(), request.get_source_address(),
                     source_mac, reached_node->get_address()
                 );
+                reply.icmp_echo_reply(request.get_icmp_identifier(), request.get_icmp_sequence(), request.get_payload());
+                reply.icmp_time_exceeded(request.get_destination_address());
                 reply.set_hoplimit(reply_hoplimit);
                 return reply;
             }
