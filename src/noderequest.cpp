@@ -18,7 +18,7 @@ NodeRequest::NodeRequest(Tins::EthernetII packet)
         {
             case Tins::Constants::IP::PROTO_ICMPV6:
             {
-                const Tins::ICMPv6& icmpv6 = packet.rfind_pdu<Tins::ICMPv6>();
+                const Tins::ICMPv6& icmpv6 = ipv6.rfind_pdu<Tins::ICMPv6>();
                 switch (icmpv6.type())
                 {
                     case Tins::ICMPv6::Types::NEIGHBOUR_SOLICIT:
@@ -130,7 +130,7 @@ std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
             type_string = "UDP";
             break;
     }
-    os << type_string << ": " <<
+    os << "REQUEST " << type_string << ": " <<
           noderequest._source_address << " (" << noderequest._source_mac << ") -> " <<
           noderequest._destination_address << " (" << noderequest._destination_mac << ") " <<
           "Hoplimit=" << noderequest._hoplimit;
@@ -144,9 +144,9 @@ std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
             os << ": Looking for " << noderequest._destination_address;
             break;
         case NodeRequestType::UDP:
-            
-            break;
-        default:
+            os << ": DPORT=" << noderequest._udp_dport <<
+                  " SPORT=" << noderequest._udp_sport <<
+                  " LENGTH=" << noderequest._udp_content.size();
             break;
     }
     return os;

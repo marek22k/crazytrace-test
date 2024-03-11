@@ -24,7 +24,7 @@ int main() {
         std::unordered_set<std::shared_ptr<NodeInfo>> nodes;
         std::shared_ptr<NodeInfo> node1 = std::make_shared<NodeInfo>();
         node1->set_mac_address(Tins::HWAddress<6>("de:9f:34:50:e2:5f"));
-        node1->add_address(Tins::IPv6Address("fe80::f8ed:65ff:fe50:22ea"));
+        node1->add_address(Tins::IPv6Address("fe80::2c0a:baff:fe2c:3d54"));
         nodes.insert(node1);
 
         std::shared_ptr<NodeContainer> nodecontainer = std::make_shared<NodeContainer>(nodes);

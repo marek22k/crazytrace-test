@@ -24,6 +24,14 @@ libtins_dep = dependency('libtins')
 
 executable(
     'crazytrace',
-    ['main.cpp', 'tun_tap.cpp', 'crazytrace.cpp', 'nodeinfo.cpp', 'nodecontainer.cpp', 'noderequest.cpp', 'nodereply.cpp'],
+    [
+        'main.cpp',
+        'tun_tap.cpp',
+        'crazytrace.cpp',
+        'nodeinfo.cpp',
+        'nodecontainer.cpp',
+        'noderequest.cpp',
+        'nodereply.cpp'
+    ],
     dependencies: [libtuntap_dep, boost_dep, libtins_dep]
 )

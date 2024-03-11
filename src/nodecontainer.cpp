@@ -23,18 +23,21 @@ NodeReply NodeContainer::get_reply(NodeRequest request)
                 {
                     /* We have found a node with the corresponding MAC address.
                        Other nodes with the same MAC address must not exist. */
-                    return NodeReply(NodeReplyType::ICMP_NDP, (*node)->get_mac_address());
+                    NodeReply reply(
+                        NodeReplyType::ICMP_NDP, (*node)->get_hoplimit(),
+                        request.get_source_mac(), request.get_source_address(),
+                        (*node)->get_mac_address(), request.get_destination_address()
+                    );
+                    return reply;
                 }
             }
-            break;
+            return NodeReply(NodeReplyType::NOREPLY);
         }
         case NodeRequestType::UDP:
             break;
         default:
-            std::cerr << "Error" << std::endl;
+            return NodeReply(NodeReplyType::NOREPLY);
     }
-
-    return NodeReply(NodeReplyType::ICMP_ECHO_REPLY, 1, 1);
 }
 
 void NodeContainer::set_nodes(std::unordered_set<std::shared_ptr<NodeInfo>> nodes)

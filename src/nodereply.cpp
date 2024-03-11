@@ -1,52 +1,112 @@
 #include "nodereply.hpp"
 
-NodeReply::NodeReply(NodeReplyType type, int icmp_identifier, int icmp_sequence) :
-    _type(type), _icmp_identifier(icmp_identifier), _icmp_sequence(icmp_sequence)
+NodeReply::NodeReply(NodeReplyType type) :
+    _type(type)
 {}
 
-NodeReply::NodeReply(NodeReplyType type, Tins::RawPDU::payload_type udp_content, int udp_dport, int udp_sport) :
-    _type(type), _udp_content(udp_content), _udp_dport(udp_dport), _udp_sport(udp_sport)
+NodeReply::NodeReply(
+    NodeReplyType type, int hoplimit,
+    Tins::HWAddress<6> destination_mac, Tins::IPv6Address destination_address,
+    Tins::HWAddress<6> source_mac, Tins::IPv6Address source_address
+) :
+    _type(type), _hoplimit(hoplimit),
+    _destination_mac(destination_mac), _destination_address(destination_address),
+    _source_mac(source_mac), _source_address(source_address)
 {}
 
-NodeReply::NodeReply(NodeReplyType type, Tins::HWAddress<6> source_mac) :
-    _type(type), _source_mac(source_mac)
-{}
-
-std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
+void NodeReply::icmp_echo_reply(int icmp_identifier, int icmp_sequence)
 {
-    std::string type_string;
-    switch (noderequest._type)
+    this->_icmp_identifier = icmp_identifier;
+    this->_icmp_sequence = icmp_sequence;
+}
+
+void NodeReply::udp_response(Tins::RawPDU::payload_type udp_content, int udp_dport, int udp_sport)
+{
+    this->_udp_content = udp_content;
+    this->_udp_dport = udp_dport;
+    this->_udp_sport = udp_sport;
+}
+
+std::string NodeReply::to_packet()
+{
+    switch(this->_type)
     {
-        case NodeRequestType::UNKNOWN:
-            type_string = "UNKNOWN";
+        case NodeReplyType::ICMP_ECHO_REPLY:
+
             break;
-        case NodeRequestType::ICMP_ECHO_REQUEST:
-            type_string = "ICMP_ECHO_REQUEST";
+        case NodeReplyType::ICMP_TIME_EXCEEDED:
+
             break;
-        case NodeRequestType::ICMP_NDP:
-            type_string = "ICMP_NDP";
+        case NodeReplyType::ICMP_PORT_UNREACHABLE:
+
             break;
-        case NodeRequestType::UDP:
-            type_string = "UDP";
+        case NodeReplyType::ICMP_NDP:
+            Tins::EthernetII packet = Tins::EthernetII(this->_destination_mac, this->_source_mac) /
+                                   Tins::IPv6(this->_destination_address, this->_source_address) /
+                                   Tins::ICMPv6(Tins::ICMPv6::Types::NEIGHBOUR_ADVERT);
+            Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
+            Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
+            inner_icmpv6.target_addr(this->_source_address);
+            // inner_icmpv6.solicited(Tins::small_uint<1>(1));
+            inner_icmpv6.router(Tins::small_uint<1>(1));
+            Tins::PDU::serialization_type serialized_packet = packet.serialize();
+            std::string raw_packet(serialized_packet.begin(), serialized_packet.end());
+            return raw_packet;
+
             break;
     }
-    os << type_string << ": " <<
-          noderequest._source_address << " (" << noderequest._source_mac << ") -> " <<
-          noderequest._destination_address << " (" << noderequest._destination_mac << ") " <<
-          "Hoplimit=" << noderequest._hoplimit;
 
-    switch (noderequest._type)
+    return std::string("test");
+}
+
+
+NodeReplyType NodeReply::get_type()
+{
+    return this->_type;
+}
+
+std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
+{
+    if (nodereply._type == NodeReplyType::NOREPLY)
     {
-        case NodeRequestType::ICMP_ECHO_REQUEST:
-            os << ": ID=" << noderequest._icmp_identifier << " SEQ=" << noderequest._icmp_sequence;
+        os << "NOREPLY";
+        return os;
+    }
+
+    std::string type_string;
+    switch (nodereply._type)
+    {
+        case NodeReplyType::ICMP_ECHO_REPLY:
+            type_string = "ICMP_ECHO_REPLY";
             break;
-        case NodeRequestType::ICMP_NDP:
-            os << ": Looking for " << noderequest._destination_address;
+        case NodeReplyType::ICMP_TIME_EXCEEDED:
+            type_string = "ICMP_TIME_EXCEEDED";
             break;
-        case NodeRequestType::UDP:
-            
+        case NodeReplyType::ICMP_PORT_UNREACHABLE:
+            type_string = "ICMP_PORT_UNREACHABLE";
             break;
-        default:
+        case NodeReplyType::ICMP_NDP:
+            type_string = "ICMP_NDP";
+            break;
+    }
+    os << "REPLY " << type_string << ": " <<
+          nodereply._source_address << " (" << nodereply._source_mac << ") -> " <<
+          nodereply._destination_address << " (" << nodereply._destination_mac << ") " <<
+          "Hoplimit=" << nodereply._hoplimit;
+
+    switch (nodereply._type)
+    {
+        case NodeReplyType::ICMP_ECHO_REPLY:
+            os << ": ID=" << nodereply._icmp_identifier << " SEQ=" << nodereply._icmp_sequence;
+            break;
+        case NodeReplyType::ICMP_TIME_EXCEEDED:
+        case NodeReplyType::ICMP_PORT_UNREACHABLE:
+            os << ": DPORT=" << nodereply._udp_dport <<
+                  " SPORT=" << nodereply._udp_sport <<
+                  " LENGTH=" << nodereply._udp_content.size();
+            break;
+        case NodeReplyType::ICMP_NDP:
+            os << ": NDP";
             break;
     }
     return os;
