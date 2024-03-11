@@ -14,9 +14,17 @@ project(
 
 cpp_compiler = meson.get_compiler('cpp')
 
+if not cpp_compiler.has_header('unistd.h')
+    error('crazytrace requires unistd.h')
+endif
+
 libtuntap_dep = dependency('libtuntap', required: false)
 if not libtuntap_dep.found()
     libtuntap_dep = cpp_compiler.find_library('libtuntap', has_headers: ['tuntap.h'], required: true)
+endif
+
+if not libtuntap_dep.found()
+    error('crazytrace requires libtuntap')
 endif
 
 boost_dep = dependency('boost', modules : ['log'])
