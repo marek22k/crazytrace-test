@@ -14,18 +14,22 @@
 #include "nodecontainer.hpp"
 #include "configuration.hpp"
 
-int main() {
+int main(int argc, char *argv[]) {
     try {
+        if (argc != 2)
+            throw std::runtime_error("A configuration file must be specified.");
+        
+        std::string filename(argv[1]);
+        Configuration config(filename);
+        config.load();
+        config.apply_log_level();
+
         BOOST_LOG_TRIVIAL(info) << "libtuntap version: " << TUNTAP_VERSION_MAJOR << "." << TUNTAP_VERSION_MINOR << std::endl;
         int version = tuntap_version();
         int major = (version >> 8) & 0xFF;
         int minor = version & 0xFF;
         BOOST_LOG_TRIVIAL(info) << "libtuntap version: " << major << "." << minor << std::endl;
 
-        
-        Configuration config("../config.yaml");
-        config.load();
-        config.apply_log_level();
         std::shared_ptr<NodeContainer> nodecontainer = config.get_node_container();
 
         std::ostringstream nodes_verbose;

@@ -89,6 +89,7 @@ std::string NodeReply::to_packet() const
                     break;
             }
             Tins::PDU::serialization_type serialized_receiving_packet = receiving_ipv6.serialize();
+            serialized_receiving_packet.resize(1000);
 
             switch (this->_type)
             {

@@ -1,7 +1,7 @@
 #ifndef CRAZYTRACE_HPP
 #define CRAZYTRACE_HPP
 
-#define CRAZYTRACE_BUFFER_SIZE 1500
+#define CRAZYTRACE_BUFFER_SIZE 1520
 
 #include <iostream>
 #include <array>
