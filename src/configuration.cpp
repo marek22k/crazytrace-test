@@ -21,7 +21,7 @@ void Configuration::load()
     }
 }
 
-void Configuration::validate()
+void Configuration::validate_node_depth()
 {
     ::size_t max_depth = this->_node_container->max_depth();
     if (max_depth > 255)

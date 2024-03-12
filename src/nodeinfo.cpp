@@ -77,7 +77,7 @@ const Tins::IPv6Address& NodeInfo::get_address()
         if (node_depth > max)
             max = node_depth;
     }
-    return max;
+    return max + 1;
 }
 
 std::vector<std::shared_ptr<NodeInfo>> NodeInfo::get_route_to(const Tins::IPv6Address& destination_address)

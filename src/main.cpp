@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
         Configuration config(filename);
         config.load();
         config.apply_log_level();
+        config.validate_node_depth();
 
         BOOST_LOG_TRIVIAL(info) << "libtuntap version: " << TUNTAP_VERSION_MAJOR << "." << TUNTAP_VERSION_MINOR << std::endl;
         int version = tuntap_version();
