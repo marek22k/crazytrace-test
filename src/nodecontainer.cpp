@@ -134,6 +134,18 @@ void NodeContainer::add_node(std::shared_ptr<NodeInfo> node) noexcept
     this->_nodes.insert(node);
 }
 
+::size_t NodeContainer::max_depth()
+{
+    ::size_t max = 0;
+    for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
+    {
+        ::size_t node_depth = (*node)->max_depth();
+        if (node_depth > max)
+            max = node_depth;
+    }
+    return max;
+}
+
 std::vector<std::shared_ptr<NodeInfo>> NodeContainer::get_route_to(const Tins::IPv6Address& destination_address)
 {
     for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)

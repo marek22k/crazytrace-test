@@ -1,13 +1,10 @@
 #include "randomgenerator.hpp"
 
-RandomGenerator::RandomGenerator(int max, int min) noexcept
-{
-    std::random_device random_device;
-    this->_rng = std::default_random_engine(random_device());
-    this->_distribution = std::uniform_int_distribution<int>(min, max);
-}
+RandomGenerator::RandomGenerator(::size_t max, ::size_t min) noexcept :
+    _rng(std::random_device()()), _distribution(min, max)
+{}
 
-int RandomGenerator::generate() noexcept
+::size_t RandomGenerator::generate() noexcept
 {
     return this->_distribution(this->_rng);
 }

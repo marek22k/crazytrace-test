@@ -8,6 +8,7 @@
 #include <unordered_set>
 #include <algorithm>
 #include <stdexcept>
+#include <cstddef>
 #include <tins/tins.h>
 #include "randomgenerator.hpp"
 
@@ -24,6 +25,7 @@ class NodeInfo
         void add_node(std::shared_ptr<NodeInfo> node);
         void add_address(Tins::IPv6Address address);
         const Tins::IPv6Address& get_address();
+        ::size_t max_depth();
         void print(std::ostream& os, int layer = 0) const;
 
         friend std::ostream& operator<<(std::ostream& os, NodeInfo const & nodeinfo);

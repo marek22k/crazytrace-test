@@ -1,16 +1,11 @@
 #include "tun_tap.hpp"
 
-tun_tap::tun_tap(std::string ifname, tun_tap_mode mode)
+tun_tap::tun_tap(std::string ifname, tun_tap_mode mode) :
+    _device(::tuntap_init())
 {
-    switch(mode)
+    if (mode != tun_tap_mode::tun && mode != tun_tap_mode::tap)
     {
-        case tun_tap_mode::tun:
-        case tun_tap_mode::tap:
-            this->_device.reset(::tuntap_init());
-            break;
-        default:
-            throw std::runtime_error("Unknown device mode.");
-            break;
+        throw std::runtime_error("Unknown device mode.");
     }
 
     int tuntap_mode_number = -1;

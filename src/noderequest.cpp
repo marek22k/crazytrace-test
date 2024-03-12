@@ -1,7 +1,8 @@
 #include "noderequest.hpp"
 #include <iostream>
 
-NodeRequest::NodeRequest(const Tins::EthernetII& packet)
+NodeRequest::NodeRequest(const Tins::EthernetII& packet) :
+    _type(NodeRequestType::UNKNOWN)
 {
     this->_source_mac = packet.src_addr();
     this->_destination_mac = packet.dst_addr();
@@ -36,7 +37,7 @@ NodeRequest::NodeRequest(const Tins::EthernetII& packet)
                         break;
                     }
                     default:
-                        this->_type = NodeRequestType::UNKNOWN;
+                        /* Not supported */
                         break;
                 }
                 break;
@@ -52,13 +53,9 @@ NodeRequest::NodeRequest(const Tins::EthernetII& packet)
                 break;
             }
             default:
-                this->_type = NodeRequestType::UNKNOWN;
+                /* Not supported */
                 break;
         }
-    }
-    else
-    {
-        this->_type = NodeRequestType::UNKNOWN;
     }
 }
 

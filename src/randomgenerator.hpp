@@ -1,17 +1,18 @@
 #ifndef RANDOM_HPP
 #define RANDOM_HPP
 
+#include <cstddef>
 #include <random>
 
 class RandomGenerator
 {
     public:
-        RandomGenerator(int max, int min = 0) noexcept;
-        int generate() noexcept;
+        RandomGenerator(::size_t max, ::size_t min = 0) noexcept;
+        ::size_t generate() noexcept;
     
     private:
         std::default_random_engine _rng;
-        std::uniform_int_distribution<int> _distribution;
+        std::uniform_int_distribution<::size_t> _distribution;
 };
 
 #endif

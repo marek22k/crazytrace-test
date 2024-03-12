@@ -21,6 +21,15 @@ void Configuration::load()
     }
 }
 
+void Configuration::validate()
+{
+    ::size_t max_depth = this->_node_container->max_depth();
+    if (max_depth > 255)
+    {
+        throw std::runtime_error("The nodes are too deep.");
+    }
+}
+
 void Configuration::load_log_level(const YAML::Node& node)
 {
     if (! node.IsDefined())

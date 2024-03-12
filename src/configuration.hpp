@@ -17,6 +17,7 @@ class Configuration
     public:
         Configuration(const std::string& filename);
         void load();
+        void validate();
         std::shared_ptr<NodeContainer> get_node_container();
         boost::log::trivial::severity_level get_log_level();
         void apply_log_level();

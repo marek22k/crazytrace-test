@@ -1,10 +1,14 @@
 #include "nodeinfo.hpp"
 
-NodeInfo::NodeInfo()
-    : _randomgenerator(0), _addressadded(false)
-{
-    this->_hoplimit = 64;
-}
+
+NodeInfo::NodeInfo() :
+    _addresses(),
+    _mac_address(),
+    _hoplimit(64),
+    _nodes(),
+    _randomgenerator(0),
+    _addressadded(false)
+{}
 
 int NodeInfo::get_hoplimit() const noexcept
 {
@@ -51,16 +55,29 @@ const Tins::IPv6Address& NodeInfo::get_address()
         /* Is called up each time the number of addresses is changed. However,
            it is not called after each address is added to allow multiple
            addresses to be added quickly. */
-        int max_address = this->_addresses.size() - 1;
-        if (max_address < 0)
+        ::size_t max_address = this->_addresses.size();
+        if (max_address == 0)
             std::invalid_argument("Despite adding an address, none is available.");
+        max_address--;
 
         this->_randomgenerator = RandomGenerator(max_address);
         std::sort(this->_addresses.begin(), this->_addresses.end());
         this->_addressadded = false;
     }
-    int address_number = this->_randomgenerator.generate();
+    ::size_t address_number = this->_randomgenerator.generate();
     return this->_addresses[address_number];
+}
+
+::size_t NodeInfo::max_depth()
+{
+    ::size_t max = 0;
+    for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
+    {
+        ::size_t node_depth = (*node)->max_depth();
+        if (node_depth > max)
+            max = node_depth;
+    }
+    return max;
 }
 
 std::vector<std::shared_ptr<NodeInfo>> NodeInfo::get_route_to(const Tins::IPv6Address& destination_address)
