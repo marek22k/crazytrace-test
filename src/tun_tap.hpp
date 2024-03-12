@@ -17,7 +17,6 @@ class tun_tap
 {
     public:
         tun_tap(std::string ifname, tun_tap_mode mode);
-        ~tun_tap();
         void set_ip(std::string ip, int netmask);
         void set_mtu(int mtu);
         void up();
@@ -25,8 +24,14 @@ class tun_tap
         int native_handler();
     
     private:
-        device * _device;
-        bool _started;
+        class TunTapDestroyer final {
+            public:
+                constexpr void operator()(device * dev) const noexcept {
+                    if (dev)
+                        ::tuntap_destroy(dev);
+                }
+        };
+        std::unique_ptr<device, TunTapDestroyer> _device;
 };
 
 #endif
