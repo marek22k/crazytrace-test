@@ -18,7 +18,7 @@ die () {
 )
 
 mkdir -p package/DEBIAN/ || die "Failed to make create data directory"
-VERSION="1-$(git describe --long --always)"
+VERSION="$(date +%s)-$(git describe --long --always)"
 [ "$VERSION" ] || die "Failed to get version string"
 ARCH="$(dpkg --print-architecture)"
 [ "$ARCH" ] || die "Failed to get architecture string"

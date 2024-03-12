@@ -1,0 +1,29 @@
+steps:
+  - name: build
+    image: debian
+    commands:
+      - apt-get update
+      - apt-get install -y build-essential git meson ninja-build cmake libyaml-cpp-dev libtins-dev curl libboost1.81-dev libboost-log1.81-dev
+      - git config --global user.name "CodeBerg Woodpecker CI"
+      - git config --global user.email woodpecker@codeberg.org
+      - cd ..
+
+      # Build and install libtuntap
+      - git clone https://github.com/LaKabane/libtuntap.git
+      - cmake -DCMAKE_BUILD_TYPE=Release -B build_libtuntap -S "libtuntap"
+      - cmake --build build_libtuntap
+      - cmake --install build_libtuntap --prefix /usr
+      
+      # Build and install libtins
+      # - git clone https://github.com/mfontanini/libtins.git
+      # - cmake -DCMAKE_BUILD_TYPE=Release -DLIBTINS_ENABLE_CXX11=1 -B build_libtins -S "libtins"
+      # - cmake --build build_libtins
+      # - cmake --install build_libtins
+
+      # Build crazytrace
+      - cd crazytrace/deb/
+      - ./build.sh
+      - curl --user $CODEBERG_GIT_USERNAME:$CODEBERG_GIT_PASSWORD --upload-file crazytrace.deb https://codeberg.org/api/packages/mark22k/debian/pool/bookworm/main/upload
+    secrets:
+      - codeberg_git_username
+      - codeberg_git_password
