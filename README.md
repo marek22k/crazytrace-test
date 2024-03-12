@@ -1,5 +1,7 @@
 # Crazy traceroute
 
+[![pipeline badge](https://ci.codeberg.org/api/badges/13147/status.svg)](https://ci.codeberg.org/repos/13147)
+
 What happens if a traceroute with the same TTL/hop limit is received from two different source addresses? How will they react?
 
 crazytrace is a network simulation program that can be used to see how different ping and traceroute implementations react when the sender address is different than expected.

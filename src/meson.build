@@ -34,15 +34,15 @@ yamlcpp_dep = dependency('yaml-cpp')
 executable(
     'crazytrace',
     [
-        'main.cpp',
-        'tun_tap.cpp',
-        'crazytrace.cpp',
-        'nodeinfo.cpp',
-        'nodecontainer.cpp',
-        'noderequest.cpp',
-        'nodereply.cpp',
         'configuration.cpp',
+        'crazytrace.cpp',
+        'main.cpp',
+        'nodecontainer.cpp',
+        'nodeinfo.cpp',
+        'nodereply.cpp',
+        'noderequest.cpp',
         'randomgenerator.cpp'
+        'tun_tap.cpp',
     ],
     dependencies: [libtuntap_dep, boost_dep, libtins_dep, yamlcpp_dep]
 )
