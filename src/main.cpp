@@ -45,10 +45,7 @@ int main(int argc, char *argv[]) {
         BOOST_LOG_TRIVIAL(debug) << "Set the TUN device up." << std::endl;
         dev.up();
 
-        boost::asio::posix::stream_descriptor tap_device(io, ::dup(dev.native_handler()));
-
-        Crazytrace ct(tap_device, nodecontainer);
-        ct.start();
+        Crazytrace ct(io.get_executor(), ::dup(dev.native_handler()), nodecontainer);
 
         io.run();
     } catch (const std::exception &e) {

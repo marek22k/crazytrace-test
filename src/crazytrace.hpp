@@ -1,28 +1,31 @@
 #ifndef CRAZYTRACE_HPP
 #define CRAZYTRACE_HPP
 
-#define CRAZYTRACE_BUFFER_SIZE 1520
-
 #include <iostream>
 #include <array>
 #include <memory>
+#include <utility>
+#include <string>
 #include <cstdlib>
 #include <boost/asio.hpp>
 #include <boost/log/trivial.hpp>
+#include <tins/tins.h>
 #include "noderequest.hpp"
 #include "nodecontainer.hpp"
 
 class Crazytrace
 {
     public:
-        Crazytrace(boost::asio::posix::stream_descriptor& device, std::shared_ptr<NodeContainer> nodecontainer);
+        Crazytrace(boost::asio::any_io_executor ex, int native_handler, std::shared_ptr<NodeContainer> nodecontainer);
         void start();
     
     private:
-        void handle_packet(const boost::system::error_code& error, std::size_t bytes_transferred, const std::array<char, CRAZYTRACE_BUFFER_SIZE>& buffer);
+        void _handle_error(const boost::system::error_code error);
+        void _handle_packet(const boost::system::error_code error, const std::string& packet_data);
 
-        boost::asio::posix::stream_descriptor& _device;
+        boost::asio::posix::stream_descriptor _device;
         std::shared_ptr<NodeContainer> _nodecontainer;
+        std::array<char, 1520> _buffer;
 };
 
 #endif

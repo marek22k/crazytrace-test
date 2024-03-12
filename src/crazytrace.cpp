@@ -1,37 +1,40 @@
 #include "crazytrace.hpp"
 
-#include <tins/tins.h>
-
-Crazytrace::Crazytrace(boost::asio::posix::stream_descriptor& device, std::shared_ptr<NodeContainer> nodecontainer) :
-    _device(device), _nodecontainer(nodecontainer)
+Crazytrace::Crazytrace(boost::asio::any_io_executor ex, int native_handler, std::shared_ptr<NodeContainer> nodecontainer) :
+     _device(ex, native_handler), _nodecontainer(nodecontainer)
 {
-    
+    this->start();
 }
 
 void Crazytrace::start()
 {
-    std::array<char, CRAZYTRACE_BUFFER_SIZE> buffer;
+    this->_device.async_read_some(
+        boost::asio::buffer(this->_buffer),
+        [this](boost::system::error_code ec, size_t bytes_transferred) {
+            if (ec) {
+                this->_handle_error(ec);
+            } else {
+                std::string packet(this->_buffer.data(), bytes_transferred);
+                start();
 
-    this->_device.async_read_some(boost::asio::buffer(buffer),
-                              [&](const boost::system::error_code& error, std::size_t bytes_transferred) {
-                                  this->start();
-                                  this->handle_packet(error, bytes_transferred, buffer);
-                              });
+                this->_handle_packet(ec, std::move(packet));
+            };
+    });
 }
 
-void Crazytrace::handle_packet(const boost::system::error_code& error, std::size_t bytes_transferred, const std::array<char, CRAZYTRACE_BUFFER_SIZE>& buffer)
+void Crazytrace::_handle_error(const boost::system::error_code error)
 {
-    if (error)
-    {
-        BOOST_LOG_TRIVIAL(error) << "Error in handle_packet: " << error.message() << std::endl;
-        return;
-    }
-    BOOST_LOG_TRIVIAL(trace) << "Received packet of size: " << bytes_transferred << std::endl;
+    BOOST_LOG_TRIVIAL(error) << "Error in handle_packet: " << error.message() << std::endl;
+}
+
+void Crazytrace::_handle_packet(const boost::system::error_code, const std::string& packet_data)
+{
+    BOOST_LOG_TRIVIAL(trace) << "Received packet of size: " << packet_data.size() << std::endl;
 
     try
     {
-        const uint8_t * raw_data = reinterpret_cast<const uint8_t *>(buffer.data());
-        Tins::EthernetII packet(raw_data, bytes_transferred);
+        const uint8_t * raw_data = reinterpret_cast<const uint8_t *>(packet_data.data());
+        Tins::EthernetII packet(raw_data, packet_data.size());
 
         NodeRequest request(packet);
         if (request.get_type() != NodeRequestType::UNKNOWN)
@@ -42,7 +45,7 @@ void Crazytrace::handle_packet(const boost::system::error_code& error, std::size
                 BOOST_LOG_TRIVIAL(debug) << request;
                 BOOST_LOG_TRIVIAL(debug) << reply;
                 std::string packet = reply.to_packet();
-                this->_device.async_write_some(boost::asio::buffer(packet, packet.size()), [&](const boost::system::error_code& error, std::size_t bytes_transferred) {
+                /*this->_device.async_write_some(boost::asio::buffer(packet, packet.size()), [&](const boost::system::error_code& error, std::size_t bytes_transferred) {
                                     if (error)
                                     {
                                         BOOST_LOG_TRIVIAL(warning) << "Failed to write packet: " << error.message() << std::endl;
@@ -51,7 +54,7 @@ void Crazytrace::handle_packet(const boost::system::error_code& error, std::size
                                     {
                                         BOOST_LOG_TRIVIAL(trace) << "Packet written, " << bytes_transferred << " bytes" << std::endl;
                                     }
-                                });
+                                });*/
             }
         }
     }
