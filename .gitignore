@@ -32,3 +32,6 @@
 *.out
 *.app
 
+# Debian package
+deb/package/
+*.deb

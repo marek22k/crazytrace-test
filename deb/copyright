@@ -1,0 +1,8 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Source: https://codeberg.org/mark22k/crazytrace/src/branch/main/LICENSE
+Upstream-Name: crazytrace
+Upstream-Contact: Marek Küthe <m.k+crazytrace@mk16.de>
+
+Files: *
+Copyright: Marek Küthe <m.k+crazytrace@mk16.de>
+License: GPL-3.0-or-later
