@@ -22,7 +22,9 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
                 /* target reached */
                 std::shared_ptr<NodeInfo> reached_node = route[0];
 
-                int reply_hoplimit = reached_node->get_hoplimit() - route.size() + 1;
+                // Both variables undergo a value check during initialization so that neither
+                // is greater than 255. It is therefore safe to convert them into an int.
+                int reply_hoplimit = static_cast<int>(reached_node->get_hoplimit()) - static_cast<int>(route.size()) + 1;
                 if (reply_hoplimit <= 0)
                     return NodeReply(NodeReplyType::NOREPLY);
 
