@@ -1,6 +1,16 @@
+when:
+  - event: cron
+    cron: build_crazytrace
+    branch: main
+  - event: manual
+    branch: main
+  - event: push
+
 steps:
   - name: build
+    # image: codeberg.org/mark22k/ci:latest
     image: debian
+    pull: true
     commands:
       - apt-get update
       - apt-get install -y build-essential git meson ninja-build cmake libyaml-cpp-dev libtins-dev curl libboost1.81-dev libboost-log1.81-dev

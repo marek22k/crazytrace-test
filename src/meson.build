@@ -41,8 +41,8 @@ executable(
         'nodeinfo.cpp',
         'nodereply.cpp',
         'noderequest.cpp',
-        'randomgenerator.cpp'
-        'tun_tap.cpp',
+        'randomgenerator.cpp',
+        'tun_tap.cpp'
     ],
     dependencies: [libtuntap_dep, boost_dep, libtins_dep, yamlcpp_dep]
 )
