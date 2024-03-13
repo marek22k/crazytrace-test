@@ -44,5 +44,6 @@ executable(
         'randomgenerator.cpp',
         'tun_tap.cpp'
     ],
-    dependencies: [libtuntap_dep, boost_dep, libtins_dep, yamlcpp_dep]
+    dependencies: [libtuntap_dep, boost_dep, libtins_dep, yamlcpp_dep],
+    install : true
 )

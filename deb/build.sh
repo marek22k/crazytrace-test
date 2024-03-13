@@ -14,7 +14,7 @@ die () {
 (
     meson setup --prefix=/usr ../src/ build || die "Failed to configure project"
     meson compile -C build || die "Failed to build project"
-    meson install -C build --destdir "package/" || die "Failed to install project to package directory"
+    meson install -C build --destdir "../package/" || die "Failed to install project to package directory"
 )
 
 mkdir -p package/DEBIAN/ || die "Failed to make create data directory"
