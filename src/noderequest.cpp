@@ -24,7 +24,9 @@ NodeRequest::NodeRequest(const Tins::EthernetII& packet) :
                 {
                     case Tins::ICMPv6::Types::NEIGHBOUR_SOLICIT:
                         this->_type = NodeRequestType::ICMP_NDP;
-                        /* TODO: Check with has_target_addr */
+                        if (! icmpv6.has_target_addr())
+                            throw std::runtime_error("ICMP NDP packet has no target address attribute.");
+
                         this->_destination_address = icmpv6.target_addr();
                         break;
                     case Tins::ICMPv6::Types::ECHO_REQUEST:
