@@ -5,6 +5,7 @@ when:
   - event: manual
     branch: main
   - event: push
+    branch: main
 
 steps:
   - name: cppcheck
