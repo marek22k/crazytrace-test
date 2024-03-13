@@ -7,13 +7,18 @@ when:
   - event: push
 
 steps:
+  - name: cppcheck
+    image: codeberg.org/mark22k/ci:latest
+    pull: true
+    commands:
+      - make check
+
   - name: build
     image: codeberg.org/mark22k/ci:latest
     pull: true
     commands:
-      - cd deb/
-      - ./build.sh
-      - curl --user $CODEBERG_GIT_USERNAME:$CODEBERG_GIT_PASSWORD --upload-file crazytrace.deb https://codeberg.org/api/packages/mark22k/debian/pool/bookworm/main/upload
+      - make debian
+      - curl --user $CODEBERG_GIT_USERNAME:$CODEBERG_GIT_PASSWORD --upload-file ./deb/crazytrace.deb https://codeberg.org/api/packages/mark22k/debian/pool/bookworm/main/upload
     secrets:
       - codeberg_git_username
       - codeberg_git_password
