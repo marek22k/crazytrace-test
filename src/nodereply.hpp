@@ -19,8 +19,8 @@ enum class NodeReplyType {
 class NodeReply
 {
     public:
-        NodeReply(NodeReplyType type);
-        NodeReply(
+        explicit NodeReply(NodeReplyType type);
+        explicit NodeReply(
             NodeReplyType type,
             Tins::HWAddress<6> destination_mac, Tins::IPv6Address destination_address,
             Tins::HWAddress<6> source_mac, Tins::IPv6Address source_address

@@ -32,6 +32,12 @@
 *.out
 *.app
 
+# Meson
+build/
+
+# cppcheck
+cppcheck-cppcheck-build-dir/
+
 # Debian package
 deb/package/
 *.deb

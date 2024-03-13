@@ -16,8 +16,8 @@ enum class tun_tap_mode
 class tun_tap
 {
     public:
-        tun_tap(std::string ifname, tun_tap_mode mode);
-        void set_ip(std::string ip, int netmask);
+        explicit tun_tap(const std::string& ifname, tun_tap_mode mode);
+        void set_ip(const std::string& ip, int netmask);
         void set_mtu(int mtu);
         void up();
         void down();

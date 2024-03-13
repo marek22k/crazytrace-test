@@ -6,6 +6,7 @@
 #include <memory>
 #include <iostream>
 #include <ostream>
+#include <algorithm>
 #include <boost/log/trivial.hpp>
 #include <tins/tins.h>
 #include "nodeinfo.hpp"

@@ -11,7 +11,7 @@ enum class NodeRequestType { UNKNOWN, ICMP_ECHO_REQUEST, ICMP_NDP, UDP };
 class NodeRequest
 {
     public:
-        NodeRequest(const Tins::EthernetII& packet);
+        explicit NodeRequest(const Tins::EthernetII& packet);
         NodeRequestType get_type() const noexcept;
         const Tins::HWAddress<6>& get_source_mac() const noexcept;
         const Tins::HWAddress<6>& get_destination_mac() const noexcept;

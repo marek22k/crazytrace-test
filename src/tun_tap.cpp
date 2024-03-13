@@ -1,6 +1,6 @@
 #include "tun_tap.hpp"
 
-tun_tap::tun_tap(std::string ifname, tun_tap_mode mode) :
+tun_tap::tun_tap(const std::string& ifname, tun_tap_mode mode) :
     _device(::tuntap_init())
 {
     if (mode != tun_tap_mode::tun && mode != tun_tap_mode::tap)
@@ -51,7 +51,7 @@ void tun_tap::set_mtu(int mtu)
         throw std::runtime_error("Failed to set mtu for tuntap device.");
 }
 
-void tun_tap::set_ip(std::string ip, int netmask)
+void tun_tap::set_ip(const std::string& ip, int netmask)
 {
     if (netmask < 0 || netmask > 128)
         throw std::invalid_argument("Invalid netmask value.");

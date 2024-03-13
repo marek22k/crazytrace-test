@@ -57,7 +57,7 @@ const Tins::IPv6Address& NodeInfo::get_address()
            addresses to be added quickly. */
         ::size_t max_address = this->_addresses.size();
         if (max_address == 0)
-            std::invalid_argument("Despite adding an address, none is available.");
+            throw std::invalid_argument("Despite adding an address, none is available.");
         max_address--;
 
         this->_randomgenerator = RandomGenerator(max_address);

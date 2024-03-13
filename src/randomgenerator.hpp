@@ -7,7 +7,7 @@
 class RandomGenerator
 {
     public:
-        RandomGenerator(::size_t max, ::size_t min = 0) noexcept;
+        explicit RandomGenerator(::size_t max, ::size_t min = 0) noexcept;
         ::size_t generate() noexcept;
     
     private:

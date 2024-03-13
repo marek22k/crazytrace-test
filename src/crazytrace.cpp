@@ -44,8 +44,8 @@ void Crazytrace::_handle_packet(const boost::system::error_code, const std::stri
             {
                 BOOST_LOG_TRIVIAL(debug) << request;
                 BOOST_LOG_TRIVIAL(debug) << reply;
-                std::string packet = reply.to_packet();
-                this->_device.async_write_some(boost::asio::buffer(packet, packet.size()), [&](const boost::system::error_code& error, std::size_t bytes_transferred) {
+                std::string reply_packet = reply.to_packet();
+                this->_device.async_write_some(boost::asio::buffer(reply_packet, reply_packet.size()), [&](const boost::system::error_code& error, std::size_t bytes_transferred) {
                                     if (error)
                                     {
                                         BOOST_LOG_TRIVIAL(warning) << "Failed to write packet: " << error.message() << std::endl;

@@ -15,7 +15,7 @@
 class Configuration
 {
     public:
-        Configuration(const std::string& filename);
+        explicit Configuration(const std::string& filename);
         void load();
         void validate_node_depth();
         std::shared_ptr<NodeContainer> get_node_container();

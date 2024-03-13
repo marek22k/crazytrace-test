@@ -15,7 +15,7 @@
 class NodeInfo
 {
     public:
-        NodeInfo();
+        explicit NodeInfo();
         std::vector<std::shared_ptr<NodeInfo>> get_route_to(const Tins::IPv6Address& destination_address);
         int get_hoplimit() const noexcept;
         bool has_address(const Tins::IPv6Address& address);
