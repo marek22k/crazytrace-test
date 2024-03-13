@@ -9,4 +9,4 @@ install: setup compile
 	meson install -C build
 
 check:
-	cppcheck --project=crazytrace.cppcheck --enable=warning,style,information,missingInclude
+	cppcheck --project=crazytrace.cppcheck --enable=warning,style,information,missingInclude --error-exitcode=1
