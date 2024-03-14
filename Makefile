@@ -1,6 +1,18 @@
 
 setup:
-	meson setup src build
+	meson setup --reconfigure src build
+
+addresssanitizer:
+	meson setup --reconfigure -Ddebug=true -Db_sanitize=address src build
+
+leaksanitizer:
+	meson setup --reconfigure -Ddebug=true -Db_sanitize=leak src build
+
+undefinedsanitizer:
+	meson setup --reconfigure -Ddebug=true -Db_sanitize=leak src build
+
+clean:
+	meson compile --clean -C build
 
 compile:
 	meson compile -C build
