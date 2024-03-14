@@ -8,7 +8,7 @@ when:
     branch: main
 
 steps:
-  - name: cppcheck
+  - name: check
     image: codeberg.org/mark22k/ci:latest
     pull: true
     commands:

@@ -11,5 +11,10 @@ install: setup compile
 debian:
 	cd deb && ./build.sh
 
-check:
+check: cppcheck flawfinder
+
+cppcheck:
 	cppcheck --project=crazytrace.cppcheck --enable=warning,style,information,missingInclude --error-exitcode=1
+
+flawfinder:
+	flawfinder --error-level=0 src/
