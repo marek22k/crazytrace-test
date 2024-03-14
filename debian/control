@@ -1,11 +1,21 @@
-Package: crazytrace
-Version: %VERSION%
-Architecture: %ARCHITECTURE%
+Source: crazytrace
 Section: net
 Priority: optional
+Maintainer: Marek Küthe <m.k@mk16.de>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+Standards-Version: 4.6.2
 Homepage: https://codeberg.org/mark22k/crazytrace
-Maintainer: Marek Küthe <m.k+crazytrace@mk16.de>
-Depends: libtins4.0
+Vcs-Browser: https://codeberg.org/mark22k/crazytrace
+Vcs-Git: https://codeberg.org/mark22k/crazytrace.git
+
+Package: crazytrace
+Architecture: any
+Multi-Arch: foreign
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
 Description: Simple network simulator to test ping and traceroute implementations
  What happens if a traceroute with the same TTL/hop limit is received from two different source addresses? How will they react?
  crazytrace is a network simulation program that can be used to see how different ping and traceroute implementations react when the sender address is different than expected.

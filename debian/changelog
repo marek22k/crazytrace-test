@@ -1,0 +1,5 @@
+crazytrace (%VERSION%) stable; urgency=medium
+
+  * Rolling release.
+
+ -- Marek Küthe <m.k@mk16.de>  %DATE%

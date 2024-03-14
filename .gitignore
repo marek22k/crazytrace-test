@@ -39,5 +39,7 @@ build/
 cppcheck-cppcheck-build-dir/
 
 # Debian package
-deb/package/
+debian/crazytrace/
+debian/debhelper-build-stamp
 *.deb
+.debhelper/

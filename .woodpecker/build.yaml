@@ -8,20 +8,15 @@ when:
     branch: main
 
 steps:
-  - name: check
-    image: codeberg.org/mark22k/ci:latest
-    pull: true
-    commands:
-      - make check
-
   - name: build
     image: codeberg.org/mark22k/ci:latest
     pull: true
     commands:
       - make debian
-      - test -f deb/build/crazytrace || exit 1
-      - test -f deb/crazytrace.deb || exit 1
-      - curl --user $CODEBERG_GIT_USERNAME:$CODEBERG_GIT_PASSWORD --upload-file ./deb/crazytrace.deb https://codeberg.org/api/packages/mark22k/debian/pool/bookworm/main/upload
+      - |
+        for FILE in ../crazytrace*.deb; do
+          curl --user $CODEBERG_GIT_USERNAME:$CODEBERG_GIT_PASSWORD --upload-file $FILE https://codeberg.org/api/packages/mark22k/debian/pool/bookworm/main/upload
+        done
     secrets:
       - codeberg_git_username
       - codeberg_git_password
