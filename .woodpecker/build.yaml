@@ -12,7 +12,6 @@ steps:
     image: codeberg.org/mark22k/ci:latest
     pull: true
     commands:
-      - make setup
       - make check
 
   - name: build
@@ -20,8 +19,8 @@ steps:
     pull: true
     commands:
       - make debian
-      - file build/crazytrace || exit 1
-      - file deb/crazytrace.deb || exit 1
+      - test -f deb/build/crazytrace || exit 1
+      - test -f deb/crazytrace.deb || exit 1
       - curl --user $CODEBERG_GIT_USERNAME:$CODEBERG_GIT_PASSWORD --upload-file ./deb/crazytrace.deb https://codeberg.org/api/packages/mark22k/debian/pool/bookworm/main/upload
     secrets:
       - codeberg_git_username

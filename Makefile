@@ -1,20 +1,20 @@
 
 setup:
-	meson setup src build
+	test -d build || meson setup src build
 
-addresssanitizer:
-	meson setup --reconfigure -Ddebug=true -Db_sanitize=address src build
+addresssanitizer: setup
+	meson setup --reconfigure --debug -Db_sanitize=address src build
 
-leaksanitizer:
-	meson setup --reconfigure -Ddebug=true -Db_sanitize=leak src build
+leaksanitizer: setup
+	meson setup --reconfigure --debug -Db_sanitize=leak src build
 
-undefinedsanitizer:
-	meson setup --reconfigure -Ddebug=true -Db_sanitize=leak src build
+undefinedsanitizer: setup
+	meson setup --reconfigure --debug -Db_sanitize=leak src build
 
 clean:
 	meson compile --clean -C build
 
-compile:
+compile: setup
 	meson compile -C build
 
 install: setup compile
@@ -25,8 +25,8 @@ debian:
 
 check: cppcheck flawfinder
 
-cppcheck:
+cppcheck: setup
 	meson compile -C build cppcheck
 
-flawfinder:
+flawfinder: setup
 	meson compile -C build flawfinder
