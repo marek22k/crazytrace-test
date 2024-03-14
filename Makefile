@@ -1,3 +1,6 @@
+.PHONY: all setup addresssanitizer leaksanitizer undefinedsanitizer clean compile install check cppcheck flawfinder
+
+all: setup compile
 
 setup:
 	test -d build || meson setup src build
@@ -19,9 +22,6 @@ compile: setup
 
 install: setup compile
 	meson install -C build
-
-debian:
-	cd deb && ./build.sh
 
 check: cppcheck flawfinder
 
