@@ -11,6 +11,18 @@ project(
     ]
 )
 
+sources = files(
+    'configuration.cpp',
+    'crazytrace.cpp',
+    'main.cpp',
+    'nodecontainer.cpp',
+    'nodeinfo.cpp',
+    'nodereply.cpp',
+    'noderequest.cpp',
+    'randomgenerator.cpp',
+    'tun_tap.cpp'
+)
+
 cpp_compiler = meson.get_compiler('cpp')
 
 if not cpp_compiler.has_header('unistd.h')
@@ -50,19 +62,18 @@ if cppcheck.found()
     ])
 endif
 
+flawfinder = find_program('flawfinder', required: false)
+if flawfinder.found()
+    run_target('flawfinder', command: [
+        flawfinder,
+        '--error-level=0',
+        sources
+    ])
+endif
+
 executable(
     'crazytrace',
-    [
-        'configuration.cpp',
-        'crazytrace.cpp',
-        'main.cpp',
-        'nodecontainer.cpp',
-        'nodeinfo.cpp',
-        'nodereply.cpp',
-        'noderequest.cpp',
-        'randomgenerator.cpp',
-        'tun_tap.cpp'
-    ],
+    sources,
     dependencies: [libtuntap_dep, boost_dep, libtins_dep, yamlcpp_dep],
     install : true
 )

@@ -29,4 +29,4 @@ cppcheck:
 	meson compile -C build cppcheck
 
 flawfinder:
-	flawfinder --error-level=0 src/
+	meson compile -C build flawfinder
