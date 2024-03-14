@@ -1,6 +1,6 @@
 
 setup:
-	meson setup --reconfigure src build
+	meson setup src build
 
 addresssanitizer:
 	meson setup --reconfigure -Ddebug=true -Db_sanitize=address src build
