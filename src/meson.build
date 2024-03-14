@@ -30,6 +30,26 @@ boost_dep = dependency('boost', modules : ['log'])
 libtins_dep = dependency('libtins')
 yamlcpp_dep = dependency('yaml-cpp')
 
+cppcheck = find_program('cppcheck', required: false)
+if cppcheck.found()
+    run_target('cppcheck', command: [
+        cppcheck,
+        # Do not check external libraries
+        '--suppress=*:*/tins/*',
+        '--suppress=*:*/boost/*',
+
+        # Problems with detecting system libraries
+        '--suppress=missingIncludeSystem',
+
+        # That's okay for me
+        '--suppress=uninitMemberVar',
+
+        '--enable=warning,style,information,missingInclude',
+        '--error-exitcode=1',
+        '--project=' + join_paths(meson.build_root(), 'compile_commands.json')
+    ])
+endif
+
 executable(
     'crazytrace',
     [

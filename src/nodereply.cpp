@@ -19,7 +19,7 @@ void NodeReply::set_hoplimit(int hoplimit) noexcept
     this->_hoplimit = hoplimit;
 }
 
-void NodeReply::icmp_echo_reply(int icmp_identifier, int icmp_sequence, Tins::RawPDU::payload_type payload) noexcept
+void NodeReply::icmp_echo_reply(int icmp_identifier, int icmp_sequence, const Tins::RawPDU::payload_type& payload) noexcept
 {
     this->_icmp_identifier = icmp_identifier;
     this->_icmp_sequence = icmp_sequence;
@@ -31,7 +31,7 @@ void NodeReply::packet_reassembly(Tins::IPv6Address original_destination_address
     this->_original_destination_address = original_destination_address;
 }
 
-void NodeReply::udp_response(Tins::RawPDU::payload_type payload, int udp_dport, int udp_sport) noexcept
+void NodeReply::udp_response(const Tins::RawPDU::payload_type& payload, int udp_dport, int udp_sport) noexcept
 {
     this->_payload = payload;
     this->_udp_dport = udp_dport;

@@ -27,9 +27,9 @@ class NodeReply
         );
 
         void set_hoplimit(int hoplimit) noexcept;
-        void icmp_echo_reply(int icmp_identifier, int icmp_sequence, Tins::RawPDU::payload_type payload) noexcept;
+        void icmp_echo_reply(int icmp_identifier, int icmp_sequence, const Tins::RawPDU::payload_type& payload) noexcept;
         void packet_reassembly(Tins::IPv6Address original_destination_address) noexcept;
-        void udp_response(Tins::RawPDU::payload_type payload, int udp_dport, int udp_sport) noexcept;
+        void udp_response(const Tins::RawPDU::payload_type& payload, int udp_dport, int udp_sport) noexcept;
 
         std::string to_packet() const;
         NodeReplyType get_type() const noexcept;

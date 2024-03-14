@@ -26,7 +26,7 @@ debian:
 check: cppcheck flawfinder
 
 cppcheck:
-	cppcheck --project=crazytrace.cppcheck --enable=warning,style,information,missingInclude --error-exitcode=1
+	meson compile -C build cppcheck
 
 flawfinder:
 	flawfinder --error-level=0 src/
