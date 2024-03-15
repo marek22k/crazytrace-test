@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
         boost::asio::io_context io;
         const ::size_t mtu = 1500;
         BOOST_LOG_TRIVIAL(debug) << "Create TUN device." << std::endl;
-        tun_tap dev = tun_tap("crazytrace", tun_tap_mode::tap);
+        tun_tap dev = tun_tap(config.get_device_name(), tun_tap_mode::tap);
         BOOST_LOG_TRIVIAL(debug) << "Set MTU to " << mtu << "." << std::endl;
         dev.set_mtu(1500);
         BOOST_LOG_TRIVIAL(debug) << "Set the TUN device up." << std::endl;

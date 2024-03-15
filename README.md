@@ -40,6 +40,7 @@ The following is a example configuration file:
 ```yaml
 ---
 log_level: info
+device_name: crazytrace
 nodes:
   - mac: 02:B1:4F:7E:9D:C3
     addresses: [fe80::b1:4fff:fe7e:9dc3]

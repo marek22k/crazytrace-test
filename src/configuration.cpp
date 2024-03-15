@@ -11,6 +11,11 @@ void Configuration::load()
         YAML::Node config = YAML::LoadFile(this->_filename);
         this->load_log_level(config["log_level"]);
 
+        YAML::Node device_name_node = config["device_name"];
+        if (! device_name_node.IsDefined())
+            throw std::runtime_error("device name is missing.");
+        this->_device_name = device_name_node.as<std::string>();
+
         YAML::Node nodes_config = config["nodes"];
         this->load_nodes(nodes_config, this->_node_container);
     }
@@ -117,14 +122,19 @@ void Configuration::load_nodes(const YAML::Node& nodes_config, std::shared_ptr<T
     }
 }
 
-std::shared_ptr<NodeContainer> Configuration::get_node_container()
+std::shared_ptr<NodeContainer> Configuration::get_node_container() const noexcept
 {
     return this->_node_container;
 }
 
-boost::log::trivial::severity_level Configuration::get_log_level()
+boost::log::trivial::severity_level Configuration::get_log_level() const noexcept
 {
     return this->_log_level;
+}
+
+const std::string& Configuration::get_device_name() const noexcept
+{
+    return this->_device_name;
 }
 
 void Configuration::apply_log_level()
