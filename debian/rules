@@ -3,4 +3,8 @@
 %:
 	dh $@
 
+override_dh_auto_configure:
+	make setup
+
 override_dh_auto_clean:
+	test -d build && make clean || true
