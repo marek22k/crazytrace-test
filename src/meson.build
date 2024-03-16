@@ -53,9 +53,6 @@ if cppcheck.found()
         # Problems with detecting system libraries
         '--suppress=missingIncludeSystem',
 
-        # That's okay for me
-        '--suppress=uninitMemberVar',
-
         '--enable=warning,style,information,missingInclude',
         '--error-exitcode=1',
         '--project=' + join_paths(meson.build_root(), 'compile_commands.json')

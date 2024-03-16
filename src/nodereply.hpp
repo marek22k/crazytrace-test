@@ -38,11 +38,12 @@ class NodeReply
 
     private:
         NodeReplyType _type;
-        int _hoplimit;
         Tins::HWAddress<6> _destination_mac;
         Tins::IPv6Address _destination_address;
         Tins::HWAddress<6> _source_mac;
         Tins::IPv6Address _source_address; /* Also used for ICMP_NDP */
+
+        int _hoplimit;
 
         /* ICMP ECHO REPLY */
         int _icmp_identifier;

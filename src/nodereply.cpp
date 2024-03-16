@@ -1,7 +1,10 @@
 #include "nodereply.hpp"
 
 NodeReply::NodeReply(NodeReplyType type) :
-    _type(type)
+    _type(type),
+    _hoplimit(0),
+    _icmp_identifier(0), _icmp_sequence(0),
+    _udp_dport(0), _udp_sport(0)
 {}
 
 NodeReply::NodeReply(
@@ -11,7 +14,10 @@ NodeReply::NodeReply(
 ) :
     _type(type),
     _destination_mac(destination_mac), _destination_address(destination_address),
-    _source_mac(source_mac), _source_address(source_address)
+    _source_mac(source_mac), _source_address(source_address),
+    _hoplimit(0),
+    _icmp_identifier(0), _icmp_sequence(0),
+    _udp_dport(0), _udp_sport(0)
 {}
 
 void NodeReply::set_hoplimit(int hoplimit) noexcept
