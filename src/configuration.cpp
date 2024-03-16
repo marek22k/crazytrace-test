@@ -99,7 +99,7 @@ void Configuration::load_postup_commands(const YAML::Node& node)
     }
 }
 
-template <typename T, typename std::enable_if<std::is_same<T, NodeInfo>::value || std::is_same<T, NodeContainer>::value, int>::type>
+template <typename T, typename std::enable_if_t<std::is_same_v<T, NodeInfo> || std::is_same_v<T, NodeContainer>, int>>
 void Configuration::load_nodes(const YAML::Node& nodes_config, std::shared_ptr<T> nodes, bool mac)
 {
     if (nodes_config.IsDefined() && !nodes_config.IsNull())

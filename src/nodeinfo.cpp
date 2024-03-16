@@ -101,7 +101,7 @@ std::vector<std::shared_ptr<NodeInfo>> NodeInfo::get_route_to(const Tins::IPv6Ad
         }
     }
 
-    return std::vector<std::shared_ptr<NodeInfo>>();
+    return {};
 }
 
 void NodeInfo::print(std::ostream& os, int layer) const

@@ -169,7 +169,7 @@ std::vector<std::shared_ptr<NodeInfo>> NodeContainer::get_route_to(const Tins::I
         }
     }
 
-    return std::vector<std::shared_ptr<NodeInfo>>();
+    return {};
 }
 
 void NodeContainer::print(std::ostream& os) const
