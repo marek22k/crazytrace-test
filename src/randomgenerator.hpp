@@ -8,7 +8,7 @@ class RandomGenerator
 {
     public:
         explicit RandomGenerator(std::size_t max, std::size_t min = 0) noexcept;
-        std::size_t generate() noexcept;
+        [[nodiscard]] std::size_t generate() noexcept;
     
     private:
         std::default_random_engine _rng;

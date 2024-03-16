@@ -12,20 +12,20 @@ class NodeRequest
 {
     public:
         explicit NodeRequest(const Tins::EthernetII& packet);
-        NodeRequestType get_type() const noexcept;
-        const Tins::HWAddress<6>& get_source_mac() const noexcept;
-        const Tins::HWAddress<6>& get_destination_mac() const noexcept;
-        const Tins::IPv6Address& get_source_address() const noexcept;
-        const Tins::IPv6Address& get_destination_address() const noexcept;
-        int get_hoplimit() const noexcept;
+        [[nodiscard]] NodeRequestType get_type() const noexcept;
+        [[nodiscard]] const Tins::HWAddress<6>& get_source_mac() const noexcept;
+        [[nodiscard]] const Tins::HWAddress<6>& get_destination_mac() const noexcept;
+        [[nodiscard]] const Tins::IPv6Address& get_source_address() const noexcept;
+        [[nodiscard]] const Tins::IPv6Address& get_destination_address() const noexcept;
+        [[nodiscard]] int get_hoplimit() const noexcept;
 
-        int get_udp_sport() const noexcept;
-        int get_udp_dport() const noexcept;
+        [[nodiscard]] int get_udp_sport() const noexcept;
+        [[nodiscard]] int get_udp_dport() const noexcept;
 
-        int get_icmp_identifier() const noexcept;
-        int get_icmp_sequence() const noexcept;
+        [[nodiscard]] int get_icmp_identifier() const noexcept;
+        [[nodiscard]] int get_icmp_sequence() const noexcept;
 
-        const Tins::RawPDU::payload_type& get_payload() const noexcept;
+        [[nodiscard]] const Tins::RawPDU::payload_type& get_payload() const noexcept;
 
         friend std::ostream& operator<<(std::ostream& os, const NodeRequest & noderequest);
 

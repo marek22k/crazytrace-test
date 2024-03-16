@@ -21,7 +21,7 @@ class tun_tap
         void set_mtu(int mtu);
         void up();
         void down();
-        int native_handler();
+        [[nodiscard]] int native_handler();
     
     private:
         class TunTapDestroyer final {

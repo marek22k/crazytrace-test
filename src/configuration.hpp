@@ -16,10 +16,10 @@ class Configuration
 {
     public:
         explicit Configuration(const std::string& filename);
-        std::shared_ptr<NodeContainer> get_node_container() const noexcept;
-        boost::log::trivial::severity_level get_log_level() const noexcept;
-        const std::string& get_device_name() const noexcept;
-        const PostupCommands& get_postup_commands() const noexcept;
+        [[nodiscard]] std::shared_ptr<NodeContainer> get_node_container() const noexcept;
+        [[nodiscard]] boost::log::trivial::severity_level get_log_level() const noexcept;
+        [[nodiscard]] const std::string& get_device_name() const noexcept;
+        [[nodiscard]] const PostupCommands& get_postup_commands() const noexcept;
     
     private:
         void load(const std::string& filename);
