@@ -91,7 +91,7 @@ void Configuration::load_postup_commands(const YAML::Node& node)
 
         for (auto command_node = node.begin(); command_node != node.end(); command_node++)
         {
-            this->_postup_commands.push_back((*command_node).as<std::string>());
+            this->_postup_commands.add_postup_command((*command_node).as<std::string>());
         }
     }
 }
@@ -157,7 +157,7 @@ const std::string& Configuration::get_device_name() const noexcept
     return this->_device_name;
 }
 
-const std::vector<std::string>& Configuration::get_postup_commands() const noexcept
+const PostupCommands& Configuration::get_postup_commands() const noexcept
 {
     return this->_postup_commands;
 }

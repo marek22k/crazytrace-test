@@ -15,6 +15,7 @@ sources = files(
     'configuration.cpp',
     'crazytrace.cpp',
     'main.cpp',
+    'postup_commands.cpp',
     'nodecontainer.cpp',
     'nodeinfo.cpp',
     'nodereply.cpp',

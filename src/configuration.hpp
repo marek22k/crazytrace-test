@@ -10,6 +10,7 @@
 #include <tins/tins.h>
 #include <yaml-cpp/yaml.h>
 #include "nodecontainer.hpp"
+#include "postup_commands.hpp"
 
 class Configuration
 {
@@ -18,7 +19,7 @@ class Configuration
         std::shared_ptr<NodeContainer> get_node_container() const noexcept;
         boost::log::trivial::severity_level get_log_level() const noexcept;
         const std::string& get_device_name() const noexcept;
-        const std::vector<std::string>& get_postup_commands() const noexcept;
+        const PostupCommands& get_postup_commands() const noexcept;
     
     private:
         void load(const std::string& filename);
@@ -29,9 +30,9 @@ class Configuration
         void validate_node_depth();
 
         std::string _device_name;
-        std::vector<std::string> _postup_commands;
         std::shared_ptr<NodeContainer> _node_container;
         boost::log::trivial::severity_level _log_level;
+        PostupCommands _postup_commands;
 };
 
 #endif
