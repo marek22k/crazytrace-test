@@ -41,7 +41,8 @@ The following is a example configuration file:
 ---
 log_level: info
 device_name: crazytrace
-post_up: ip route add fd00::/64 dev crazytrace via fe80::b1:4fff:fe7e:9dc3
+post_up_commands:
+  - ip route add fd00::/64 dev crazytrace via fe80::b1:4fff:fe7e:9dc3
 nodes:
   - mac: 02:B1:4F:7E:9D:C3
     addresses: [fe80::b1:4fff:fe7e:9dc3]
