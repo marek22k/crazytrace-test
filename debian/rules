@@ -4,7 +4,7 @@
 	dh $@
 
 override_dh_auto_configure:
-	make setup
+	meson setup --prefix=/usr -Dinstall_systemd_unit=true . build
 
 override_dh_auto_clean:
 	test -d build && make clean || true

@@ -69,6 +69,13 @@ if flawfinder.found()
     ])
 endif
 
+if get_option('install_systemd_unit')
+    install_data(
+        'systemd/crazytrace@.service',
+        install_dir: 'lib/systemd/system'
+    )
+endif
+
 executable(
     'crazytrace',
     sources,

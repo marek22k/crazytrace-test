@@ -3,7 +3,7 @@
 all: setup compile
 
 setup:
-	test -d build || meson setup --prefix=/usr . build
+	test -d build || meson setup . build
 
 addresssanitizer: setup
 	meson setup --reconfigure --debug -Db_sanitize=address . build

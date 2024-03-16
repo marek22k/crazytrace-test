@@ -1,0 +1,37 @@
+[Unit]
+Description=crazytrace %I
+Documentation=https://codeberg.org/mark22k/crazytrace
+
+[Service]
+RemoveIPC=true
+DynamicUser=true
+NoNewPrivileges=true
+SystemCallArchitectures=native
+MemoryDenyWriteExecute=true
+LockPersonality=true
+RestrictNamespaces=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_NETLINK
+RestrictRealtime=true
+ProtectKernelTunables=true
+ProtectHostname=true
+ProtectHome=true
+ProtectProc=ptraceable
+ProtectSystem=strict
+ProtectClock=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+PrivateTmp=true
+ProcSubset=pid
+SystemCallFilter=~@clock @cpu-emulation @debug @module @mount @obsolete @privileged @raw-io @reboot @resources @swap
+
+CapabilityBoundingSet=CAP_NET_ADMIN
+AmbientCapabilities=CAP_NET_ADMIN
+ConfigurationDirectory=crazytrace
+
+ExecStart=/usr/bin/crazytrace %E/crazytrace/%i.yaml
+Restart=on-failue
+TimeoutStopSec=5
+
+[Install]
+WantedBy=multi-user.target
