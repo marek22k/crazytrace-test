@@ -1,0 +1,28 @@
+name: Coverity Scan
+
+on:
+  push:
+    branches: [ "github" ]
+  schedule:
+    - cron: '19 8 * * 5'
+
+jobs:
+  coverity:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo add-apt-repository --yes ppa:mhier/libboost-latest
+        sudo apt-get install --yes build-essential git meson ninja-build cmake libboost1.81-dev libboost-log1.81-dev libyaml-cpp-dev libpcap-dev libtins-dev
+        git clone https://github.com/LaKabane/libtuntap.git /tmp/libtuntap/
+        cd /tmp/
+        cmake -DCMAKE_BUILD_TYPE=Release -B build -S "libtuntap"
+        cmake --build build
+        sudo cmake --install build --prefix /usr
+    - uses: vapier/coverity-scan-action@v1
+      with:
+        project: 'crazytrace'
+        email: ${{ secrets.COVERITY_SCAN_EMAIL }}
+        token: ${{ secrets.COVERITY_SCAN_TOKEN }}
