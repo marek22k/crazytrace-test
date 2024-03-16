@@ -17,7 +17,7 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
             Tins::HWAddress<6> source_mac = route.back()->get_mac_address();
 
             int hoplimit = request.get_hoplimit();
-            if (static_cast<::size_t>(hoplimit) >= route.size())
+            if (static_cast<std::size_t>(hoplimit) >= route.size())
             {
                 /* target reached */
                 std::shared_ptr<NodeInfo> reached_node = route[0];
@@ -61,7 +61,7 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
             else
             {
                 /* hoplimit exceeded */
-                int reached_node_number = route.size() - request.get_hoplimit();
+                int reached_node_number = static_cast<int>(route.size()) - static_cast<int>(request.get_hoplimit());
                 std::shared_ptr<NodeInfo> reached_node = route[reached_node_number];
 
                 int reply_hoplimit = reached_node->get_hoplimit() - hoplimit + 1;
@@ -136,12 +136,12 @@ void NodeContainer::add_node(std::shared_ptr<NodeInfo> node) noexcept
     this->_nodes.insert(node);
 }
 
-::size_t NodeContainer::max_depth()
+std::size_t NodeContainer::max_depth()
 {
-    ::size_t max = 0;
+    std::size_t max = 0;
     for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
     {
-        ::size_t node_depth = (*node)->max_depth();
+        std::size_t node_depth = (*node)->max_depth();
         if (node_depth > max)
             max = node_depth;
     }

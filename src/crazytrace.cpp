@@ -1,7 +1,7 @@
 #include "crazytrace.hpp"
 
 Crazytrace::Crazytrace(boost::asio::any_io_executor ex, int native_handler, std::shared_ptr<NodeContainer> nodecontainer) :
-     _device(ex, native_handler), _nodecontainer(std::move(nodecontainer))
+     _device(ex, native_handler), _nodecontainer(std::move(nodecontainer)), _buffer()
 {
     this->start();
 }
@@ -33,8 +33,8 @@ void Crazytrace::_handle_packet(const boost::system::error_code, const std::stri
 
     try
     {
-        const uint8_t * raw_data = reinterpret_cast<const uint8_t *>(packet_data.data());
-        Tins::EthernetII packet(raw_data, packet_data.size());
+        std::vector<uint8_t> raw_data(packet_data.begin(), packet_data.end());
+        Tins::EthernetII packet(raw_data.data(), raw_data.size());
 
         NodeRequest request(packet);
         if (request.get_type() != NodeRequestType::UNKNOWN)

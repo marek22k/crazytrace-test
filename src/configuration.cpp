@@ -1,8 +1,11 @@
 #include "configuration.hpp"
 
+// NOLINTBEGIN(cppcoreguidelines-pro-type-member-init)
+// _log_level is initialized in a function that is called directly from the constructor. If _log_level cannot be initialized, an error is thrown.
 Configuration::Configuration(const std::string& filename) :
     _node_container(std::make_shared<NodeContainer>())
 {
+    // NOLINTEND(cppcoreguidelines-pro-type-member-init)
     this->load(filename);
     this->validate_node_depth();
 }
@@ -34,7 +37,7 @@ void Configuration::load(const std::string& filename)
 
 void Configuration::validate_node_depth()
 {
-    ::size_t max_depth = this->_node_container->max_depth();
+    std::size_t max_depth = this->_node_container->max_depth();
     if (max_depth > 255)
     {
         throw std::runtime_error("The nodes are too deep.");

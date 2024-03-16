@@ -2,6 +2,7 @@
 #include <sstream>
 #include <memory>
 #include <system_error>
+#include <span>
 #include <stdexcept>
 #include <cstdlib>
 
@@ -19,10 +20,11 @@
 
 int main(int argc, char *argv[]) {
     try {
-        if (argc != 2)
+        auto args = std::span(argv, static_cast<std::size_t>(argc));
+        if (args.size() != 2)
             throw std::runtime_error("A configuration file must be specified.");
         
-        std::string filename(argv[1]);
+        std::string filename(args[1]);
         Configuration config(filename);
 
         boost::log::core::get()->set_filter(
@@ -42,7 +44,7 @@ int main(int argc, char *argv[]) {
         BOOST_LOG_TRIVIAL(info) << nodes_verbose.str();
 
         boost::asio::io_context io;
-        const ::size_t mtu = 1500;
+        const std::size_t mtu = 1500;
         BOOST_LOG_TRIVIAL(debug) << "Create TUN device." << std::endl;
         tun_tap dev = tun_tap(config.get_device_name(), tun_tap_mode::tap);
         BOOST_LOG_TRIVIAL(debug) << "Set MTU to " << mtu << "." << std::endl;
@@ -57,7 +59,7 @@ int main(int argc, char *argv[]) {
         io.run();
     } catch (const std::exception &e) {
         BOOST_LOG_TRIVIAL(fatal) << "Error: " << e.what() << std::endl << "Exit program.";
-        exit(EXIT_FAILURE);
+        std::exit(EXIT_FAILURE); // NOLINT(concurrency-mt-unsafe)
     }
     return EXIT_SUCCESS;
 }

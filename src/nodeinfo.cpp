@@ -55,7 +55,7 @@ const Tins::IPv6Address& NodeInfo::get_address()
         /* Is called up each time the number of addresses is changed. However,
            it is not called after each address is added to allow multiple
            addresses to be added quickly. */
-        ::size_t max_address = this->_addresses.size();
+        std::size_t max_address = this->_addresses.size();
         if (max_address == 0)
             throw std::invalid_argument("Despite adding an address, none is available.");
         max_address--;
@@ -64,16 +64,16 @@ const Tins::IPv6Address& NodeInfo::get_address()
         std::sort(this->_addresses.begin(), this->_addresses.end());
         this->_addressadded = false;
     }
-    ::size_t address_number = this->_randomgenerator.generate();
+    std::size_t address_number = this->_randomgenerator.generate();
     return this->_addresses[address_number];
 }
 
-::size_t NodeInfo::max_depth()
+std::size_t NodeInfo::max_depth()
 {
-    ::size_t max = 0;
+    std::size_t max = 0;
     for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
     {
-        ::size_t node_depth = (*node)->max_depth();
+        std::size_t node_depth = (*node)->max_depth();
         if (node_depth > max)
             max = node_depth;
     }

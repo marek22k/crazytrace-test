@@ -7,12 +7,12 @@
 class RandomGenerator
 {
     public:
-        explicit RandomGenerator(::size_t max, ::size_t min = 0) noexcept;
-        ::size_t generate() noexcept;
+        explicit RandomGenerator(std::size_t max, std::size_t min = 0) noexcept;
+        std::size_t generate() noexcept;
     
     private:
         std::default_random_engine _rng;
-        std::uniform_int_distribution<::size_t> _distribution;
+        std::uniform_int_distribution<std::size_t> _distribution;
 };
 
 #endif
