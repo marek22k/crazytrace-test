@@ -12,16 +12,16 @@ project(
 )
 
 sources = files(
-    'configuration.cpp',
-    'crazytrace.cpp',
-    'main.cpp',
-    'postup_commands.cpp',
-    'nodecontainer.cpp',
-    'nodeinfo.cpp',
-    'nodereply.cpp',
-    'noderequest.cpp',
-    'randomgenerator.cpp',
-    'tun_tap.cpp'
+    'src/configuration.cpp',
+    'src/crazytrace.cpp',
+    'src/main.cpp',
+    'src/postup_commands.cpp',
+    'src/nodecontainer.cpp',
+    'src/nodeinfo.cpp',
+    'src/nodereply.cpp',
+    'src/noderequest.cpp',
+    'src/randomgenerator.cpp',
+    'src/tun_tap.cpp'
 )
 
 cpp_compiler = meson.get_compiler('cpp')
