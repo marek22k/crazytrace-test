@@ -1,7 +1,7 @@
 #include "crazytrace.hpp"
 
 Crazytrace::Crazytrace(boost::asio::any_io_executor ex, int native_handler, std::shared_ptr<NodeContainer> nodecontainer) :
-     _device(ex, native_handler), _nodecontainer(nodecontainer)
+     _device(ex, native_handler), _nodecontainer(std::move(nodecontainer))
 {
     this->start();
 }
