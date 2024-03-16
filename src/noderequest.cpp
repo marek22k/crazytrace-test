@@ -2,7 +2,10 @@
 #include <iostream>
 
 NodeRequest::NodeRequest(const Tins::EthernetII& packet) :
-    _type(NodeRequestType::UNKNOWN)
+    _type(NodeRequestType::UNKNOWN),
+    _hoplimit(0),
+    _udp_dport(0), _udp_sport(0),
+    _icmp_identifier(0), _icmp_sequence(0)
 {
     this->_source_mac = packet.src_addr();
     this->_destination_mac = packet.dst_addr();
