@@ -14,18 +14,18 @@ void Configuration::load(const std::string& filename)
 {
     try
     {
-        YAML::Node config = YAML::LoadFile(filename);
+        const YAML::Node config = YAML::LoadFile(filename);
         this->load_log_level(config["log_level"]);
 
-        YAML::Node device_name_node = config["device_name"];
+        const YAML::Node device_name_node = config["device_name"];
         if (! device_name_node.IsDefined())
             throw std::runtime_error("device name is missing.");
         this->_device_name = device_name_node.as<std::string>();
 
-        YAML::Node post_up_command_node = config["post_up_commands"];
+        const YAML::Node post_up_command_node = config["post_up_commands"];
         this->load_postup_commands(post_up_command_node);
 
-        YAML::Node nodes_config = config["nodes"];
+        const YAML::Node nodes_config = config["nodes"];
         this->load_nodes(nodes_config, this->_node_container);
     }
     catch (const YAML::Exception& e)
@@ -37,7 +37,7 @@ void Configuration::load(const std::string& filename)
 
 void Configuration::validate_node_depth()
 {
-    std::size_t max_depth = this->_node_container->max_depth();
+    const std::size_t max_depth = this->_node_container->max_depth();
     if (max_depth > 255)
     {
         throw std::runtime_error("The nodes are too deep.");
@@ -124,18 +124,18 @@ void Configuration::load_nodes(const YAML::Node& nodes_config, std::shared_ptr<T
                     throw std::runtime_error("Failed to load configuration file: Missing mac attribute.");
             }
 
-            std::shared_ptr<NodeInfo> node = std::make_shared<NodeInfo>();
+            const std::shared_ptr<NodeInfo> node = std::make_shared<NodeInfo>();
 
             if (mac)
             {
                 node->set_mac_address(Tins::HWAddress<6>((*node_config)["mac"].as<std::string>()));
             }
 
-            YAML::Node addresses_config = (*node_config)["addresses"];
+            const YAML::Node addresses_config = (*node_config)["addresses"];
             for (auto address_config = addresses_config.begin(); address_config != addresses_config.end(); address_config++)
                 node->add_address(Tins::IPv6Address((*address_config).as<std::string>()));
 
-            YAML::Node hoplimit_config = (*node_config)["hoplimit"];
+            const YAML::Node hoplimit_config = (*node_config)["hoplimit"];
             if (hoplimit_config.IsDefined())
                 node->set_hoplimit(hoplimit_config.as<int>());
 

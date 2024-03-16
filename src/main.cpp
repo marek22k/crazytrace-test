@@ -20,24 +20,24 @@
 
 int main(int argc, char *argv[]) {
     try {
-        auto args = std::span(argv, static_cast<std::size_t>(argc));
+        const auto args = std::span(argv, static_cast<std::size_t>(argc));
         if (args.size() != 2)
             throw std::runtime_error("A configuration file must be specified.");
         
-        std::string filename(args[1]);
-        Configuration config(filename);
+        const std::string filename(args[1]);
+        const Configuration config(filename);
 
         boost::log::core::get()->set_filter(
             boost::log::trivial::severity >= config.get_log_level()
         );
 
         BOOST_LOG_TRIVIAL(info) << "libtuntap version: " << TUNTAP_VERSION_MAJOR << "." << TUNTAP_VERSION_MINOR << std::endl;
-        int version = tuntap_version();
-        int major = (version >> 8) & 0xFF;
-        int minor = version & 0xFF;
+        const int version = tuntap_version();
+        const int major = (version >> 8) & 0xFF;
+        const int minor = version & 0xFF;
         BOOST_LOG_TRIVIAL(info) << "libtuntap version: " << major << "." << minor << std::endl;
 
-        std::shared_ptr<NodeContainer> nodecontainer = config.get_node_container();
+        const std::shared_ptr<NodeContainer> nodecontainer = config.get_node_container();
 
         std::ostringstream nodes_verbose;
         nodecontainer->print(nodes_verbose);
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
         BOOST_LOG_TRIVIAL(debug) << "Set the TUN device up." << std::endl;
         dev.up();
 
-        Crazytrace ct(io.get_executor(), ::dup(dev.native_handler()), nodecontainer);
+        const Crazytrace ct(io.get_executor(), ::dup(dev.native_handler()), nodecontainer);
 
         config.get_postup_commands().execute_commands();
 

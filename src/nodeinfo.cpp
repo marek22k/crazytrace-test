@@ -64,7 +64,7 @@ const Tins::IPv6Address& NodeInfo::get_address()
         std::sort(this->_addresses.begin(), this->_addresses.end());
         this->_addressadded = false;
     }
-    std::size_t address_number = this->_randomgenerator.generate();
+    const std::size_t address_number = this->_randomgenerator.generate();
     return this->_addresses[address_number];
 }
 
@@ -73,7 +73,7 @@ std::size_t NodeInfo::max_depth()
     std::size_t max = 0;
     for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
     {
-        std::size_t node_depth = (*node)->max_depth();
+        const std::size_t node_depth = (*node)->max_depth();
         if (node_depth > max)
             max = node_depth;
     }
@@ -106,7 +106,7 @@ std::vector<std::shared_ptr<NodeInfo>> NodeInfo::get_route_to(const Tins::IPv6Ad
 
 void NodeInfo::print(std::ostream& os, int layer) const
 {
-    std::string tabs(layer, '\t');
+    const std::string tabs(layer, '\t');
 
     os << tabs << *this << std::endl;
     if (! this->_nodes.empty())

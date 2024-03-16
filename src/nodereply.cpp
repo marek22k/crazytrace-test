@@ -145,7 +145,7 @@ std::string NodeReply::to_packet() const
             inner_icmpv6.solicited(Tins::small_uint<1>(1));
             inner_icmpv6.router(Tins::small_uint<1>(1));
             inner_icmpv6.override(Tins::small_uint<1>(1));
-            Tins::ICMPv6::option address_option(
+            const Tins::ICMPv6::option address_option(
                 Tins::ICMPv6::OptionTypes::TARGET_ADDRESS,
                 this->_source_mac.size(),
                 &(*this->_source_mac.begin())

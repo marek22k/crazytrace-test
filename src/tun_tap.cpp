@@ -29,14 +29,14 @@ tun_tap::tun_tap(const std::string& ifname, tun_tap_mode mode) :
 
 void tun_tap::up()
 {
-    int status = ::tuntap_up(this->_device.get());
+    const int status = ::tuntap_up(this->_device.get());
     if (status)
         throw std::runtime_error("Failed to bring tuntap device up.");
 }
 
 void tun_tap::down()
 {
-    int status = ::tuntap_down(this->_device.get());
+    const int status = ::tuntap_down(this->_device.get());
     if (status)
         throw std::runtime_error("Failed to bring tuntap device down.");
 }
@@ -46,7 +46,7 @@ void tun_tap::set_mtu(int mtu)
     if (mtu < 0 || mtu > 65535)
         throw std::invalid_argument("Invalid mtu value.");
 
-    int status = ::tuntap_set_mtu(this->_device.get(), mtu);
+    const int status = ::tuntap_set_mtu(this->_device.get(), mtu);
     if (status)
         throw std::runtime_error("Failed to set mtu for tuntap device.");
 }
@@ -56,7 +56,7 @@ void tun_tap::set_ip(const std::string& ip, int netmask)
     if (netmask < 0 || netmask > 128)
         throw std::invalid_argument("Invalid netmask value.");
 
-    int status = ::tuntap_set_ip(this->_device.get(), ip.c_str(), netmask);
+    const int status = ::tuntap_set_ip(this->_device.get(), ip.c_str(), netmask);
     if (status)
         throw std::runtime_error("Failed to set ip address for tuntap device.");
 }

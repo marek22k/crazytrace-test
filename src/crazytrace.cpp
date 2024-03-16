@@ -14,7 +14,7 @@ void Crazytrace::start()
             if (ec) {
                 this->_handle_error(ec);
             } else {
-                std::string packet(this->_buffer.data(), bytes_transferred);
+                const std::string packet(this->_buffer.data(), bytes_transferred);
                 start();
 
                 this->_handle_packet(ec, std::move(packet));
@@ -33,13 +33,13 @@ void Crazytrace::_handle_packet(const boost::system::error_code, const std::stri
 
     try
     {
-        std::vector<uint8_t> raw_data(packet_data.begin(), packet_data.end());
-        Tins::EthernetII packet(raw_data.data(), raw_data.size());
+        const std::vector<uint8_t> raw_data(packet_data.begin(), packet_data.end());
+        const Tins::EthernetII packet(raw_data.data(), raw_data.size());
 
-        NodeRequest request(packet);
+        const NodeRequest request(packet);
         if (request.get_type() != NodeRequestType::UNKNOWN)
         {
-            NodeReply reply = this->_nodecontainer->get_reply(request);
+            const NodeReply reply = this->_nodecontainer->get_reply(request);
             if (reply.get_type() != NodeReplyType::NOREPLY)
             {
                 BOOST_LOG_TRIVIAL(debug) << request;

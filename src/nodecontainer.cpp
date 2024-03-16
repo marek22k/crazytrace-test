@@ -14,17 +14,17 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
                 return NodeReply(NodeReplyType::NOREPLY);
             }
 
-            Tins::HWAddress<6> source_mac = route.back()->get_mac_address();
+            const Tins::HWAddress<6> source_mac = route.back()->get_mac_address();
 
-            int hoplimit = request.get_hoplimit();
+            const int hoplimit = request.get_hoplimit();
             if (static_cast<std::size_t>(hoplimit) >= route.size())
             {
                 /* target reached */
-                std::shared_ptr<NodeInfo> reached_node = route[0];
+                const std::shared_ptr<NodeInfo> reached_node = route[0];
 
                 // Both variables undergo a value check during initialization so that neither
                 // is greater than 255. It is therefore safe to convert them into an int.
-                int reply_hoplimit = static_cast<int>(reached_node->get_hoplimit()) - static_cast<int>(route.size()) + 1;
+                const int reply_hoplimit = static_cast<int>(reached_node->get_hoplimit()) - static_cast<int>(route.size()) + 1;
                 if (reply_hoplimit <= 0)
                     return NodeReply(NodeReplyType::NOREPLY);
 
@@ -61,10 +61,10 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
             else
             {
                 /* hoplimit exceeded */
-                int reached_node_number = static_cast<int>(route.size()) - static_cast<int>(request.get_hoplimit());
-                std::shared_ptr<NodeInfo> reached_node = route[reached_node_number];
+                const int reached_node_number = static_cast<int>(route.size()) - static_cast<int>(request.get_hoplimit());
+                const std::shared_ptr<NodeInfo> reached_node = route[reached_node_number];
 
-                int reply_hoplimit = reached_node->get_hoplimit() - hoplimit + 1;
+                const int reply_hoplimit = reached_node->get_hoplimit() - hoplimit + 1;
                 if (reply_hoplimit <= 0)
                     return NodeReply(NodeReplyType::NOREPLY);
 
@@ -141,7 +141,7 @@ std::size_t NodeContainer::max_depth()
     std::size_t max = 0;
     for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
     {
-        std::size_t node_depth = (*node)->max_depth();
+        const std::size_t node_depth = (*node)->max_depth();
         if (node_depth > max)
             max = node_depth;
     }
