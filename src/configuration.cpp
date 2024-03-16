@@ -2,7 +2,10 @@
 
 Configuration::Configuration(const std::string& filename) :
     _filename(filename), _node_container(std::make_shared<NodeContainer>())
-{}
+{
+    this->load();
+    this->validate_node_depth();
+}
 
 void Configuration::load()
 {
@@ -135,11 +138,4 @@ boost::log::trivial::severity_level Configuration::get_log_level() const noexcep
 const std::string& Configuration::get_device_name() const noexcept
 {
     return this->_device_name;
-}
-
-void Configuration::apply_log_level()
-{
-    boost::log::core::get()->set_filter(
-        boost::log::trivial::severity >= this->_log_level
-    );
 }
