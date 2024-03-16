@@ -19,6 +19,13 @@ void Configuration::load(const std::string& filename)
             throw std::runtime_error("device name is missing.");
         this->_device_name = device_name_node.as<std::string>();
 
+        YAML::Node post_up_command_node = config["post_up_command"];
+        if (! post_up_command_node.IsDefined())
+        {
+            this->_postup_command_available = true;
+            this->_postup_command = post_up_command_node.as<std::string>();
+        }
+
         YAML::Node nodes_config = config["nodes"];
         this->load_nodes(nodes_config, this->_node_container);
     }
@@ -138,4 +145,14 @@ boost::log::trivial::severity_level Configuration::get_log_level() const noexcep
 const std::string& Configuration::get_device_name() const noexcept
 {
     return this->_device_name;
+}
+
+const std::string& Configuration::get_postup_command() const noexcept
+{
+    return this->_postup_command;
+}
+
+bool Configuration::postup_command_available() const noexcept
+{
+    return this->_postup_command_available;
 }

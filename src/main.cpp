@@ -51,6 +51,15 @@ int main(int argc, char *argv[]) {
 
         Crazytrace ct(io.get_executor(), ::dup(dev.native_handler()), nodecontainer);
 
+        if (config.postup_command_available())
+        {
+            BOOST_LOG_TRIVIAL(debug) << "Execute post up command." << std::endl;
+            int result = std::system(config.get_postup_command().c_str());
+            BOOST_LOG_TRIVIAL(debug) << "Post up command result: " << result << std::endl;
+            if (result != 0)
+                throw std::runtime_error("Failed to execute post up command.");
+        }
+
         io.run();
     } catch (const std::exception &e) {
         BOOST_LOG_TRIVIAL(fatal) << "Error: " << e.what() << std::endl << "Exit program.";

@@ -17,7 +17,8 @@ class Configuration
         std::shared_ptr<NodeContainer> get_node_container() const noexcept;
         boost::log::trivial::severity_level get_log_level() const noexcept;
         const std::string& get_device_name() const noexcept;
-        // const std::string& get_postup_command() const noexcept;
+        const std::string& get_postup_command() const noexcept;
+        bool postup_command_available() const noexcept;
     
     private:
         void load(const std::string& filename);
@@ -27,6 +28,8 @@ class Configuration
         void validate_node_depth();
 
         std::string _device_name;
+        std::string _postup_command;
+        bool _postup_command_available;
         std::shared_ptr<NodeContainer> _node_container;
         boost::log::trivial::severity_level _log_level;
 };
