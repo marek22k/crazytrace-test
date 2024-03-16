@@ -41,6 +41,7 @@ The following is a example configuration file:
 ---
 log_level: info
 device_name: crazytrace
+post_up: ip route add fd00::/64 dev crazytrace via fe80::b1:4fff:fe7e:9dc3
 nodes:
   - mac: 02:B1:4F:7E:9D:C3
     addresses: [fe80::b1:4fff:fe7e:9dc3]
@@ -60,11 +61,6 @@ This would generate the following topology:
 
 If a node has several IPv6 addresses, it listens to all of them and responds randomly with one.
 If no hop limit is specified, 64 is used.
-
-To reach the subnet `fd00::/64` under Linux, you can use the following command:
-```
-# ip route add fd00::/64 dev crazytrace via fe80::b1:4fff:fe7e:9dc3
-```
 
 ### Which MAC addresses can I use without any problems?
 

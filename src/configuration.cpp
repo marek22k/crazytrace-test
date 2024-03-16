@@ -1,17 +1,17 @@
 #include "configuration.hpp"
 
 Configuration::Configuration(const std::string& filename) :
-    _filename(filename), _node_container(std::make_shared<NodeContainer>())
+    _node_container(std::make_shared<NodeContainer>())
 {
-    this->load();
+    this->load(filename);
     this->validate_node_depth();
 }
 
-void Configuration::load()
+void Configuration::load(const std::string& filename)
 {
     try
     {
-        YAML::Node config = YAML::LoadFile(this->_filename);
+        YAML::Node config = YAML::LoadFile(filename);
         this->load_log_level(config["log_level"]);
 
         YAML::Node device_name_node = config["device_name"];
