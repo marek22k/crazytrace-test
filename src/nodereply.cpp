@@ -171,6 +171,7 @@ std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
         os << "NOREPLY";
         return os;
     }
+    auto os_flags = os.flags();
 
     std::string type_string;
     switch (nodereply._type)
@@ -229,5 +230,7 @@ std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
         default:
             break;
     }
+
+    os.flags(os_flags);
     return os;
 }
