@@ -153,9 +153,6 @@ std::string NodeReply::to_packet() const
         default: [[unlikely]]
             throw std::runtime_error("Attempt to create a packet, although there is no reply.");
     }
-
-    [[unlikely]]
-    throw std::runtime_error("Attempt to create a packet, although there is no reply.");
 }
 
 
