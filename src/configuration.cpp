@@ -19,12 +19,8 @@ void Configuration::load(const std::string& filename)
             throw std::runtime_error("device name is missing.");
         this->_device_name = device_name_node.as<std::string>();
 
-        YAML::Node post_up_command_node = config["post_up_command"];
-        if (! post_up_command_node.IsDefined())
-        {
-            this->_postup_command_available = true;
-            this->_postup_command = post_up_command_node.as<std::string>();
-        }
+        YAML::Node post_up_command_node = config["post_up_commands"];
+        this->load_postup_commands(post_up_command_node);
 
         YAML::Node nodes_config = config["nodes"];
         this->load_nodes(nodes_config, this->_node_container);
@@ -83,6 +79,20 @@ void Configuration::load_log_level(const YAML::Node& node)
     else
     {
         throw std::runtime_error("Failed to load configuration file: Unknown log level");
+    }
+}
+
+void Configuration::load_postup_commands(const YAML::Node& node)
+{
+    if (node.IsDefined())
+    {
+        if (! node.IsSequence())
+            throw std::runtime_error("post up commands must be an array.");
+
+        for (auto command_node = node.begin(); command_node != node.end(); command_node++)
+        {
+            this->_postup_commands.push_back((*command_node).as<std::string>());
+        }
     }
 }
 
@@ -147,12 +157,7 @@ const std::string& Configuration::get_device_name() const noexcept
     return this->_device_name;
 }
 
-const std::string& Configuration::get_postup_command() const noexcept
+const std::vector<std::string>& Configuration::get_postup_commands() const noexcept
 {
-    return this->_postup_command;
-}
-
-bool Configuration::postup_command_available() const noexcept
-{
-    return this->_postup_command_available;
+    return this->_postup_commands;
 }

@@ -1,10 +1,12 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <system_error>
 #include <stdexcept>
 #include <cstdlib>
 
 #include <boost/asio.hpp>
+#include <boost/process.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
@@ -51,13 +53,30 @@ int main(int argc, char *argv[]) {
 
         Crazytrace ct(io.get_executor(), ::dup(dev.native_handler()), nodecontainer);
 
-        if (config.postup_command_available())
+        const std::vector<std::string>& postup_commands = config.get_postup_commands();
+        if (! postup_commands.empty())
         {
-            BOOST_LOG_TRIVIAL(debug) << "Execute post up command." << std::endl;
-            int result = std::system(config.get_postup_command().c_str());
-            BOOST_LOG_TRIVIAL(debug) << "Post up command result: " << result << std::endl;
-            if (result != 0)
-                throw std::runtime_error("Failed to execute post up command.");
+            for (auto postup_command = postup_commands.begin(); postup_command != postup_commands.end(); postup_command++)
+            {
+                BOOST_LOG_TRIVIAL(debug) << "Execute post up command: " << *postup_command << std::endl;
+                std::error_code ec;
+                boost::process::child child(
+                    *postup_command,
+                    boost::process::std_out > boost::process::null,
+                    boost::process::std_err > boost::process::null,
+                    ec
+                );
+                child.wait();
+                BOOST_LOG_TRIVIAL(debug) << "Post up command result: " << child.exit_code() << std::endl;
+                if (child.exit_code() != 0 || ec)
+                {
+                    if (ec)
+                    {
+                        BOOST_LOG_TRIVIAL(fatal) << "Failed to execute post up command: " << ec.message() << std::endl;
+                    }
+                    throw std::runtime_error("Failed to execute post up command.");
+                }
+            }
         }
 
         io.run();
