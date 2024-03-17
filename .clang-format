@@ -108,8 +108,8 @@ InsertTrailingCommas: None
 IntegerLiteralSeparator:
   Binary: 4
   BinaryMinDigits: 3
-  Decimal: 6
-  DecimalMinDigits: 5
+  Decimal: 3
+  DecimalMinDigits: 6
   Hex: 4
   HexMinDigits: 3
 KeepEmptyLinesAtEOF: false
