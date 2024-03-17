@@ -95,11 +95,10 @@ void Configuration::load_postup_commands(const YAML::Node& node)
         if (!node.IsSequence())
             throw std::runtime_error("post up commands must be an array.");
 
-        for (auto command_node = node.begin(); command_node != node.end();
-             command_node++)
+        for (const auto& command_node : node)
         {
             this->_postup_commands.add_postup_command(
-                (*command_node).as<std::string>());
+                command_node.as<std::string>());
         }
     }
 }
@@ -118,25 +117,23 @@ void Configuration::load_nodes(const YAML::Node& nodes_config,
             throw std::runtime_error(
                 "Failed to load configuration file: Nodes is not a sequence.");
 
-        for (auto node_config = nodes_config.begin();
-             node_config != nodes_config.end();
-             node_config++)
+        for (const auto& node_config : nodes_config)
         {
-            if ((*node_config).IsNull())
+            if (node_config.IsNull())
                 continue;
 
-            if (!(*node_config).IsMap())
+            if (!node_config.IsMap())
                 throw std::runtime_error(
                     "Failed to load configuration file: Node is not a map.");
-            if (!(*node_config)["addresses"].IsDefined())
+            if (!node_config["addresses"].IsDefined())
                 throw std::runtime_error("Failed to load configuration file: "
                                          "Missing addresses attribute.");
-            if (!(*node_config)["addresses"].IsSequence())
+            if (!node_config["addresses"].IsSequence())
                 throw std::runtime_error("Failed to load configuration file: "
                                          "Addresses is not a sequence.");
             if (mac)
             {
-                if (!(*node_config)["mac"].IsDefined())
+                if (!node_config["mac"].IsDefined())
                     throw std::runtime_error("Failed to load configuration "
                                              "file: Missing mac attribute.");
             }
@@ -146,21 +143,19 @@ void Configuration::load_nodes(const YAML::Node& nodes_config,
             if (mac)
             {
                 node->set_mac_address(Tins::HWAddress<6>(
-                    (*node_config)["mac"].as<std::string>()));
+                    node_config["mac"].as<std::string>()));
             }
 
-            const YAML::Node addresses_config = (*node_config)["addresses"];
-            for (auto address_config = addresses_config.begin();
-                 address_config != addresses_config.end();
-                 address_config++)
+            const YAML::Node addresses_config = node_config["addresses"];
+            for (const auto& address_config : addresses_config)
                 node->add_address(
-                    Tins::IPv6Address((*address_config).as<std::string>()));
+                    Tins::IPv6Address(address_config.as<std::string>()));
 
-            const YAML::Node hoplimit_config = (*node_config)["hoplimit"];
+            const YAML::Node hoplimit_config = node_config["hoplimit"];
             if (hoplimit_config.IsDefined())
                 node->set_hoplimit(hoplimit_config.as<int>());
 
-            load_nodes((*node_config)["nodes"], node, false);
+            load_nodes(node_config["nodes"], node, false);
             nodes->add_node(node);
         }
     }
