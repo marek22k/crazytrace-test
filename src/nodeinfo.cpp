@@ -71,8 +71,7 @@ std::size_t NodeInfo::max_depth()
     for (const auto& node : this->_nodes)
     {
         const std::size_t node_depth = node->max_depth();
-        if (node_depth > max)
-            max = node_depth;
+        max = std::max(max, node_depth);
     }
     return max + 1;
 }
