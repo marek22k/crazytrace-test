@@ -22,11 +22,11 @@ void Crazytrace::start()
             }
             else
             {
-                std::string packet(this->_buffer.data(),
-                                   bytes_transferred); // NOLINT
+                const std::string packet(this->_buffer.data(),
+                                   bytes_transferred);
                 start();
 
-                this->_handle_packet(ec, std::move(packet)); // NOLINT
+                this->_handle_packet(ec, packet);
             };
         });
 }
