@@ -24,7 +24,7 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
 
                 // Both variables undergo a value check during initialization so that neither
                 // is greater than 255. It is therefore safe to convert them into an int.
-                const int reply_hoplimit = static_cast<int>(reached_node->get_hoplimit()) - static_cast<int>(route.size()) + 1;
+                const int reply_hoplimit = reached_node->get_hoplimit() - static_cast<int>(route.size()) + 1;
                 if (reply_hoplimit <= 0)
                     return NodeReply(NodeReplyType::NOREPLY);
 
@@ -61,7 +61,7 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
             else
             {
                 /* hoplimit exceeded */
-                const int reached_node_number = static_cast<int>(route.size()) - static_cast<int>(request.get_hoplimit());
+                const int reached_node_number = static_cast<int>(route.size()) - request.get_hoplimit();
                 const std::shared_ptr<NodeInfo> reached_node = route[reached_node_number];
 
                 const int reply_hoplimit = reached_node->get_hoplimit() - hoplimit + 1;
@@ -142,8 +142,7 @@ std::size_t NodeContainer::max_depth()
     for (const auto& node : this->_nodes)
     {
         const std::size_t node_depth = node->max_depth();
-        if (node_depth > max)
-            max = node_depth;
+        max = std::max(max, node_depth);
     }
     return max;
 }
