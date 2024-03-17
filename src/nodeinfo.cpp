@@ -2,10 +2,7 @@
 
 
 NodeInfo::NodeInfo() :
-    _addresses(),
-    _mac_address(),
     _hoplimit(64),
-    _nodes(),
     _randomgenerator(0),
     _addressadded(false)
 {}
@@ -71,7 +68,7 @@ const Tins::IPv6Address& NodeInfo::get_address()
 std::size_t NodeInfo::max_depth()
 {
     std::size_t max = 0;
-    for (auto& node : this->_nodes)
+    for (const auto& node : this->_nodes)
     {
         const std::size_t node_depth = node->max_depth();
         if (node_depth > max)
@@ -82,7 +79,7 @@ std::size_t NodeInfo::max_depth()
 
 std::vector<std::shared_ptr<NodeInfo>> NodeInfo::get_route_to(const Tins::IPv6Address& destination_address)
 {
-    for (auto& node : this->_nodes)
+    for (const auto& node : this->_nodes)
     {
         if ( node->has_address(destination_address) )
         {
@@ -90,14 +87,12 @@ std::vector<std::shared_ptr<NodeInfo>> NodeInfo::get_route_to(const Tins::IPv6Ad
             result.push_back(node);
             return result;
         }
-        else
+
+        std::vector<std::shared_ptr<NodeInfo>> result = node->get_route_to(destination_address);
+        if (! result.empty())
         {
-            std::vector<std::shared_ptr<NodeInfo>> result = node->get_route_to(destination_address);
-            if (! result.empty())
-            {
-                result.push_back(node);
-                return result;
-            }
+            result.push_back(node);
+            return result;
         }
     }
 
@@ -112,7 +107,7 @@ void NodeInfo::print(std::ostream& os, int layer) const
     if (! this->_nodes.empty())
     {
         os << tabs << "Childs:" << std::endl;
-        for (auto& node : this->_nodes)
+        for (const auto& node : this->_nodes)
         {
             node->print(os, layer + 1);
         }
@@ -122,7 +117,7 @@ void NodeInfo::print(std::ostream& os, int layer) const
 std::ostream& operator<<(std::ostream& os, NodeInfo const & nodeinfo)
 {
     os << "NodeInfo: hoplimit=" << nodeinfo._hoplimit;
-    for (auto& address : nodeinfo._addresses)
+    for (const auto& address : nodeinfo._addresses)
     {
         os << " " << address;
     }

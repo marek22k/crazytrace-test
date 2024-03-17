@@ -14,10 +14,10 @@ void Crazytrace::start()
             if (ec) {
                 this->_handle_error(ec);
             } else {
-                const std::string packet(this->_buffer.data(), bytes_transferred);
+                std::string packet(this->_buffer.data(), bytes_transferred); // NOLINT
                 start();
 
-                this->_handle_packet(ec, std::move(packet));
+                this->_handle_packet(ec, std::move(packet)); // NOLINT
             };
     });
 }

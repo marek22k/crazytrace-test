@@ -7,7 +7,7 @@ void PostupCommands::add_postup_command(std::string command)
 
 void PostupCommands::execute_commands() const
 {
-    for (auto& postup_command : this->_postup_commands)
+    for (const auto& postup_command : this->_postup_commands)
     {
         BOOST_LOG_TRIVIAL(debug) << "Execute post up command: " << postup_command << std::endl;
         std::error_code ec;
