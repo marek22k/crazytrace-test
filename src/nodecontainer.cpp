@@ -139,7 +139,7 @@ void NodeContainer::add_node(std::shared_ptr<NodeInfo> node) noexcept
 std::size_t NodeContainer::max_depth()
 {
     std::size_t max = 0;
-    for (auto& node : this->_nodes)
+    for (const auto& node : this->_nodes)
     {
         const std::size_t node_depth = node->max_depth();
         if (node_depth > max)
@@ -150,7 +150,7 @@ std::size_t NodeContainer::max_depth()
 
 std::vector<std::shared_ptr<NodeInfo>> NodeContainer::get_route_to(const Tins::IPv6Address& destination_address)
 {
-    for (auto &node : this->_nodes)
+    for (const auto &node : this->_nodes)
     {
         if ( node->has_address(destination_address) )
         {
@@ -158,14 +158,12 @@ std::vector<std::shared_ptr<NodeInfo>> NodeContainer::get_route_to(const Tins::I
             result.push_back(node);
             return result;
         }
-        else
+
+        std::vector<std::shared_ptr<NodeInfo>> result = node->get_route_to(destination_address);
+        if (! result.empty())
         {
-            std::vector<std::shared_ptr<NodeInfo>> result = node->get_route_to(destination_address);
-            if (! result.empty())
-            {
-                result.push_back(node);
-                return result;
-            }
+            result.push_back(node);
+            return result;
         }
     }
 
@@ -178,14 +176,14 @@ void NodeContainer::print(std::ostream& os) const
     if (! this->_nodes.empty())
     {
         os << "Childs:" << std::endl;
-        for (auto& node : this->_nodes)
+        for (const auto& node : this->_nodes)
         {
             node->print(os, 1);
         }
     }
 }
 
-std::ostream& operator<<(std::ostream& os, NodeContainer const & nodecontainer)
+std::ostream& operator<<(std::ostream& os, const NodeContainer& nodecontainer)
 {
     os << "NodeContainer: " << nodecontainer._nodes.size() << " childnodes";
     return os;

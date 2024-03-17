@@ -10,7 +10,7 @@ NodeRequest::NodeRequest(const Tins::EthernetII& packet) :
     this->_source_mac = packet.src_addr();
     this->_destination_mac = packet.dst_addr();
 
-    if (packet.find_pdu<Tins::IPv6>())
+    if (packet.find_pdu<Tins::IPv6>() != nullptr)
     {
         const Tins::IPv6& ipv6 = packet.rfind_pdu<Tins::IPv6>();
 
@@ -152,7 +152,7 @@ std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
             os << ": ID=" << noderequest._icmp_identifier <<
                   " SEQ=" << noderequest._icmp_sequence <<
                   " Payload:" << std::hex << std::setw(2);
-                  for (auto& byte : noderequest._payload)
+                  for (const auto& byte : noderequest._payload)
                   {
                     os << " " << static_cast<int>(byte);
                   }

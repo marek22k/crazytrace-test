@@ -34,7 +34,7 @@ class NodeReply
         [[nodiscard]] std::string to_packet() const;
         [[nodiscard]] NodeReplyType get_type() const noexcept;
 
-        friend std::ostream& operator<<(std::ostream& os, const NodeReply & nodereply);
+        friend std::ostream& operator<<(std::ostream& os, const NodeReply& nodereply);
 
     private:
         NodeReplyType _type;

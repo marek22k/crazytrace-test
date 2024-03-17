@@ -210,7 +210,7 @@ std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
                   ": ID=" << nodereply._icmp_identifier <<
                   " SEQ=" << nodereply._icmp_sequence <<
                   " Payload:" << std::hex << std::setw(2);
-            for (auto& byte : nodereply._payload)
+            for (const auto& byte : nodereply._payload)
             {
                 os << " " << static_cast<int>(byte);
             }

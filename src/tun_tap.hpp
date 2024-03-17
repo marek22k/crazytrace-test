@@ -27,7 +27,7 @@ class tun_tap
         class TunTapDestroyer final {
             public:
                 constexpr void operator()(device * dev) const noexcept {
-                    if (dev)
+                    if (dev != nullptr)
                         ::tuntap_destroy(dev);
                 }
         };

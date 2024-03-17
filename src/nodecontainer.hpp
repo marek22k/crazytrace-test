@@ -21,7 +21,7 @@ class NodeContainer
         [[nodiscard]] std::size_t max_depth();
 
         void print(std::ostream& os) const;
-        friend std::ostream& operator<<(std::ostream& os, NodeContainer const & nodecontainer);
+        friend std::ostream& operator<<(std::ostream& os, const NodeContainer& nodecontainer);
 
     private:
         std::vector<std::shared_ptr<NodeInfo>> get_route_to(const Tins::IPv6Address& destination_address);
