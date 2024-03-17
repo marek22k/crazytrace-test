@@ -1,17 +1,17 @@
 #ifndef NODECONTAINER_HPP
 #define NODECONTAINER_HPP
 
-#include <vector>
-#include <unordered_set>
-#include <memory>
-#include <iostream>
-#include <ostream>
 #include <algorithm>
+#include <iostream>
+#include <memory>
+#include <ostream>
+#include <unordered_set>
+#include <vector>
 #include <boost/log/trivial.hpp>
 #include <tins/tins.h>
 #include "nodeinfo.hpp"
-#include "noderequest.hpp"
 #include "nodereply.hpp"
+#include "noderequest.hpp"
 
 class NodeContainer
 {
@@ -21,10 +21,12 @@ class NodeContainer
         [[nodiscard]] std::size_t max_depth();
 
         void print(std::ostream& os) const;
-        friend std::ostream& operator<<(std::ostream& os, const NodeContainer& nodecontainer);
+        friend std::ostream& operator<<(std::ostream& os,
+                                        const NodeContainer& nodecontainer);
 
     private:
-        std::vector<std::shared_ptr<NodeInfo>> get_route_to(const Tins::IPv6Address& destination_address);
+        std::vector<std::shared_ptr<NodeInfo>>
+            get_route_to(const Tins::IPv6Address& destination_address);
         std::unordered_set<std::shared_ptr<NodeInfo>> _nodes;
 };
 

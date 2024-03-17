@@ -4,8 +4,10 @@
 NodeRequest::NodeRequest(const Tins::EthernetII& packet) :
     _type(NodeRequestType::UNKNOWN),
     _hoplimit(0),
-    _udp_dport(0), _udp_sport(0),
-    _icmp_identifier(0), _icmp_sequence(0)
+    _udp_dport(0),
+    _udp_sport(0),
+    _icmp_identifier(0),
+    _icmp_sequence(0)
 {
     this->_source_mac = packet.src_addr();
     this->_destination_mac = packet.dst_addr();
@@ -27,17 +29,22 @@ NodeRequest::NodeRequest(const Tins::EthernetII& packet) :
                 {
                     case Tins::ICMPv6::Types::NEIGHBOUR_SOLICIT:
                         this->_type = NodeRequestType::ICMP_NDP;
-                        if (! icmpv6.has_target_addr())
-                            throw std::runtime_error("ICMP NDP packet has no target address attribute.");
+                        if (!icmpv6.has_target_addr())
+                            throw std::runtime_error(
+                                "ICMP NDP packet has no target address "
+                                "attribute.");
 
                         this->_destination_address = icmpv6.target_addr();
                         break;
                     case Tins::ICMPv6::Types::ECHO_REQUEST:
                     {
                         this->_type = NodeRequestType::ICMP_ECHO_REQUEST;
-                        this->_icmp_identifier = static_cast<int>(icmpv6.identifier());
-                        this->_icmp_sequence = static_cast<int>(icmpv6.sequence());
-                        const Tins::RawPDU& raw_icmpv6 = icmpv6.rfind_pdu<Tins::RawPDU>();
+                        this->_icmp_identifier =
+                            static_cast<int>(icmpv6.identifier());
+                        this->_icmp_sequence =
+                            static_cast<int>(icmpv6.sequence());
+                        const Tins::RawPDU& raw_icmpv6 =
+                            icmpv6.rfind_pdu<Tins::RawPDU>();
                         this->_payload = raw_icmpv6.payload();
                         break;
                     }
@@ -114,7 +121,6 @@ int NodeRequest::get_icmp_sequence() const noexcept
     return this->_icmp_sequence;
 }
 
-
 const Tins::RawPDU::payload_type& NodeRequest::get_payload() const noexcept
 {
     return this->_payload;
@@ -140,31 +146,32 @@ std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
             type_string = "UNKNOWN";
             break;
     }
-    os << "REQUEST " << type_string << ": " <<
-          noderequest._source_address << " (" << noderequest._source_mac << ") -> " <<
-          noderequest._destination_address << " (" << noderequest._destination_mac << ") " <<
-          "Hoplimit=" << noderequest._hoplimit;
+    os << "REQUEST " << type_string << ": " << noderequest._source_address
+       << " (" << noderequest._source_mac << ") -> "
+       << noderequest._destination_address << " ("
+       << noderequest._destination_mac << ") "
+       << "Hoplimit=" << noderequest._hoplimit;
 
     switch (noderequest._type)
     {
         case NodeRequestType::ICMP_ECHO_REQUEST:
         {
-            os << ": ID=" << noderequest._icmp_identifier <<
-                  " SEQ=" << noderequest._icmp_sequence <<
-                  " Payload:" << std::hex << std::setw(2);
-                  for (const auto& byte : noderequest._payload)
-                  {
-                    os << " " << static_cast<int>(byte);
-                  }
+            os << ": ID=" << noderequest._icmp_identifier
+               << " SEQ=" << noderequest._icmp_sequence
+               << " Payload:" << std::hex << std::setw(2);
+            for (const auto& byte : noderequest._payload)
+            {
+                os << " " << static_cast<int>(byte);
+            }
             break;
         }
         case NodeRequestType::ICMP_NDP:
             os << ": Looking for " << noderequest._destination_address;
             break;
         case NodeRequestType::UDP:
-            os << ": DPORT=" << noderequest._udp_dport <<
-                  " SPORT=" << noderequest._udp_sport <<
-                  " LENGTH=" << noderequest._payload.size();
+            os << ": DPORT=" << noderequest._udp_dport
+               << " SPORT=" << noderequest._udp_sport
+               << " LENGTH=" << noderequest._payload.size();
             break;
         default:
             break;

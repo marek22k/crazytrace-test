@@ -1,18 +1,23 @@
 #ifndef NODEREPLY_HPP
 #define NODEREPLY_HPP
 
-#include <ostream>
 #include <iomanip>
+#include <ostream>
 #include <string>
 #include <stdexcept>
 #include <tins/tins.h>
 
-enum class NodeReplyType {
+enum class NodeReplyType
+{
     NOREPLY, /* No reply is to be sent. */
     ICMP_ECHO_REPLY, /* An ICMP ECHO REPLY packet is sent in response. */
-    ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST, /* An ICMP TIME EXCEEDED packet is sent in response to an ICMP ECHO_REQUEST packet. */
-    ICMP_PORT_UNREACHABLE, /* An ICMP PORT UNREACHABLE packet is sent in response. */
-    ICMP_TIME_EXCEEDED_UDP, /* An ICMP TIME EXCEEDED packet is sent in response to an UDP packet. */
+    ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST, /* An ICMP TIME EXCEEDED packet is
+                                             sent in response to an ICMP
+                                             ECHO_REQUEST packet. */
+    ICMP_PORT_UNREACHABLE, /* An ICMP PORT UNREACHABLE packet is sent in
+                              response. */
+    ICMP_TIME_EXCEEDED_UDP, /* An ICMP TIME EXCEEDED packet is sent in response
+                               to an UDP packet. */
     ICMP_NDP /* A neighbor advertisement is sent. */
 };
 
@@ -20,21 +25,28 @@ class NodeReply
 {
     public:
         explicit NodeReply(NodeReplyType type);
-        explicit NodeReply(
-            NodeReplyType type,
-            Tins::HWAddress<6> destination_mac, Tins::IPv6Address destination_address,
-            Tins::HWAddress<6> source_mac, Tins::IPv6Address source_address
-        );
+        explicit NodeReply(NodeReplyType type,
+                           Tins::HWAddress<6> destination_mac,
+                           Tins::IPv6Address destination_address,
+                           Tins::HWAddress<6> source_mac,
+                           Tins::IPv6Address source_address);
 
         void set_hoplimit(int hoplimit) noexcept;
-        void icmp_echo_reply(int icmp_identifier, int icmp_sequence, const Tins::RawPDU::payload_type& payload) noexcept;
-        void packet_reassembly(Tins::IPv6Address original_destination_address) noexcept;
-        void udp_response(const Tins::RawPDU::payload_type& payload, int udp_dport, int udp_sport) noexcept;
+        void
+            icmp_echo_reply(int icmp_identifier,
+                            int icmp_sequence,
+                            const Tins::RawPDU::payload_type& payload) noexcept;
+        void packet_reassembly(
+            Tins::IPv6Address original_destination_address) noexcept;
+        void udp_response(const Tins::RawPDU::payload_type& payload,
+                          int udp_dport,
+                          int udp_sport) noexcept;
 
         [[nodiscard]] std::string to_packet() const;
         [[nodiscard]] NodeReplyType get_type() const noexcept;
 
-        friend std::ostream& operator<<(std::ostream& os, const NodeReply& nodereply);
+        friend std::ostream& operator<<(std::ostream& os,
+                                        const NodeReply& nodereply);
 
     private:
         NodeReplyType _type;
@@ -55,7 +67,7 @@ class NodeReply
         int _udp_sport;
 
         /* ICMP TIME EXCEEDED */
-        Tins::IPv6Address _original_destination_address; 
+        Tins::IPv6Address _original_destination_address;
 };
 
 #endif
