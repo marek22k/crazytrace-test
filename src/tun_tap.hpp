@@ -2,9 +2,8 @@
 #define TUNTAP_HPP
 
 #include <memory>
-#include <stdexcept>
 #include <string>
-
+#include <stdexcept>
 #include <tuntap.h>
 
 enum class tun_tap_mode
@@ -22,15 +21,18 @@ class tun_tap
         void up();
         void down();
         [[nodiscard]] int native_handler();
-    
+
     private:
-        class TunTapDestroyer final {
+        class TunTapDestroyer final
+        {
             public:
-                constexpr void operator()(device * dev) const noexcept {
+                constexpr void operator()(device * dev) const noexcept
+                {
                     if (dev != nullptr)
                         ::tuntap_destroy(dev);
                 }
         };
+
         std::unique_ptr<device, TunTapDestroyer> _device;
 };
 

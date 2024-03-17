@@ -9,7 +9,7 @@ tun_tap::tun_tap(const std::string& ifname, tun_tap_mode mode) :
     }
 
     int tuntap_mode_number = -1;
-    switch(mode)
+    switch (mode)
     {
         case tun_tap_mode::tun:
             tuntap_mode_number = TUNTAP_MODE_TUNNEL;
@@ -18,11 +18,13 @@ tun_tap::tun_tap(const std::string& ifname, tun_tap_mode mode) :
             tuntap_mode_number = TUNTAP_MODE_ETHERNET;
             break;
     }
-    const int status_start = ::tuntap_start(this->_device.get(), tuntap_mode_number, TUNTAP_ID_ANY);
+    const int status_start =
+        ::tuntap_start(this->_device.get(), tuntap_mode_number, TUNTAP_ID_ANY);
     if (status_start != 0)
         throw std::runtime_error("Failed to start tuntap device.");
 
-    const int status_ifname = ::tuntap_set_ifname(this->_device.get(), ifname.c_str());
+    const int status_ifname =
+        ::tuntap_set_ifname(this->_device.get(), ifname.c_str());
     if (status_ifname != 0)
         throw std::runtime_error("Failed to set ifname for tuntap device.");
 }
@@ -56,7 +58,8 @@ void tun_tap::set_ip(const std::string& ip, int netmask)
     if (netmask < 0 || netmask > 128)
         throw std::invalid_argument("Invalid netmask value.");
 
-    const int status = ::tuntap_set_ip(this->_device.get(), ip.c_str(), netmask);
+    const int status =
+        ::tuntap_set_ip(this->_device.get(), ip.c_str(), netmask);
     if (status != 0)
         throw std::runtime_error("Failed to set ip address for tuntap device.");
 }

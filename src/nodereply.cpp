@@ -3,41 +3,55 @@
 NodeReply::NodeReply(NodeReplyType type) :
     _type(type),
     _hoplimit(0),
-    _icmp_identifier(0), _icmp_sequence(0),
-    _udp_dport(0), _udp_sport(0)
-{}
+    _icmp_identifier(0),
+    _icmp_sequence(0),
+    _udp_dport(0),
+    _udp_sport(0)
+{
+}
 
-NodeReply::NodeReply(
-    NodeReplyType type,
-    Tins::HWAddress<6> destination_mac, Tins::IPv6Address destination_address,
-    Tins::HWAddress<6> source_mac, Tins::IPv6Address source_address
-) :
+NodeReply::NodeReply(NodeReplyType type,
+                     Tins::HWAddress<6> destination_mac,
+                     Tins::IPv6Address destination_address,
+                     Tins::HWAddress<6> source_mac,
+                     Tins::IPv6Address source_address) :
     _type(type),
-    _destination_mac(destination_mac), _destination_address(destination_address),
-    _source_mac(source_mac), _source_address(source_address),
+    _destination_mac(destination_mac),
+    _destination_address(destination_address),
+    _source_mac(source_mac),
+    _source_address(source_address),
     _hoplimit(0),
-    _icmp_identifier(0), _icmp_sequence(0),
-    _udp_dport(0), _udp_sport(0)
-{}
+    _icmp_identifier(0),
+    _icmp_sequence(0),
+    _udp_dport(0),
+    _udp_sport(0)
+{
+}
 
 void NodeReply::set_hoplimit(int hoplimit) noexcept
 {
     this->_hoplimit = hoplimit;
 }
 
-void NodeReply::icmp_echo_reply(int icmp_identifier, int icmp_sequence, const Tins::RawPDU::payload_type& payload) noexcept
+void NodeReply::icmp_echo_reply(
+    int icmp_identifier,
+    int icmp_sequence,
+    const Tins::RawPDU::payload_type& payload) noexcept
 {
     this->_icmp_identifier = icmp_identifier;
     this->_icmp_sequence = icmp_sequence;
     this->_payload = payload;
 }
 
-void NodeReply::packet_reassembly(Tins::IPv6Address original_destination_address) noexcept
+void NodeReply::packet_reassembly(
+    Tins::IPv6Address original_destination_address) noexcept
 {
     this->_original_destination_address = original_destination_address;
 }
 
-void NodeReply::udp_response(const Tins::RawPDU::payload_type& payload, int udp_dport, int udp_sport) noexcept
+void NodeReply::udp_response(const Tins::RawPDU::payload_type& payload,
+                             int udp_dport,
+                             int udp_sport) noexcept
 {
     this->_payload = payload;
     this->_udp_dport = udp_dport;
@@ -46,13 +60,14 @@ void NodeReply::udp_response(const Tins::RawPDU::payload_type& payload, int udp_
 
 std::string NodeReply::to_packet() const
 {
-    switch(this->_type)
+    switch (this->_type)
     {
         case NodeReplyType::ICMP_ECHO_REPLY:
         {
-            Tins::EthernetII packet = Tins::EthernetII(this->_destination_mac, this->_source_mac) /
-                                      Tins::IPv6(this->_destination_address, this->_source_address) /
-                                      Tins::ICMPv6(Tins::ICMPv6::Types::ECHO_REPLY);
+            Tins::EthernetII packet =
+                Tins::EthernetII(this->_destination_mac, this->_source_mac) /
+                Tins::IPv6(this->_destination_address, this->_source_address) /
+                Tins::ICMPv6(Tins::ICMPv6::Types::ECHO_REPLY);
             Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
             inner_ipv6.hop_limit(this->_hoplimit);
             Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
@@ -60,8 +75,10 @@ std::string NodeReply::to_packet() const
             inner_icmpv6.sequence(this->_icmp_sequence);
             inner_icmpv6.inner_pdu(Tins::RawPDU(this->_payload));
 
-            Tins::PDU::serialization_type serialized_packet = packet.serialize();
-            std::string raw_packet(serialized_packet.begin(), serialized_packet.end());
+            Tins::PDU::serialization_type serialized_packet =
+                packet.serialize();
+            std::string raw_packet(serialized_packet.begin(),
+                                   serialized_packet.end());
             return raw_packet;
         }
         case NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST:
@@ -69,13 +86,16 @@ std::string NodeReply::to_packet() const
         case NodeReplyType::ICMP_PORT_UNREACHABLE:
         {
             /* Recreation of the receiving packet */
-            Tins::IPv6 receiving_ipv6 = Tins::IPv6(this->_original_destination_address, this->_destination_address);
+            Tins::IPv6 receiving_ipv6 =
+                Tins::IPv6(this->_original_destination_address,
+                           this->_destination_address);
             receiving_ipv6.hop_limit(1);
             switch (this->_type)
             {
                 case NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST:
                 {
-                    Tins::ICMPv6 receiving_icmpv6 = Tins::ICMPv6(Tins::ICMPv6::Types::ECHO_REQUEST);
+                    Tins::ICMPv6 receiving_icmpv6 =
+                        Tins::ICMPv6(Tins::ICMPv6::Types::ECHO_REQUEST);
                     receiving_icmpv6.identifier(this->_icmp_identifier);
                     receiving_icmpv6.sequence(this->_icmp_sequence);
                     receiving_icmpv6.inner_pdu(Tins::RawPDU(this->_payload));
@@ -85,7 +105,8 @@ std::string NodeReply::to_packet() const
                 case NodeReplyType::ICMP_TIME_EXCEEDED_UDP:
                 case NodeReplyType::ICMP_PORT_UNREACHABLE:
                 {
-                    Tins::UDP receiving_udp = Tins::UDP(this->_udp_dport, this->_udp_sport);
+                    Tins::UDP receiving_udp =
+                        Tins::UDP(this->_udp_dport, this->_udp_sport);
                     receiving_udp.inner_pdu(Tins::RawPDU(this->_payload));
                     receiving_ipv6.inner_pdu(receiving_udp);
                     break;
@@ -94,7 +115,8 @@ std::string NodeReply::to_packet() const
                     /* Fatal error */
                     break;
             }
-            Tins::PDU::serialization_type serialized_receiving_packet = receiving_ipv6.serialize();
+            Tins::PDU::serialization_type serialized_receiving_packet =
+                receiving_ipv6.serialize();
             serialized_receiving_packet.resize(1000);
 
             switch (this->_type)
@@ -102,42 +124,60 @@ std::string NodeReply::to_packet() const
                 case NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST:
                 case NodeReplyType::ICMP_TIME_EXCEEDED_UDP:
                 {
-                    Tins::EthernetII packet = Tins::EthernetII(this->_destination_mac, this->_source_mac) /
-                                              Tins::IPv6(this->_destination_address, this->_source_address) /
-                                              Tins::ICMPv6(Tins::ICMPv6::Types::TIME_EXCEEDED);
+                    Tins::EthernetII packet =
+                        Tins::EthernetII(this->_destination_mac,
+                                         this->_source_mac) /
+                        Tins::IPv6(this->_destination_address,
+                                   this->_source_address) /
+                        Tins::ICMPv6(Tins::ICMPv6::Types::TIME_EXCEEDED);
                     Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
                     inner_ipv6.hop_limit(this->_hoplimit);
-                    Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
-                    inner_icmpv6.inner_pdu(Tins::RawPDU(serialized_receiving_packet));
+                    Tins::ICMPv6& inner_icmpv6 =
+                        inner_ipv6.rfind_pdu<Tins::ICMPv6>();
+                    inner_icmpv6.inner_pdu(
+                        Tins::RawPDU(serialized_receiving_packet));
 
-                    Tins::PDU::serialization_type serialized_packet = packet.serialize();
-                    std::string raw_packet(serialized_packet.begin(), serialized_packet.end());
+                    Tins::PDU::serialization_type serialized_packet =
+                        packet.serialize();
+                    std::string raw_packet(serialized_packet.begin(),
+                                           serialized_packet.end());
                     return raw_packet;
                 }
                 case NodeReplyType::ICMP_PORT_UNREACHABLE:
                 {
-                    Tins::EthernetII packet = Tins::EthernetII(this->_destination_mac, this->_source_mac) /
-                                              Tins::IPv6(this->_destination_address, this->_source_address) /
-                                              Tins::ICMPv6(Tins::ICMPv6::Types::DEST_UNREACHABLE);
+                    Tins::EthernetII packet =
+                        Tins::EthernetII(this->_destination_mac,
+                                         this->_source_mac) /
+                        Tins::IPv6(this->_destination_address,
+                                   this->_source_address) /
+                        Tins::ICMPv6(Tins::ICMPv6::Types::DEST_UNREACHABLE);
                     Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
                     inner_ipv6.hop_limit(this->_hoplimit);
-                    Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
+                    Tins::ICMPv6& inner_icmpv6 =
+                        inner_ipv6.rfind_pdu<Tins::ICMPv6>();
                     inner_icmpv6.code(4);
-                    inner_icmpv6.inner_pdu(Tins::RawPDU(serialized_receiving_packet));
+                    inner_icmpv6.inner_pdu(
+                        Tins::RawPDU(serialized_receiving_packet));
 
-                    Tins::PDU::serialization_type serialized_packet = packet.serialize();
-                    std::string raw_packet(serialized_packet.begin(), serialized_packet.end());
+                    Tins::PDU::serialization_type serialized_packet =
+                        packet.serialize();
+                    std::string raw_packet(serialized_packet.begin(),
+                                           serialized_packet.end());
                     return raw_packet;
                 }
-                default: [[unlikely]]
-                    throw std::runtime_error("Attempt to create a packet, but the packet type has suddenly changed. As a result, no response could be generated.");
+                default:
+                    [[unlikely]] throw std::runtime_error(
+                        "Attempt to create a packet, but the packet type has "
+                        "suddenly changed. As a result, no response could be "
+                        "generated.");
             }
         }
         case NodeReplyType::ICMP_NDP:
         {
-            Tins::EthernetII packet = Tins::EthernetII(this->_destination_mac, this->_source_mac) /
-                                   Tins::IPv6(this->_destination_address, this->_source_address) /
-                                   Tins::ICMPv6(Tins::ICMPv6::Types::NEIGHBOUR_ADVERT);
+            Tins::EthernetII packet =
+                Tins::EthernetII(this->_destination_mac, this->_source_mac) /
+                Tins::IPv6(this->_destination_address, this->_source_address) /
+                Tins::ICMPv6(Tins::ICMPv6::Types::NEIGHBOUR_ADVERT);
             Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
             inner_ipv6.hop_limit(255);
             Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
@@ -148,19 +188,20 @@ std::string NodeReply::to_packet() const
             const Tins::ICMPv6::option address_option(
                 Tins::ICMPv6::OptionTypes::TARGET_ADDRESS,
                 this->_source_mac.size(),
-                &(*this->_source_mac.begin())
-            );
+                &(*this->_source_mac.begin()));
             inner_icmpv6.add_option(address_option);
 
-            Tins::PDU::serialization_type serialized_packet = packet.serialize();
-            std::string raw_packet(serialized_packet.begin(), serialized_packet.end());
+            Tins::PDU::serialization_type serialized_packet =
+                packet.serialize();
+            std::string raw_packet(serialized_packet.begin(),
+                                   serialized_packet.end());
             return raw_packet;
         }
-        default: [[unlikely]]
-            throw std::runtime_error("Attempt to create a packet, although there is no reply.");
+        default:
+            [[unlikely]] throw std::runtime_error(
+                "Attempt to create a packet, although there is no reply.");
     }
 }
-
 
 NodeReplyType NodeReply::get_type() const noexcept
 {
@@ -198,18 +239,18 @@ std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
             type_string = "UNKNOWN";
             break;
     }
-    os << "REPLY " << type_string << ": " <<
-          nodereply._source_address << " (" << nodereply._source_mac << ") -> " <<
-          nodereply._destination_address << " (" << nodereply._destination_mac << ")";
+    os << "REPLY " << type_string << ": " << nodereply._source_address << " ("
+       << nodereply._source_mac << ") -> " << nodereply._destination_address
+       << " (" << nodereply._destination_mac << ")";
 
     switch (nodereply._type)
     {
         case NodeReplyType::ICMP_ECHO_REPLY:
         {
-            os << " Hoplimit=" << nodereply._hoplimit <<
-                  ": ID=" << nodereply._icmp_identifier <<
-                  " SEQ=" << nodereply._icmp_sequence <<
-                  " Payload:" << std::hex << std::setw(2);
+            os << " Hoplimit=" << nodereply._hoplimit
+               << ": ID=" << nodereply._icmp_identifier
+               << " SEQ=" << nodereply._icmp_sequence << " Payload:" << std::hex
+               << std::setw(2);
             for (const auto& byte : nodereply._payload)
             {
                 os << " " << static_cast<int>(byte);
@@ -217,15 +258,15 @@ std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
             break;
         }
         case NodeReplyType::ICMP_PORT_UNREACHABLE:
-            os << " Hoplimit=" << nodereply._hoplimit <<
-                  ": DPORT=" << nodereply._udp_dport <<
-                  " SPORT=" << nodereply._udp_sport <<
-                  " LENGTH=" << nodereply._payload.size();
+            os << " Hoplimit=" << nodereply._hoplimit
+               << ": DPORT=" << nodereply._udp_dport
+               << " SPORT=" << nodereply._udp_sport
+               << " LENGTH=" << nodereply._payload.size();
             break;
         case NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST:
         case NodeReplyType::ICMP_TIME_EXCEEDED_UDP:
-            os << " Hoplimit=" << nodereply._hoplimit <<
-                  " LENGTH=" << nodereply._payload.size();
+            os << " Hoplimit=" << nodereply._hoplimit
+               << " LENGTH=" << nodereply._payload.size();
             break;
         case NodeReplyType::ICMP_NDP:
             os << ": NDP";
