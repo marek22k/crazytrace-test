@@ -1,0 +1,164 @@
+---
+Language:        Cpp
+AccessModifierOffset: 0
+AlignArrayOfStructures: Left
+AlignConsecutiveAssignments:
+  Enabled: false
+AlignConsecutiveBitFields:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: true
+AlignConsecutiveDeclarations:
+  Enabled: false
+AlignConsecutiveMacros:
+  Enabled: false
+AlignConsecutiveShortCaseStatements:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: true
+  AlignCaseColons: false
+AlignEscapedNewlines: Left
+AlignOperands: Align
+AlignTrailingComments:
+  Kind: Never
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: Empty
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakBeforeMultilineStrings: false
+BinPackArguments: false
+BinPackParameters: false
+BitFieldColonSpacing: Both
+BraceWrapping:
+  AfterCaseLabel: true
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeLambdaBody: false
+  BeforeWhile: true
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+BracedInitializerIndentWidth: 4
+BreakAfterAttributes: Never
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Allman
+BreakBeforeConceptDeclarations: Always
+BreakBeforeInlineASMColon: OnlyMultiline
+BreakBeforeTernaryOperators: false
+BreakConstructorInitializers: AfterColon
+BreakInheritanceList: AfterColon
+BreakStringLiterals: true
+ColumnLimit: 80
+CompactNamespaces: false
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+Cpp11BracedListStyle: true
+DerivePointerAlignment: false
+EmptyLineAfterAccessModifier: Never
+EmptyLineBeforeAccessModifier: LogicalBlock
+FixNamespaceComments: true
+IncludeBlocks: Merge
+IncludeCategories:
+  - Regex:           '^<(concepts|coroutine|any|bitset|chrono|compare|debugging|expected|functional|initializer_list|optional|source_location|tuple|type_traits|typeindex|typeinfo|utility|variant|version|memory|memory_resource|new|scoped_allocator|limits|exception|stacktrace|system_error|charconv|format|string|string_view|array|deque|flat_map|flat_set|forward_list|list|map|mdspan|queue|set|span|stack|unordered_map|unordered_set|vector|iterator|generator|ranges|algorithm|execution|bit|complex|linalg|numbers|numeric|random|ratio|valarray|locale|text_encoding|fstream|iomanip|ios|iosfwd|iostream|istream|ostream|print|spanstream|sstream|streambuf|syncstream|filesystem|regex|atomic|barrier|condition_variable|future|hazard_pointer|latch|mutex|rcu|semaphore|shared_mutex|stop_token|thread)>'
+    Priority:        10
+  - Regex:           '^<std.*>'
+    Priority:        20
+  - Regex:           '^<c.*>'
+    Priority:        30
+  - Regex:           '^<boost/.*>'
+    Priority:        40
+  - Regex:           '^<tins/.*>'
+    Priority:        41
+  - Regex:           '^<yaml-cpp/.*>'
+    Priority:        42
+  - Regex:           '^<unistd.h>'
+    Priority:        50
+  - Regex:           '^<io.h>'
+    Priority:        51
+  - Regex:           '"[^"]+\\.hpp"'
+    Priority:        60
+  - Regex:           '"[^"]+\\.h"'
+    Priority:        61
+  - Regex:           '.*'
+    Priority:        70
+IndentAccessModifiers: true
+IndentCaseBlocks: false
+IndentCaseLabels: true
+IndentExternBlock: AfterExternBlock
+IndentGotoLabels: true
+IndentPPDirectives: BeforeHash
+IndentWidth: 4
+IndentWrappedFunctionNames: true
+InsertNewlineAtEOF: true
+InsertTrailingCommas: None
+IntegerLiteralSeparator:
+  Binary: 4
+  BinaryMinDigits: 3
+  Decimal: 3
+  DecimalMinDigits: 2
+  Hex: 4
+  HexMinDigits: 3
+KeepEmptyLinesAtEOF: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+LambdaBodyIndentation: Signature
+LineEnding: LF
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: All
+PPIndentWidth: -1
+PackConstructorInitializers: CurrentLine
+PointerAlignment: Middle
+ReferenceAlignment: Left
+ReflowComments: true
+RequiresClausePosition: OwnLine
+RequiresExpressionIndentation: Keyword
+SeparateDefinitionBlocks: Always
+SortIncludes: CaseInsensitive
+SortUsingDeclarations: LexicographicNumeric
+SpaceAfterCStyleCast: true
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: false
+SpaceAroundPointerQualifiers: Both
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCaseColon: false
+SpaceBeforeCpp11BracedList: false
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeParensOptions:
+  AfterControlStatements: true
+  AfterForeachMacros: true
+  AfterFunctionDefinitionName: false
+  AfterFunctionDeclarationName: false
+  AfterIfMacros: true
+  AfterOverloadedOperator: false
+  AfterRequiresInClause: false
+  AfterRequiresInExpression: false
+  BeforeNonEmptyParentheses: false
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceBeforeSquareBrackets: false
+SpaceInEmptyBlock: false
+SpacesBeforeTrailingComments: 1
+SpacesInAngles: Never
+SpacesInLineCommentPrefix:
+  Minimum:         1
+  Maximum:         -1
+SpacesInParens: Never
+SpacesInSquareBrackets: false
+TabWidth: 4
+UseTab: Never
+...
+

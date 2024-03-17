@@ -1,4 +1,4 @@
-.PHONY: all setup addresssanitizer leaksanitizer undefinedsanitizer clean compile install debian check cppcheck flawfinder clangtidy
+.PHONY: all setup addresssanitizer leaksanitizer undefinedsanitizer clean compile install debian check cppcheck flawfinder clangtidy clangformat
 
 all: setup compile
 
@@ -40,3 +40,6 @@ flawfinder: setup
 clangtidy: setup
 	# How to avoid the ninja command? https://github.com/mesonbuild/meson/issues/2383#issuecomment-2002148039
 	ninja -C build clang-tidy
+
+clangformat: setup
+	ninja -C build clang-format
