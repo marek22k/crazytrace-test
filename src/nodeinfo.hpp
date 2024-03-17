@@ -17,15 +17,15 @@ class NodeInfo
     public:
         explicit NodeInfo();
         std::vector<std::shared_ptr<NodeInfo>> get_route_to(const Tins::IPv6Address& destination_address);
-        int get_hoplimit() const noexcept;
-        bool has_address(const Tins::IPv6Address& address);
         void set_hoplimit(int hoplimit);
         void set_mac_address(Tins::HWAddress<6> mac_address) noexcept;
-        const Tins::HWAddress<6>& get_mac_address() const noexcept;
         void add_node(std::shared_ptr<NodeInfo> node);
         void add_address(Tins::IPv6Address address);
-        const Tins::IPv6Address& get_address();
-        ::size_t max_depth();
+        [[nodiscard]] int get_hoplimit() const noexcept;
+        [[nodiscard]] bool has_address(const Tins::IPv6Address& address);
+        [[nodiscard]] const Tins::HWAddress<6>& get_mac_address() const noexcept;
+        [[nodiscard]] const Tins::IPv6Address& get_address();
+        [[nodiscard]] std::size_t max_depth();
         void print(std::ostream& os, int layer = 0) const;
 
         friend std::ostream& operator<<(std::ostream& os, NodeInfo const & nodeinfo);

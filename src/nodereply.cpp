@@ -145,7 +145,7 @@ std::string NodeReply::to_packet() const
             inner_icmpv6.solicited(Tins::small_uint<1>(1));
             inner_icmpv6.router(Tins::small_uint<1>(1));
             inner_icmpv6.override(Tins::small_uint<1>(1));
-            Tins::ICMPv6::option address_option(
+            const Tins::ICMPv6::option address_option(
                 Tins::ICMPv6::OptionTypes::TARGET_ADDRESS,
                 this->_source_mac.size(),
                 &(*this->_source_mac.begin())
@@ -210,10 +210,10 @@ std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
                   ": ID=" << nodereply._icmp_identifier <<
                   " SEQ=" << nodereply._icmp_sequence <<
                   " Payload:" << std::hex << std::setw(2);
-                  for (auto byte = nodereply._payload.begin(); byte != nodereply._payload.end(); byte++)
-                  {
-                    os << " " << static_cast<int>(*byte);
-                  }
+            for (const auto& byte : nodereply._payload)
+            {
+                os << " " << static_cast<int>(byte);
+            }
             break;
         }
         case NodeReplyType::ICMP_PORT_UNREACHABLE:

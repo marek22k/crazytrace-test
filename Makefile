@@ -1,4 +1,4 @@
-.PHONY: all setup addresssanitizer leaksanitizer undefinedsanitizer clean compile install debian check cppcheck flawfinder
+.PHONY: all setup addresssanitizer leaksanitizer undefinedsanitizer clean compile install debian check cppcheck flawfinder clangtidy
 
 all: setup compile
 
@@ -29,10 +29,14 @@ debian:
 	cat debian/changelog
 	dpkg-buildpackage --build=full
 
-check: cppcheck flawfinder
+check: cppcheck flawfinder clangtidy
 
 cppcheck: setup
 	meson compile -C build cppcheck
 
 flawfinder: setup
 	meson compile -C build flawfinder
+
+clangtidy: setup
+	# How to avoid the ninja command? https://github.com/mesonbuild/meson/issues/2383#issuecomment-2002148039
+	ninja -C build clang-tidy

@@ -14,17 +14,17 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
                 return NodeReply(NodeReplyType::NOREPLY);
             }
 
-            Tins::HWAddress<6> source_mac = route.back()->get_mac_address();
+            const Tins::HWAddress<6> source_mac = route.back()->get_mac_address();
 
-            int hoplimit = request.get_hoplimit();
-            if (static_cast<::size_t>(hoplimit) >= route.size())
+            const int hoplimit = request.get_hoplimit();
+            if (static_cast<std::size_t>(hoplimit) >= route.size())
             {
                 /* target reached */
-                std::shared_ptr<NodeInfo> reached_node = route[0];
+                const std::shared_ptr<NodeInfo> reached_node = route[0];
 
                 // Both variables undergo a value check during initialization so that neither
                 // is greater than 255. It is therefore safe to convert them into an int.
-                int reply_hoplimit = static_cast<int>(reached_node->get_hoplimit()) - static_cast<int>(route.size()) + 1;
+                const int reply_hoplimit = static_cast<int>(reached_node->get_hoplimit()) - static_cast<int>(route.size()) + 1;
                 if (reply_hoplimit <= 0)
                     return NodeReply(NodeReplyType::NOREPLY);
 
@@ -61,10 +61,10 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
             else
             {
                 /* hoplimit exceeded */
-                int reached_node_number = route.size() - request.get_hoplimit();
-                std::shared_ptr<NodeInfo> reached_node = route[reached_node_number];
+                const int reached_node_number = static_cast<int>(route.size()) - static_cast<int>(request.get_hoplimit());
+                const std::shared_ptr<NodeInfo> reached_node = route[reached_node_number];
 
-                int reply_hoplimit = reached_node->get_hoplimit() - hoplimit + 1;
+                const int reply_hoplimit = reached_node->get_hoplimit() - hoplimit + 1;
                 if (reply_hoplimit <= 0)
                     return NodeReply(NodeReplyType::NOREPLY);
 
@@ -136,12 +136,12 @@ void NodeContainer::add_node(std::shared_ptr<NodeInfo> node) noexcept
     this->_nodes.insert(node);
 }
 
-::size_t NodeContainer::max_depth()
+std::size_t NodeContainer::max_depth()
 {
-    ::size_t max = 0;
-    for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
+    std::size_t max = 0;
+    for (const auto& node : this->_nodes)
     {
-        ::size_t node_depth = (*node)->max_depth();
+        const std::size_t node_depth = node->max_depth();
         if (node_depth > max)
             max = node_depth;
     }
@@ -150,26 +150,24 @@ void NodeContainer::add_node(std::shared_ptr<NodeInfo> node) noexcept
 
 std::vector<std::shared_ptr<NodeInfo>> NodeContainer::get_route_to(const Tins::IPv6Address& destination_address)
 {
-    for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
+    for (const auto &node : this->_nodes)
     {
-        if ( (*node)->has_address(destination_address) )
+        if ( node->has_address(destination_address) )
         {
             std::vector<std::shared_ptr<NodeInfo>> result;
-            result.push_back(*node);
+            result.push_back(node);
             return result;
         }
-        else
+
+        std::vector<std::shared_ptr<NodeInfo>> result = node->get_route_to(destination_address);
+        if (! result.empty())
         {
-            std::vector<std::shared_ptr<NodeInfo>> result = (*node)->get_route_to(destination_address);
-            if (! result.empty())
-            {
-                result.push_back(*node);
-                return result;
-            }
+            result.push_back(node);
+            return result;
         }
     }
 
-    return std::vector<std::shared_ptr<NodeInfo>>();
+    return {};
 }
 
 void NodeContainer::print(std::ostream& os) const
@@ -178,14 +176,14 @@ void NodeContainer::print(std::ostream& os) const
     if (! this->_nodes.empty())
     {
         os << "Childs:" << std::endl;
-        for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
+        for (const auto& node : this->_nodes)
         {
-            (*node)->print(os, 1);
+            node->print(os, 1);
         }
     }
 }
 
-std::ostream& operator<<(std::ostream& os, NodeContainer const & nodecontainer)
+std::ostream& operator<<(std::ostream& os, const NodeContainer& nodecontainer)
 {
     os << "NodeContainer: " << nodecontainer._nodes.size() << " childnodes";
     return os;

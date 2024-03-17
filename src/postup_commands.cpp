@@ -7,12 +7,12 @@ void PostupCommands::add_postup_command(std::string command)
 
 void PostupCommands::execute_commands() const
 {
-    for (auto postup_command = this->_postup_commands.begin(); postup_command != this->_postup_commands.end(); postup_command++)
+    for (const auto& postup_command : this->_postup_commands)
     {
-        BOOST_LOG_TRIVIAL(debug) << "Execute post up command: " << *postup_command << std::endl;
+        BOOST_LOG_TRIVIAL(debug) << "Execute post up command: " << postup_command << std::endl;
         std::error_code ec;
         boost::process::child child(
-            *postup_command,
+            postup_command,
             boost::process::std_out > boost::process::null,
             boost::process::std_err > boost::process::null,
             ec

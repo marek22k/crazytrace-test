@@ -2,10 +2,7 @@
 
 
 NodeInfo::NodeInfo() :
-    _addresses(),
-    _mac_address(),
     _hoplimit(64),
-    _nodes(),
     _randomgenerator(0),
     _addressadded(false)
 {}
@@ -55,7 +52,7 @@ const Tins::IPv6Address& NodeInfo::get_address()
         /* Is called up each time the number of addresses is changed. However,
            it is not called after each address is added to allow multiple
            addresses to be added quickly. */
-        ::size_t max_address = this->_addresses.size();
+        std::size_t max_address = this->_addresses.size();
         if (max_address == 0)
             throw std::invalid_argument("Despite adding an address, none is available.");
         max_address--;
@@ -64,16 +61,16 @@ const Tins::IPv6Address& NodeInfo::get_address()
         std::sort(this->_addresses.begin(), this->_addresses.end());
         this->_addressadded = false;
     }
-    ::size_t address_number = this->_randomgenerator.generate();
+    const std::size_t address_number = this->_randomgenerator.generate();
     return this->_addresses[address_number];
 }
 
-::size_t NodeInfo::max_depth()
+std::size_t NodeInfo::max_depth()
 {
-    ::size_t max = 0;
-    for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
+    std::size_t max = 0;
+    for (const auto& node : this->_nodes)
     {
-        ::size_t node_depth = (*node)->max_depth();
+        const std::size_t node_depth = node->max_depth();
         if (node_depth > max)
             max = node_depth;
     }
@@ -82,39 +79,37 @@ const Tins::IPv6Address& NodeInfo::get_address()
 
 std::vector<std::shared_ptr<NodeInfo>> NodeInfo::get_route_to(const Tins::IPv6Address& destination_address)
 {
-    for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
+    for (const auto& node : this->_nodes)
     {
-        if ( (*node)->has_address(destination_address) )
+        if ( node->has_address(destination_address) )
         {
             std::vector<std::shared_ptr<NodeInfo>> result;
-            result.push_back(*node);
+            result.push_back(node);
             return result;
         }
-        else
+
+        std::vector<std::shared_ptr<NodeInfo>> result = node->get_route_to(destination_address);
+        if (! result.empty())
         {
-            std::vector<std::shared_ptr<NodeInfo>> result = (*node)->get_route_to(destination_address);
-            if (! result.empty())
-            {
-                result.push_back(*node);
-                return result;
-            }
+            result.push_back(node);
+            return result;
         }
     }
 
-    return std::vector<std::shared_ptr<NodeInfo>>();
+    return {};
 }
 
 void NodeInfo::print(std::ostream& os, int layer) const
 {
-    std::string tabs(layer, '\t');
+    const std::string tabs(layer, '\t');
 
     os << tabs << *this << std::endl;
     if (! this->_nodes.empty())
     {
         os << tabs << "Childs:" << std::endl;
-        for (auto node = this->_nodes.begin(); node != this->_nodes.end(); node++)
+        for (const auto& node : this->_nodes)
         {
-            (*node)->print(os, layer + 1);
+            node->print(os, layer + 1);
         }
     }
 }
@@ -122,9 +117,9 @@ void NodeInfo::print(std::ostream& os, int layer) const
 std::ostream& operator<<(std::ostream& os, NodeInfo const & nodeinfo)
 {
     os << "NodeInfo: hoplimit=" << nodeinfo._hoplimit;
-    for (auto address = nodeinfo._addresses.begin(); address != nodeinfo._addresses.end(); address++)
+    for (const auto& address : nodeinfo._addresses)
     {
-        os << " " << *address;
+        os << " " << address;
     }
     if (nodeinfo._mac_address != Tins::HWAddress<6>())
     {

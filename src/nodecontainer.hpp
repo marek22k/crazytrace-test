@@ -18,10 +18,10 @@ class NodeContainer
     public:
         NodeReply get_reply(const NodeRequest& request);
         void add_node(std::shared_ptr<NodeInfo> node) noexcept;
-        ::size_t max_depth();
+        [[nodiscard]] std::size_t max_depth();
 
         void print(std::ostream& os) const;
-        friend std::ostream& operator<<(std::ostream& os, NodeContainer const & nodecontainer);
+        friend std::ostream& operator<<(std::ostream& os, const NodeContainer& nodecontainer);
 
     private:
         std::vector<std::shared_ptr<NodeInfo>> get_route_to(const Tins::IPv6Address& destination_address);

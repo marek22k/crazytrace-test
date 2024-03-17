@@ -21,13 +21,13 @@ class tun_tap
         void set_mtu(int mtu);
         void up();
         void down();
-        int native_handler();
+        [[nodiscard]] int native_handler();
     
     private:
         class TunTapDestroyer final {
             public:
                 constexpr void operator()(device * dev) const noexcept {
-                    if (dev)
+                    if (dev != nullptr)
                         ::tuntap_destroy(dev);
                 }
         };

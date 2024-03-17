@@ -31,10 +31,10 @@ class NodeReply
         void packet_reassembly(Tins::IPv6Address original_destination_address) noexcept;
         void udp_response(const Tins::RawPDU::payload_type& payload, int udp_dport, int udp_sport) noexcept;
 
-        std::string to_packet() const;
-        NodeReplyType get_type() const noexcept;
+        [[nodiscard]] std::string to_packet() const;
+        [[nodiscard]] NodeReplyType get_type() const noexcept;
 
-        friend std::ostream& operator<<(std::ostream& os, const NodeReply & nodereply);
+        friend std::ostream& operator<<(std::ostream& os, const NodeReply& nodereply);
 
     private:
         NodeReplyType _type;
