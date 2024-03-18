@@ -1,4 +1,3 @@
-#include <iostream>
 #include <memory>
 #include <span>
 #include <sstream>
@@ -30,16 +29,16 @@ int main(int argc, char * argv[])
                                             config.get_log_level());
 
         BOOST_LOG_TRIVIAL(info) << "libtuntap version: " << TUNTAP_VERSION_MAJOR
-                                << "." << TUNTAP_VERSION_MINOR << std::endl;
+                                << "." << TUNTAP_VERSION_MINOR;
         const int version = ::tuntap_version();
         const int major = (version >> 8) & 0xFF;
         const int minor = version & 0xFF;
         BOOST_LOG_TRIVIAL(info)
-            << "libtuntap version: " << major << "." << minor << std::endl;
+            << "libtuntap version: " << major << "." << minor;
 
         BOOST_LOG_TRIVIAL(info)
             << "libtins version: " << TINS_VERSION_MAJOR << "."
-            << TINS_VERSION_MINOR << "." << TINS_VERSION_PATCH << std::endl;
+            << TINS_VERSION_MINOR << "." << TINS_VERSION_PATCH;
 
         const std::shared_ptr<NodeContainer> nodecontainer =
             config.get_node_container();
@@ -50,11 +49,11 @@ int main(int argc, char * argv[])
 
         boost::asio::io_context io;
         constexpr std::size_t mtu = 1500;
-        BOOST_LOG_TRIVIAL(debug) << "Create TUN device." << std::endl;
+        BOOST_LOG_TRIVIAL(debug) << "Create TUN device.";
         tun_tap dev = tun_tap(config.get_device_name(), tun_tap_mode::tap);
-        BOOST_LOG_TRIVIAL(debug) << "Set MTU to " << mtu << "." << std::endl;
+        BOOST_LOG_TRIVIAL(debug) << "Set MTU to " << mtu << ".";
         dev.set_mtu(mtu);
-        BOOST_LOG_TRIVIAL(debug) << "Set the TUN device up." << std::endl;
+        BOOST_LOG_TRIVIAL(debug) << "Set the TUN device up.";
         dev.up();
 
         const Crazytrace ct(
