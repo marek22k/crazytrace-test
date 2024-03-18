@@ -77,8 +77,8 @@ std::string NodeReply::to_packet() const
 
             Tins::PDU::serialization_type serialized_packet =
                 packet.serialize();
-            std::string raw_packet(serialized_packet.begin(),
-                                   serialized_packet.end());
+            const std::string raw_packet(serialized_packet.begin(),
+                                         serialized_packet.end());
             return raw_packet;
         }
         case NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST:
@@ -137,10 +137,10 @@ std::string NodeReply::to_packet() const
                     inner_icmpv6.inner_pdu(
                         Tins::RawPDU(serialized_receiving_packet));
 
-                    Tins::PDU::serialization_type serialized_packet =
+                    const Tins::PDU::serialization_type serialized_packet =
                         packet.serialize();
-                    std::string raw_packet(serialized_packet.begin(),
-                                           serialized_packet.end());
+                    const std::string raw_packet(serialized_packet.begin(),
+                                                 serialized_packet.end());
                     return raw_packet;
                 }
                 case NodeReplyType::ICMP_PORT_UNREACHABLE:
@@ -159,10 +159,10 @@ std::string NodeReply::to_packet() const
                     inner_icmpv6.inner_pdu(
                         Tins::RawPDU(serialized_receiving_packet));
 
-                    Tins::PDU::serialization_type serialized_packet =
+                    const Tins::PDU::serialization_type serialized_packet =
                         packet.serialize();
-                    std::string raw_packet(serialized_packet.begin(),
-                                           serialized_packet.end());
+                    const std::string raw_packet(serialized_packet.begin(),
+                                                 serialized_packet.end());
                     return raw_packet;
                 }
                 default:
@@ -191,10 +191,10 @@ std::string NodeReply::to_packet() const
                 &(*this->_source_mac.begin()));
             inner_icmpv6.add_option(address_option);
 
-            Tins::PDU::serialization_type serialized_packet =
+            const Tins::PDU::serialization_type serialized_packet =
                 packet.serialize();
-            std::string raw_packet(serialized_packet.begin(),
-                                   serialized_packet.end());
+            const std::string raw_packet(serialized_packet.begin(),
+                                         serialized_packet.end());
             return raw_packet;
         }
         default:
@@ -215,7 +215,7 @@ std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
         os << "NOREPLY";
         return os;
     }
-    auto os_flags = os.flags();
+    const auto os_flags = os.flags();
 
     std::string type_string;
     switch (nodereply._type)
