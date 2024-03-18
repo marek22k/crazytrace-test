@@ -31,7 +31,7 @@ int main(int argc, char * argv[])
 
         BOOST_LOG_TRIVIAL(info) << "libtuntap version: " << TUNTAP_VERSION_MAJOR
                                 << "." << TUNTAP_VERSION_MINOR << std::endl;
-        const int version = tuntap_version();
+        const int version = ::tuntap_version();
         const int major = (version >> 8) & 0xFF;
         const int minor = version & 0xFF;
         BOOST_LOG_TRIVIAL(info)
@@ -45,11 +45,11 @@ int main(int argc, char * argv[])
         BOOST_LOG_TRIVIAL(info) << nodes_verbose.str();
 
         boost::asio::io_context io;
-        const std::size_t mtu = 1500;
+        constexpr std::size_t mtu = 1500;
         BOOST_LOG_TRIVIAL(debug) << "Create TUN device." << std::endl;
         tun_tap dev = tun_tap(config.get_device_name(), tun_tap_mode::tap);
         BOOST_LOG_TRIVIAL(debug) << "Set MTU to " << mtu << "." << std::endl;
-        dev.set_mtu(1500);
+        dev.set_mtu(mtu);
         BOOST_LOG_TRIVIAL(debug) << "Set the TUN device up." << std::endl;
         dev.up();
 
