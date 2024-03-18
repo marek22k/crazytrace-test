@@ -19,9 +19,9 @@ class Crazytrace
         explicit Crazytrace(boost::asio::any_io_executor ex,
                             int native_handler,
                             std::shared_ptr<NodeContainer> nodecontainer);
-        void start();
 
     private:
+        void start();
         void _handle_error(const boost::system::error_code error);
         void _handle_packet(const boost::system::error_code error,
                             const std::string& packet_data);

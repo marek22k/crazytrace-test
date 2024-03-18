@@ -7,7 +7,7 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
         case NodeRequestType::ICMP_ECHO_REQUEST:
         case NodeRequestType::UDP:
         {
-            std::vector<std::shared_ptr<NodeInfo>> route =
+            const std::vector<std::shared_ptr<NodeInfo>> route =
                 this->get_route_to(request.get_destination_address());
             if (route.empty())
             {
@@ -21,7 +21,7 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
             if (static_cast<std::size_t>(hoplimit) >= route.size())
             {
                 /* target reached */
-                const std::shared_ptr<NodeInfo> reached_node = route[0];
+                const std::shared_ptr<NodeInfo>& reached_node = route[0];
 
                 // Both variables undergo a value check during initialization so
                 // that neither is greater than 255. It is therefore safe to
@@ -74,7 +74,7 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
                 /* hoplimit exceeded */
                 const int reached_node_number =
                     static_cast<int>(route.size()) - request.get_hoplimit();
-                const std::shared_ptr<NodeInfo> reached_node =
+                const std::shared_ptr<NodeInfo>& reached_node =
                     route[reached_node_number];
 
                 const int reply_hoplimit =
@@ -130,7 +130,7 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
             /* Only the first level of nodes can have MAC addresses, as all
                other child nodes are "hidden" behind them and routing to them
                should be simulated. */
-            auto found_node = std::find_if(
+            const auto found_node = std::find_if(
                 this->_nodes.begin(),
                 this->_nodes.end(),
                 [&](const std::shared_ptr<NodeInfo>& node)

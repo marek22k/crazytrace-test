@@ -128,7 +128,7 @@ const Tins::RawPDU::payload_type& NodeRequest::get_payload() const noexcept
 
 std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
 {
-    auto os_flags = os.flags();
+    const auto os_flags = os.flags();
 
     std::string type_string;
     switch (noderequest._type)

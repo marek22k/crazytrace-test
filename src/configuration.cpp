@@ -142,8 +142,8 @@ void Configuration::load_nodes(const YAML::Node& nodes_config,
 
             if (mac)
             {
-                node->set_mac_address(Tins::HWAddress<6>(
-                    node_config["mac"].as<std::string>()));
+                node->set_mac_address(
+                    Tins::HWAddress<6>(node_config["mac"].as<std::string>()));
             }
 
             const YAML::Node addresses_config = node_config["addresses"];

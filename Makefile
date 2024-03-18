@@ -14,7 +14,7 @@ leaksanitizer: setup
 undefinedsanitizer: setup
 	meson setup --reconfigure --debug -Db_sanitize=leak . build
 
-clean:
+clean: setup
 	meson compile --clean -C build
 
 compile: setup

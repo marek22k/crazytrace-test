@@ -23,7 +23,7 @@ void Crazytrace::start()
             else
             {
                 const std::string packet(this->_buffer.data(),
-                                   bytes_transferred);
+                                         bytes_transferred);
                 start();
 
                 this->_handle_packet(ec, packet);
