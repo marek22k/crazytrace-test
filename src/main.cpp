@@ -36,9 +36,12 @@ int main(int argc, char * argv[])
         BOOST_LOG_TRIVIAL(info)
             << "libtuntap version: " << major << "." << minor;
 
+#if defined(TINS_VERSION_MAJOR) && defined(TINS_VERSION_MINOR) && \
+    defined(TINS_VERSION_PATCH)
         BOOST_LOG_TRIVIAL(info)
             << "libtins version: " << TINS_VERSION_MAJOR << "."
             << TINS_VERSION_MINOR << "." << TINS_VERSION_PATCH;
+#endif
 
         const std::shared_ptr<NodeContainer> nodecontainer =
             config.get_node_container();
