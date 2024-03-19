@@ -15,6 +15,7 @@ main_file = files('src/main.cpp')
 sources = files(
     'src/configuration.cpp',
     'src/crazytrace.cpp',
+    'src/loglevel.cpp',
     'src/postup_commands.cpp',
     'src/nodecontainer.cpp',
     'src/nodeinfo.cpp',
@@ -54,6 +55,7 @@ if cppcheck.found()
         # Do not check external libraries
         '--suppress=*:*/tins/*',
         '--suppress=*:*/boost/*',
+        '--suppress=*:*/gtest/*',
 
         # Problems with detecting system libraries
         '--suppress=missingIncludeSystem',

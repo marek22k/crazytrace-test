@@ -9,6 +9,7 @@
 #include <boost/log/trivial.hpp>
 #include <tins/tins.h>
 #include <yaml-cpp/yaml.h>
+#include "loglevel.hpp"
 #include "nodecontainer.hpp"
 #include "postup_commands.hpp"
 
@@ -18,8 +19,7 @@ class Configuration
         explicit Configuration(const std::string& filename);
         [[nodiscard]] std::shared_ptr<NodeContainer>
             get_node_container() const noexcept;
-        [[nodiscard]] boost::log::trivial::severity_level
-            get_log_level() const noexcept;
+        [[nodiscard]] LogLevel get_log_level() const noexcept;
         [[nodiscard]] const std::string& get_device_name() const noexcept;
         [[nodiscard]] const PostupCommands&
             get_postup_commands() const noexcept;
@@ -39,7 +39,7 @@ class Configuration
 
         std::string _device_name;
         std::shared_ptr<NodeContainer> _node_container;
-        boost::log::trivial::severity_level _log_level;
+        LogLevel _log_level;
         PostupCommands _postup_commands;
 };
 
