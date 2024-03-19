@@ -35,19 +35,15 @@ if not cpp_compiler.has_header('unistd.h')
     error('crazytrace requires unistd.h')
 endif
 
-libtuntap_dep = dependency('libtuntap', required: false)
+libtuntap_dep = dependency('libtuntap', required: false, include_type: 'system')
 if not libtuntap_dep.found()
     libtuntap_dep = cpp_compiler.find_library('libtuntap', has_headers: ['tuntap.h'], required: true)
 endif
 
-if not libtuntap_dep.found()
-    error('crazytrace requires libtuntap')
-endif
-
-boost_dep = dependency('boost', modules : ['log'])
-libtins_dep = dependency('libtins')
-yamlcpp_dep = dependency('yaml-cpp')
-gtest_dep = dependency('gtest', main: true)
+boost_dep = dependency('boost', modules: ['log'], include_type: 'system')
+libtins_dep = dependency('libtins', include_type: 'system')
+yamlcpp_dep = dependency('yaml-cpp', include_type: 'system')
+gtest_dep = dependency('gtest', main: true, include_type: 'system')
 
 cppcheck = find_program('cppcheck', required: false)
 if cppcheck.found()
