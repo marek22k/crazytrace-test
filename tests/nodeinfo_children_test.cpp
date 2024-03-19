@@ -71,6 +71,7 @@ std::shared_ptr<NodeInfo> nodeinfo_children_test::child_node3;
 std::shared_ptr<NodeInfo> nodeinfo_children_test::child_node3_child1;
 std::shared_ptr<NodeInfo> nodeinfo_children_test::child_node3_child2;
 std::shared_ptr<NodeInfo> nodeinfo_children_test::child_node3_child2_child1;
+
 // NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
 
 TEST_F(nodeinfo_children_test, print)
