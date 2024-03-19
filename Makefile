@@ -42,7 +42,7 @@ clangtidy: setup
 	ninja -C build clang-tidy
 
 test: compile
-	ninja -C build test
+	meson test -C build
 
 clangformat: setup
 	ninja -C build clang-format
