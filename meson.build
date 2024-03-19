@@ -43,7 +43,7 @@ endif
 boost_dep = dependency('boost', modules: ['log'], include_type: 'system')
 libtins_dep = dependency('libtins', include_type: 'system')
 yamlcpp_dep = dependency('yaml-cpp', include_type: 'system')
-gtest_dep = dependency('gtest', main: true, include_type: 'system')
+gtest_dep = dependency('gtest', main: true, required: false, include_type: 'system')
 
 cppcheck = find_program('cppcheck', required: false)
 if cppcheck.found()
@@ -82,8 +82,10 @@ endif
 
 deps = [libtuntap_dep, boost_dep, libtins_dep, yamlcpp_dep]
 
-gtest = executable('gtest', sources + tests_sources, dependencies: [gtest_dep] + deps, include_directories: ['src/'])
-test('gtest', gtest)
+if gtest_dep.found()
+    gtest = executable('gtest', sources + tests_sources, dependencies: [gtest_dep] + deps, include_directories: ['src/'])
+    test('gtest', gtest)
+endif
 
 executable(
     'crazytrace',
