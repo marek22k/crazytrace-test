@@ -4,7 +4,8 @@
 // _log_level is initialized in a function that is called directly from the
 // constructor. If _log_level cannot be initialized, an error is thrown.
 Configuration::Configuration(const std::string& filename) :
-    _node_container(std::make_shared<NodeContainer>())
+    _node_container(std::make_shared<NodeContainer>()),
+    _log_level(boost::log::trivial::info)
 {
     // NOLINTEND(cppcoreguidelines-pro-type-member-init)
     this->load(filename);
@@ -49,43 +50,10 @@ void Configuration::validate_node_depth()
 void Configuration::load_log_level(const YAML::Node& node)
 {
     if (!node.IsDefined())
-    {
-        /* Default log level */
-        this->_log_level = boost::log::trivial::info;
         return;
-    }
 
     const std::string log_level_string = node.as<std::string>();
-
-    if (log_level_string == "trace")
-    {
-        this->_log_level = boost::log::trivial::trace;
-    }
-    else if (log_level_string == "debug")
-    {
-        this->_log_level = boost::log::trivial::debug;
-    }
-    else if (log_level_string == "info")
-    {
-        this->_log_level = boost::log::trivial::info;
-    }
-    else if (log_level_string == "warning")
-    {
-        this->_log_level = boost::log::trivial::warning;
-    }
-    else if (log_level_string == "error")
-    {
-        this->_log_level = boost::log::trivial::error;
-    }
-    else if (log_level_string == "fatal")
-    {
-        this->_log_level = boost::log::trivial::fatal;
-    }
-    else
-    {
-        throw std::runtime_error(
-            "Failed to load configuration file: Unknown log level");
-    }
+    this->_log_level = LogLevel(log_level_string);
 }
 
 void Configuration::load_postup_commands(const YAML::Node& node)
@@ -167,8 +135,7 @@ std::shared_ptr<NodeContainer>
     return this->_node_container;
 }
 
-boost::log::trivial::severity_level
-    Configuration::get_log_level() const noexcept
+LogLevel Configuration::get_log_level() const noexcept
 {
     return this->_log_level;
 }

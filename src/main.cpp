@@ -5,8 +5,6 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <boost/asio.hpp>
-#include <boost/log/core.hpp>
-#include <boost/log/expressions.hpp>
 #include <boost/log/trivial.hpp>
 #include <unistd.h>
 #include "configuration.hpp"
@@ -24,9 +22,7 @@ int main(int argc, char * argv[])
 
         const std::string filename(args[1]);
         const Configuration config(filename);
-
-        boost::log::core::get()->set_filter(boost::log::trivial::severity >=
-                                            config.get_log_level());
+        config.get_log_level().apply();
 
         BOOST_LOG_TRIVIAL(info) << "libtuntap version: " << TUNTAP_VERSION_MAJOR
                                 << "." << TUNTAP_VERSION_MINOR;
