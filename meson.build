@@ -11,10 +11,10 @@ project(
     ]
 )
 
+main_file = files('src/main.cpp')
 sources = files(
     'src/configuration.cpp',
     'src/crazytrace.cpp',
-    'src/main.cpp',
     'src/postup_commands.cpp',
     'src/nodecontainer.cpp',
     'src/nodeinfo.cpp',
@@ -22,6 +22,9 @@ sources = files(
     'src/noderequest.cpp',
     'src/randomgenerator.cpp',
     'src/tun_tap.cpp'
+)
+tests_sources = files(
+    'tests/nodeinfo_test.cpp'
 )
 
 cpp_compiler = meson.get_compiler('cpp')
@@ -42,6 +45,7 @@ endif
 boost_dep = dependency('boost', modules : ['log'])
 libtins_dep = dependency('libtins')
 yamlcpp_dep = dependency('yaml-cpp')
+gtest_dep = dependency('gtest', main: true)
 
 cppcheck = find_program('cppcheck', required: false)
 if cppcheck.found()
@@ -76,9 +80,14 @@ if get_option('install_systemd_unit')
     )
 endif
 
+deps = [libtuntap_dep, boost_dep, libtins_dep, yamlcpp_dep]
+
+gtest = executable('gtest', sources + tests_sources, dependencies: [gtest_dep] + deps, include_directories: ['src/'])
+test('gtest', gtest)
+
 executable(
     'crazytrace',
-    sources,
-    dependencies: [libtuntap_dep, boost_dep, libtins_dep, yamlcpp_dep],
+    sources + main_file,
+    dependencies: deps,
     install : true
 )
