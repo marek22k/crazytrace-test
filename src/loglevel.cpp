@@ -2,7 +2,8 @@
 
 LogLevel::LogLevel(boost::log::trivial::severity_level log_level) :
     _log_level(log_level)
-{}
+{
+}
 
 LogLevel::LogLevel(const std::string& log_level_string)
 {
@@ -38,5 +39,6 @@ LogLevel::LogLevel(const std::string& log_level_string)
 
 void LogLevel::apply() const
 {
-    boost::log::core::get()->set_filter(boost::log::trivial::severity >= this->_log_level);
+    boost::log::core::get()->set_filter(boost::log::trivial::severity >=
+                                        this->_log_level);
 }
