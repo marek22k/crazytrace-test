@@ -1,14 +1,17 @@
+#include <gtest/gtest.h>
 #include <memory>
 #include <sstream>
 #include <tins/tins.h>
 #include "nodeinfo.hpp"
-#include <gtest/gtest.h>
 
 class nodeinfo_children_test : public testing::Test
 {
     protected:
+        // cppcheck-suppress duplInheritedMember
         static void SetUpTestSuite()
         {
+            testing::Test::SetUpTestSuite();
+
             root_node = std::make_unique<NodeInfo>();
             root_node->set_mac_address(
                 Tins::HWAddress<6>(std::string("52:54:00:b2:fa:7f")));
@@ -49,6 +52,7 @@ class nodeinfo_children_test : public testing::Test
             root_node->add_node(child_node3);
         }
 
+        // NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables)
         static std::unique_ptr<NodeInfo> root_node;
         static std::shared_ptr<NodeInfo> child_node1;
         static std::shared_ptr<NodeInfo> child_node2;
@@ -56,6 +60,7 @@ class nodeinfo_children_test : public testing::Test
         static std::shared_ptr<NodeInfo> child_node3_child1;
         static std::shared_ptr<NodeInfo> child_node3_child2;
         static std::shared_ptr<NodeInfo> child_node3_child2_child1;
+        // NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
 };
 
 std::unique_ptr<NodeInfo> nodeinfo_children_test::root_node;
@@ -101,15 +106,18 @@ TEST_F(nodeinfo_children_test, max_depth)
 
 TEST_F(nodeinfo_children_test, get_route_to)
 {
-    auto route1 = child_node3->get_route_to(Tins::IPv6Address(std::string("fd00::3:2:1")));
+    auto route1 = child_node3->get_route_to(
+        Tins::IPv6Address(std::string("fd00::3:2:1")));
     EXPECT_EQ(route1.size(), 2);
     EXPECT_EQ(route1[1], child_node3_child2);
     EXPECT_EQ(route1[0], child_node3_child2_child1);
 
-    auto route2 = child_node1->get_route_to(Tins::IPv6Address(std::string("fd00::12")));
+    auto route2 =
+        child_node1->get_route_to(Tins::IPv6Address(std::string("fd00::12")));
     EXPECT_EQ(route2.size(), 0);
 
-    auto route3 = root_node->get_route_to(Tins::IPv6Address(std::string("fd00::12")));
+    auto route3 =
+        root_node->get_route_to(Tins::IPv6Address(std::string("fd00::12")));
     EXPECT_EQ(route3.size(), 1);
     EXPECT_EQ(route3[0], child_node1);
 }

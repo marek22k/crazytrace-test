@@ -1,12 +1,12 @@
+#include <gtest/gtest.h>
 #include <sstream>
 #include <tins/tins.h>
 #include "nodeinfo.hpp"
-#include <gtest/gtest.h>
 
 TEST(nodeinfo_test, mac_address)
 
 {
-    Tins::HWAddress<6> mac_address(std::string("52:54:00:b2:fa:7f"));
+    const Tins::HWAddress<6> mac_address(std::string("52:54:00:b2:fa:7f"));
     NodeInfo nodeinfo;
     nodeinfo.set_mac_address(mac_address);
     EXPECT_EQ(mac_address, nodeinfo.get_mac_address());
@@ -25,8 +25,8 @@ TEST(nodeinfo_test, hop_limit)
 
 TEST(nodeinfo_test, ipv6_address)
 {
-    Tins::IPv6Address address1(std::string("fd00::1"));
-    Tins::IPv6Address address2(std::string("fd00::2"));
+    const Tins::IPv6Address address1(std::string("fd00::1"));
+    const Tins::IPv6Address address2(std::string("fd00::2"));
     NodeInfo nodeinfo;
 
     nodeinfo.add_address(address1);
@@ -47,14 +47,17 @@ TEST(nodeinfo_test, ipv6_address)
 
 TEST(nodeinfo_test, has_address)
 {
-    Tins::IPv6Address address1(std::string("fd00::1"));
-    Tins::IPv6Address address2(std::string("fd00::2"));
+    const Tins::IPv6Address address1(std::string("fd00::1"));
+    const Tins::IPv6Address address2(std::string("fd00::2"));
     NodeInfo nodeinfo;
+
     EXPECT_FALSE(nodeinfo.has_address(address1));
     EXPECT_FALSE(nodeinfo.has_address(address2));
+
     nodeinfo.add_address(address1);
     EXPECT_TRUE(nodeinfo.has_address(address1));
     EXPECT_FALSE(nodeinfo.has_address(address2));
+
     nodeinfo.add_address(address2);
     EXPECT_TRUE(nodeinfo.has_address(address1));
     EXPECT_TRUE(nodeinfo.has_address(address2));
@@ -62,8 +65,8 @@ TEST(nodeinfo_test, has_address)
 
 TEST(nodeinfo_test, output)
 {
-    Tins::IPv6Address address1(std::string("fd00::1"));
-    Tins::IPv6Address address2(std::string("fd00::2"));
+    const Tins::IPv6Address address1(std::string("fd00::1"));
+    const Tins::IPv6Address address2(std::string("fd00::2"));
     NodeInfo nodeinfo;
     nodeinfo.add_address(address1);
 

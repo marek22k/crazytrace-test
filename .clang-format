@@ -73,28 +73,30 @@ EmptyLineBeforeAccessModifier: LogicalBlock
 FixNamespaceComments: true
 IncludeBlocks: Merge
 IncludeCategories:
-  - Regex:           '^<(concepts|coroutine|any|bitset|chrono|compare|debugging|expected|functional|initializer_list|optional|source_location|tuple|type_traits|typeindex|typeinfo|utility|variant|version|memory|memory_resource|new|scoped_allocator|limits|exception|stacktrace|system_error|charconv|format|string|string_view|array|deque|flat_map|flat_set|forward_list|list|map|mdspan|queue|set|span|stack|unordered_map|unordered_set|vector|iterator|generator|ranges|algorithm|execution|bit|complex|linalg|numbers|numeric|random|ratio|valarray|locale|text_encoding|fstream|iomanip|ios|iosfwd|iostream|istream|ostream|print|spanstream|sstream|streambuf|syncstream|filesystem|regex|atomic|barrier|condition_variable|future|hazard_pointer|latch|mutex|rcu|semaphore|shared_mutex|stop_token|thread)>'
+  - Regex:           '^<gtest/.*>'
     Priority:        10
-  - Regex:           '^<std.*>'
+  - Regex:           '^<(concepts|coroutine|any|bitset|chrono|compare|debugging|expected|functional|initializer_list|optional|source_location|tuple|type_traits|typeindex|typeinfo|utility|variant|version|memory|memory_resource|new|scoped_allocator|limits|exception|stacktrace|system_error|charconv|format|string|string_view|array|deque|flat_map|flat_set|forward_list|list|map|mdspan|queue|set|span|stack|unordered_map|unordered_set|vector|iterator|generator|ranges|algorithm|execution|bit|complex|linalg|numbers|numeric|random|ratio|valarray|locale|text_encoding|fstream|iomanip|ios|iosfwd|iostream|istream|ostream|print|spanstream|sstream|streambuf|syncstream|filesystem|regex|atomic|barrier|condition_variable|future|hazard_pointer|latch|mutex|rcu|semaphore|shared_mutex|stop_token|thread)>'
     Priority:        20
-  - Regex:           '^<c.*>'
+  - Regex:           '^<std.*>'
     Priority:        30
-  - Regex:           '^<boost/.*>'
+  - Regex:           '^<c.*>'
     Priority:        40
-  - Regex:           '^<tins/.*>'
-    Priority:        41
-  - Regex:           '^<yaml-cpp/.*>'
-    Priority:        42
-  - Regex:           '^<unistd.h>'
+  - Regex:           '^<boost/.*>'
     Priority:        50
-  - Regex:           '^<io.h>'
-    Priority:        51
-  - Regex:           '"[^"]+\\.hpp"'
-    Priority:        60
-  - Regex:           '"[^"]+\\.h"'
+  - Regex:           '^<tins/.*>'
     Priority:        61
-  - Regex:           '.*'
+  - Regex:           '^<yaml-cpp/.*>'
+    Priority:        62
+  - Regex:           '^<unistd.h>'
     Priority:        70
+  - Regex:           '^<io.h>'
+    Priority:        71
+  - Regex:           '"[^"]+\\.hpp"'
+    Priority:        80
+  - Regex:           '"[^"]+\\.h"'
+    Priority:        81
+  - Regex:           '.*'
+    Priority:        90
 IndentAccessModifiers: true
 IndentCaseBlocks: false
 IndentCaseLabels: true

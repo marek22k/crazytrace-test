@@ -41,7 +41,7 @@ clangtidy: setup
 	# How to avoid the ninja command? https://github.com/mesonbuild/meson/issues/2383#issuecomment-2002148039
 	ninja -C build clang-tidy
 
-test: compile
+test: setup
 	meson test -C build
 
 clangformat: setup
