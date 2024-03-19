@@ -90,7 +90,7 @@ TEST(nodeinfo_test, output)
               "NodeInfo: hoplimit=30 fd00::1 fd00::2 52:54:00:b2:fa:7f");
 }
 
-TEST(nodeinfo_test, childnodes)
+TEST(nodeinfo_test, print)
 {
     /* Creating the test objects */
     NodeInfo root_node;
@@ -150,11 +150,69 @@ TEST(nodeinfo_test, childnodes)
     
     child_node3_child2->print(test_output);
     EXPECT_EQ(test_output.str(), "NodeInfo: hoplimit=64 fd00::3:2\nChilds:\n\tNodeInfo: hoplimit=64 fd00::3:2:1\n");
+}
+
+TEST(nodeinfo_test, max_depth)
+{
+    /* Creating the test objects */
+    NodeInfo root_node;
+
+    std::shared_ptr<NodeInfo> child_node1 = std::make_shared<NodeInfo>();
+    root_node.add_node(child_node1);
+
+    std::shared_ptr<NodeInfo> child_node3 = std::make_shared<NodeInfo>();
+
+    std::shared_ptr<NodeInfo> child_node3_child1 = std::make_shared<NodeInfo>();
+    child_node3->add_node(child_node3_child1);
+
+    std::shared_ptr<NodeInfo> child_node3_child2 = std::make_shared<NodeInfo>();
+
+    std::shared_ptr<NodeInfo> child_node3_child2_child1 =
+        std::make_shared<NodeInfo>();
+    child_node3_child2->add_node(child_node3_child2_child1);
+
+    child_node3->add_node(child_node3_child2);
+    root_node.add_node(child_node3);
 
     /* Testing the max depth function */
     EXPECT_EQ(root_node.max_depth(), 4);
     EXPECT_EQ(child_node3_child2->max_depth(), 2);
     EXPECT_EQ(child_node1->max_depth(), 1);
+}
+
+TEST(nodeinfo_test, get_route_to)
+{
+    /* Creating the test objects */
+    NodeInfo root_node;
+    root_node.set_mac_address(
+        Tins::HWAddress<6>(std::string("52:54:00:b2:fa:7f")));
+    root_node.add_address(Tins::IPv6Address(std::string("fd00::")));
+
+    std::shared_ptr<NodeInfo> child_node1 = std::make_shared<NodeInfo>();
+    child_node1->add_address(Tins::IPv6Address(std::string("fd00::11")));
+    child_node1->add_address(Tins::IPv6Address(std::string("fd00::12")));
+    root_node.add_node(child_node1);
+
+    std::shared_ptr<NodeInfo> child_node3 = std::make_shared<NodeInfo>();
+    child_node3->add_address(Tins::IPv6Address(std::string("fd00::3")));
+
+    std::shared_ptr<NodeInfo> child_node3_child1 = std::make_shared<NodeInfo>();
+    child_node3_child1->add_address(
+        Tins::IPv6Address(std::string("fd00::3:1")));
+    child_node3->add_node(child_node3_child1);
+
+    std::shared_ptr<NodeInfo> child_node3_child2 = std::make_shared<NodeInfo>();
+    child_node3_child2->add_address(
+        Tins::IPv6Address(std::string("fd00::3:2")));
+
+    std::shared_ptr<NodeInfo> child_node3_child2_child1 =
+        std::make_shared<NodeInfo>();
+    child_node3_child2_child1->add_address(
+        Tins::IPv6Address(std::string("fd00::3:2:1")));
+    child_node3_child2->add_node(child_node3_child2_child1);
+
+    child_node3->add_node(child_node3_child2);
+    root_node.add_node(child_node3);
 
     /* Testing the route to function */
     auto route1 = child_node3->get_route_to(Tins::IPv6Address(std::string("fd00::3:2:1")));
