@@ -25,7 +25,8 @@ sources = files(
     'src/tun_tap.cpp'
 )
 tests_sources = files(
-    'tests/nodeinfo_test.cpp'
+    'tests/nodeinfo_test.cpp',
+    'tests/nodeinfo_children_test.cpp'
 )
 
 cpp_compiler = meson.get_compiler('cpp')
