@@ -2,6 +2,7 @@
 
 [![pipeline badge](https://ci.codeberg.org/api/badges/13147/status.svg)](https://ci.codeberg.org/repos/13147)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c7441b6b4d6847558f113aa73d5e7f1e)](https://app.codacy.com/gh/marek22k/crazytrace-mirror/dashboard)
+[![Coverity Badge](https://scan.coverity.com/projects/29920/badge.svg)](https://scan.coverity.com/projects/crazytrace)
 
 What happens if a traceroute with the same TTL/hop limit is received from two different source addresses? How will they react?
 
