@@ -32,7 +32,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo add-apt-repository --yes ppa:mhier/libboost-latest
-        sudo apt-get install --yes build-essential git meson ninja-build cmake libboost1.81-dev libboost-log1.81-dev libyaml-cpp-dev libpcap-dev libtins-dev
+        sudo apt-get install --yes build-essential git meson ninja-build cmake libboost1.81-dev libboost-log1.81-dev libyaml-cpp-dev libpcap-dev libtins-dev googletest
         git clone https://github.com/LaKabane/libtuntap.git /tmp/libtuntap/
         cd /tmp/
         cmake -DCMAKE_BUILD_TYPE=Release -B build -S "libtuntap"
