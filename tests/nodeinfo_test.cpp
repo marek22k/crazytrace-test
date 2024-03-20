@@ -3,7 +3,7 @@
 #include <tins/tins.h>
 #include "nodeinfo.hpp"
 
-TEST(nodeinfo_test, mac_address)
+TEST(NodeInfoTest, MacAddress)
 
 {
     const Tins::HWAddress<6> mac_address(std::string("52:54:00:b2:fa:7f"));
@@ -13,7 +13,7 @@ TEST(nodeinfo_test, mac_address)
     EXPECT_EQ(mac_address.to_string(), nodeinfo.get_mac_address().to_string());
 }
 
-TEST(nodeinfo_test, hop_limit)
+TEST(NodeInfoTest, HopLimit)
 {
     constexpr int hoplimit = 150;
     NodeInfo nodeinfo;
@@ -23,7 +23,7 @@ TEST(nodeinfo_test, hop_limit)
     EXPECT_EQ(hoplimit, nodeinfo.get_hoplimit());
 }
 
-TEST(nodeinfo_test, ipv6_address)
+TEST(NodeInfoTest, IPv6Address)
 {
     const Tins::IPv6Address address1(std::string("fd00::1"));
     const Tins::IPv6Address address2(std::string("fd00::2"));
@@ -45,7 +45,7 @@ TEST(nodeinfo_test, ipv6_address)
     EXPECT_EQ(random_address, address2);
 }
 
-TEST(nodeinfo_test, has_address)
+TEST(NodeInfoTest, HasAddress)
 {
     const Tins::IPv6Address address1(std::string("fd00::1"));
     const Tins::IPv6Address address2(std::string("fd00::2"));
@@ -63,7 +63,7 @@ TEST(nodeinfo_test, has_address)
     EXPECT_TRUE(nodeinfo.has_address(address2));
 }
 
-TEST(nodeinfo_test, output)
+TEST(NodeInfoTest, Output)
 {
     const Tins::IPv6Address address1(std::string("fd00::1"));
     const Tins::IPv6Address address2(std::string("fd00::2"));
