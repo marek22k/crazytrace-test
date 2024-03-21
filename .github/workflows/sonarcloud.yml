@@ -1,0 +1,36 @@
+name: SonarCloud
+on:
+  push:
+    branches:
+      - github
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+    env:
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo add-apt-repository --yes ppa:mhier/libboost-latest
+          sudo apt-get install --yes build-essential git meson ninja-build cmake libboost1.81-dev libboost-log1.81-dev libyaml-cpp-dev libpcap-dev libtins-dev googletest
+          git clone https://github.com/LaKabane/libtuntap.git /tmp/libtuntap/
+          cd /tmp/
+          cmake -DCMAKE_BUILD_TYPE=Release -B build -S "libtuntap"
+          cmake --build build
+          sudo cmake --install build --prefix /usr
+      - name: Install sonar-scanner and build-wrapper
+        uses: SonarSource/sonarcloud-github-c-cpp@v2
+      - name: Run build-wrapper
+        run: |
+          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} make clean all
+      - name: Run sonar-scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          sonar-scanner --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}"
