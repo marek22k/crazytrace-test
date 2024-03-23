@@ -12,10 +12,10 @@ template<int BUFFER_SIZE> class DeviceClient
         DeviceClient(
             boost::asio::any_io_executor ex,
             int native_handler,
-            std::function<void(boost::system::error_code, std::string)>
+            const std::function<void(boost::system::error_code, std::string)>
                 packet_handler,
-            std::function<void(boost::system::error_code)> error_handler) :
-            _device(ex, native_handler),
+            const std::function<void(boost::system::error_code)> error_handler) :
+            _device(std::move(ex), native_handler),
             _buffer(),
             _packet_handler(std::move(packet_handler)),
             _error_handler(std::move(error_handler))
@@ -25,9 +25,9 @@ template<int BUFFER_SIZE> class DeviceClient
 
         void write(
             const std::string& data,
-            std::function<void(boost::system::error_code,
+            const std::function<void(boost::system::error_code,
                                std::size_t bytes_transferred)> write_handler,
-            std::function<void(boost::system::error_code)> write_error_handler)
+            const std::function<void(boost::system::error_code)> write_error_handler) noexcept
         {
             this->_device.async_write_some(
                 boost::asio::buffer(data, data.size()),
@@ -42,7 +42,7 @@ template<int BUFFER_SIZE> class DeviceClient
         }
 
     private:
-        void read() // flawfinder: ignore
+        void read() noexcept // flawfinder: ignore
         {
             this->_device.async_read_some(
                 boost::asio::buffer(this->_buffer),
@@ -65,9 +65,9 @@ template<int BUFFER_SIZE> class DeviceClient
 
         boost::asio::posix::stream_descriptor _device;
         std::array<char, BUFFER_SIZE> _buffer;
-        std::function<void(boost::system::error_code, std::string)>
+        const std::function<void(boost::system::error_code, std::string)>
             _packet_handler;
-        std::function<void(boost::system::error_code)> _error_handler;
+        const std::function<void(boost::system::error_code)> _error_handler;
 };
 
 #endif
