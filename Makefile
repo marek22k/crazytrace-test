@@ -5,14 +5,8 @@ all: setup compile
 setup:
 	test -d build || meson setup build
 
-addresssanitizer: setup
-	meson setup --reconfigure --debug -Db_sanitize=address build
-
-leaksanitizer: setup
-	meson setup --reconfigure --debug -Db_sanitize=leak build
-
-undefinedsanitizer: setup
-	meson setup --reconfigure --debug -Db_sanitize=undefined build
+sanitizer:
+	meson setup --reconfigure --debug -Db_sanitize=address,undefined build
 
 clean: setup
 	meson compile --clean -C build
