@@ -19,6 +19,10 @@ See [BUILDING.md](BUILDING.md).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Security
+
+See [SECURITY.md](SECURITY.md).
+
 ## How it works?
 
 crazytrace uses several libraries and tricks to create a virtual TAP adapter behind which the simulated network is hidden.
