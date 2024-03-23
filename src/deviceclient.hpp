@@ -20,7 +20,7 @@ template<int BUFFER_SIZE> class DeviceClient
             _packet_handler(std::move(packet_handler)),
             _error_handler(std::move(error_handler))
         {
-            this->read();
+            this->read(); // flawfinder: ignore
         }
 
         void write(
@@ -42,7 +42,7 @@ template<int BUFFER_SIZE> class DeviceClient
         }
 
     private:
-        void read()
+        void read() // flawfinder: ignore
         {
             this->_device.async_read_some(
                 boost::asio::buffer(this->_buffer),
@@ -56,7 +56,7 @@ template<int BUFFER_SIZE> class DeviceClient
                     {
                         const std::string packet(this->_buffer.data(),
                                                  bytes_transferred);
-                        this->read();
+                        this->read(); // flawfinder: ignore
 
                         this->_packet_handler(ec, packet);
                     };
