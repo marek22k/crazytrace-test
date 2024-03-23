@@ -19,39 +19,33 @@ class NodeContainerTest : public testing::Test
             c1_child_node1 = std::make_shared<NodeInfo>();
             c1_child_node1->set_hoplimit(20);
             c1_child_node1->set_mac_address(
-                Tins::HWAddress<6>(std::string("52:54:00:b2:fa:7f")));
-            c1_child_node1->add_address(
-                Tins::IPv6Address(std::string("fd00::11")));
-            c1_child_node1->add_address(
-                Tins::IPv6Address(std::string("fd00::12")));
+                Tins::HWAddress<6>("52:54:00:b2:fa:7f"));
+            c1_child_node1->add_address(Tins::IPv6Address("fd00::11"));
+            c1_child_node1->add_address(Tins::IPv6Address("fd00::12"));
             container1->add_node(c1_child_node1);
 
             c1_child_node2 = std::make_shared<NodeInfo>();
             c1_child_node2->set_hoplimit(30);
             c1_child_node2->set_mac_address(
-                Tins::HWAddress<6>(std::string("52:54:00:b2:fa:7e")));
-            c1_child_node2->add_address(
-                Tins::IPv6Address(std::string("fd00::21")));
+                Tins::HWAddress<6>("52:54:00:b2:fa:7e"));
+            c1_child_node2->add_address(Tins::IPv6Address("fd00::21"));
             container1->add_node(c1_child_node2);
 
             c1_child_node3 = std::make_shared<NodeInfo>();
             c1_child_node2->set_mac_address(
-                Tins::HWAddress<6>(std::string("52:54:00:b2:fa:7d")));
-            c1_child_node3->add_address(
-                Tins::IPv6Address(std::string("fd00::3")));
+                Tins::HWAddress<6>("52:54:00:b2:fa:7d"));
+            c1_child_node3->add_address(Tins::IPv6Address("fd00::3"));
 
             c1_child_node3_child1 = std::make_shared<NodeInfo>();
-            c1_child_node3_child1->add_address(
-                Tins::IPv6Address(std::string("fd00::3:1")));
+            c1_child_node3_child1->add_address(Tins::IPv6Address("fd00::3:1"));
             c1_child_node3->add_node(c1_child_node3_child1);
 
             c1_child_node3_child2 = std::make_shared<NodeInfo>();
-            c1_child_node3_child2->add_address(
-                Tins::IPv6Address(std::string("fd00::3:2")));
+            c1_child_node3_child2->add_address(Tins::IPv6Address("fd00::3:2"));
 
             c1_child_node3_child2_child1 = std::make_shared<NodeInfo>();
             c1_child_node3_child2_child1->add_address(
-                Tins::IPv6Address(std::string("fd00::3:2:1")));
+                Tins::IPv6Address("fd00::3:2:1"));
             c1_child_node3_child2->add_node(c1_child_node3_child2_child1);
 
             c1_child_node3->add_node(c1_child_node3_child2);
@@ -62,9 +56,8 @@ class NodeContainerTest : public testing::Test
 
             c2_child_node1 = std::make_shared<NodeInfo>();
             c2_child_node1->set_mac_address(
-                Tins::HWAddress<6>(std::string("52:54:00:b2:fa:7f")));
-            c2_child_node1->add_address(
-                Tins::IPv6Address(std::string("fd01::")));
+                Tins::HWAddress<6>("52:54:00:b2:fa:7f"));
+            c2_child_node1->add_address(Tins::IPv6Address("fd01::"));
             container2->add_node(c2_child_node1);
 
             /* Container 3 */
@@ -114,7 +107,9 @@ TEST_F(NodeContainerTest, Print)
     test_output.str("");
 
     container2->print(test_output);
-    EXPECT_EQ(test_output.str(), "NodeContainer: 1 childnodes\nChilds:\n\tNodeInfo: hoplimit=64 fd01:: 52:54:00:b2:fa:7f\n");
+    EXPECT_EQ(test_output.str(),
+              "NodeContainer: 1 childnodes\nChilds:\n\tNodeInfo: hoplimit=64 "
+              "fd01:: 52:54:00:b2:fa:7f\n");
     test_output.str("");
 
     container3->print(test_output);
