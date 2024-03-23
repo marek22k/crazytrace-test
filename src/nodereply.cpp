@@ -33,29 +33,42 @@ void NodeReply::set_hoplimit(int hoplimit) noexcept
     this->_hoplimit = hoplimit;
 }
 
-void NodeReply::icmp_echo_reply(
-    int icmp_identifier,
-    int icmp_sequence,
-    const Tins::RawPDU::payload_type& payload) noexcept
+void NodeReply::icmp_echo_reply(int icmp_identifier,
+                                int icmp_sequence,
+                                const Tins::RawPDU::payload_type& payload)
 {
+    if (this->_type != NodeReplyType::ICMP_ECHO_REPLY &&
+        this->_type != NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST)
+        throw std::runtime_error("NodeReply has no type that would require "
+                                 "ICMP echo reply information.");
+
     this->_icmp_identifier = icmp_identifier;
     this->_icmp_sequence = icmp_sequence;
     this->_payload = payload;
 }
 
-void NodeReply::packet_reassembly(
-    Tins::IPv6Address original_destination_address) noexcept
-{
-    this->_original_destination_address = original_destination_address;
-}
-
 void NodeReply::udp_response(const Tins::RawPDU::payload_type& payload,
                              int udp_dport,
-                             int udp_sport) noexcept
+                             int udp_sport)
 {
+    if (this->_type != NodeReplyType::ICMP_PORT_UNREACHABLE &&
+        this->_type != NodeReplyType::ICMP_TIME_EXCEEDED_UDP)
+        throw std::runtime_error(
+            "NodeReply has no type that would require UDP information.");
     this->_payload = payload;
     this->_udp_dport = udp_dport;
     this->_udp_sport = udp_sport;
+}
+
+void NodeReply::packet_reassembly(
+    Tins::IPv6Address original_destination_address)
+{
+    if (this->_type != NodeReplyType::ICMP_PORT_UNREACHABLE &&
+        this->_type != NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST &&
+        this->_type != NodeReplyType::ICMP_TIME_EXCEEDED_UDP)
+        throw std::runtime_error("NodeReply has no type that would require "
+                                 "original destionation address information.");
+    this->_original_destination_address = original_destination_address;
 }
 
 std::string NodeReply::to_packet() const
