@@ -116,3 +116,13 @@ crazytrace is configured via a configuration file. The path to this file is give
 ```
 # /path/to/crazytrace /path/to/config.yaml
 ```
+
+## Notes for myself
+
+### Create a new release
+
+To create a new release the following is necessary:
+- Create a changelog entry
+- Create a changelog entry for the Debian package
+- Update the SECURITY.md
+- Create a new git tag
