@@ -21,8 +21,7 @@ const Tins::HWAddress<6>& NodeInfo::get_mac_address() const noexcept
 
 bool NodeInfo::has_address(const Tins::IPv6Address& address)
 {
-    return std::binary_search(
-        this->_addresses.begin(), this->_addresses.end(), address);
+    return std::ranges::binary_search(this->_addresses, address);
 }
 
 void NodeInfo::set_hoplimit(int hoplimit)
