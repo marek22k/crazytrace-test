@@ -17,7 +17,7 @@ TEST(NodeReplyTest, NoReply)
 
     try
     {
-        const std::string reply_packet = reply.to_packet();
+        [[maybe_unused]] const std::string reply_packet = reply.to_packet();
         FAIL();
     }
     catch (const std::exception& e)
