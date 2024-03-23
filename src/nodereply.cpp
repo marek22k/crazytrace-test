@@ -28,8 +28,12 @@ NodeReply::NodeReply(NodeReplyType type,
 {
 }
 
-void NodeReply::set_hoplimit(int hoplimit) noexcept
+void NodeReply::set_hoplimit(int hoplimit)
 {
+    if (this->_type == NodeReplyType::ICMP_NDP)
+        throw std::runtime_error(
+            "ICMP NDP responses always have a hop limit of 255.");
+
     this->_hoplimit = hoplimit;
 }
 
@@ -282,9 +286,6 @@ std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
         case NodeReplyType::ICMP_TIME_EXCEEDED_UDP:
             os << " Hoplimit=" << nodereply._hoplimit
                << " LENGTH=" << nodereply._payload.size();
-            break;
-        case NodeReplyType::ICMP_NDP:
-            os << ": NDP";
             break;
         default:
             break;

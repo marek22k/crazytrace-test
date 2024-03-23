@@ -31,7 +31,7 @@ class NodeReply
                            Tins::HWAddress<6> source_mac,
                            Tins::IPv6Address source_address);
 
-        void set_hoplimit(int hoplimit) noexcept;
+        void set_hoplimit(int hoplimit);
         void icmp_echo_reply(int icmp_identifier,
                              int icmp_sequence,
                              const Tins::RawPDU::payload_type& payload);

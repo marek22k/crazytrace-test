@@ -200,7 +200,10 @@ TEST(NodeReplyTest, IcmpTimeExceededIcmpEchoRequest)
 
     std::ostringstream test_output;
     test_output << reply;
-    EXPECT_EQ(test_output.str(), "REPLY ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST: fd00::1 (52:54:00:b2:fa:7f) -> fd00::2 (52:54:00:b2:fa:7e) Hoplimit=55 LENGTH=10");
+    EXPECT_EQ(test_output.str(),
+              "REPLY ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST: fd00::1 "
+              "(52:54:00:b2:fa:7f) -> fd00::2 (52:54:00:b2:fa:7e) Hoplimit=55 "
+              "LENGTH=10");
 
     EXPECT_EQ(actual_packet, expected_packet);
     EXPECT_EQ(reply.get_type(),
@@ -235,15 +238,15 @@ TEST(NodeReplyTest, IcmpPortUnreachable)
         Tins::IPv6(original_destination_address, destination_address) /
         Tins::UDP(udp_dport, udp_sport);
     embedded_packet.hop_limit(1);
-    Tins::UDP& embedded_inner_udp =
-        embedded_packet.rfind_pdu<Tins::UDP>();
+    Tins::UDP& embedded_inner_udp = embedded_packet.rfind_pdu<Tins::UDP>();
     embedded_inner_udp.inner_pdu(Tins::RawPDU(payload));
     Tins::PDU::serialization_type serialized_embedded_packet =
         embedded_packet.serialize();
 
-    Tins::EthernetII packet = Tins::EthernetII(destination_mac, source_mac) /
-                              Tins::IPv6(destination_address, source_address) /
-                              Tins::ICMPv6(Tins::ICMPv6::Types::DEST_UNREACHABLE);
+    Tins::EthernetII packet =
+        Tins::EthernetII(destination_mac, source_mac) /
+        Tins::IPv6(destination_address, source_address) /
+        Tins::ICMPv6(Tins::ICMPv6::Types::DEST_UNREACHABLE);
     Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
     inner_ipv6.hop_limit(hoplimit);
     Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
@@ -263,16 +266,19 @@ TEST(NodeReplyTest, IcmpPortUnreachable)
     {
         SUCCEED();
         EXPECT_EQ(std::string(e.what()),
-                  "NodeReply has no type that would require ICMP echo reply information.");
+                  "NodeReply has no type that would require ICMP echo reply "
+                  "information.");
     }
 
     std::ostringstream test_output;
     test_output << reply;
-    EXPECT_EQ(test_output.str(), "REPLY ICMP_PORT_UNREACHABLE: fd00::1 (52:54:00:b2:fa:7f) -> fd00::2 (52:54:00:b2:fa:7e) Hoplimit=55: DPORT=34344 SPORT=46432 LENGTH=10");
+    EXPECT_EQ(
+        test_output.str(),
+        "REPLY ICMP_PORT_UNREACHABLE: fd00::1 (52:54:00:b2:fa:7f) -> fd00::2 "
+        "(52:54:00:b2:fa:7e) Hoplimit=55: DPORT=34344 SPORT=46432 LENGTH=10");
 
     EXPECT_EQ(actual_packet, expected_packet);
-    EXPECT_EQ(reply.get_type(),
-              NodeReplyType::ICMP_PORT_UNREACHABLE);
+    EXPECT_EQ(reply.get_type(), NodeReplyType::ICMP_PORT_UNREACHABLE);
 }
 
 TEST(NodeReplyTest, IcmpTimeExceededUdp)
@@ -303,8 +309,7 @@ TEST(NodeReplyTest, IcmpTimeExceededUdp)
         Tins::IPv6(original_destination_address, destination_address) /
         Tins::UDP(udp_dport, udp_sport);
     embedded_packet.hop_limit(1);
-    Tins::UDP& embedded_inner_udp =
-        embedded_packet.rfind_pdu<Tins::UDP>();
+    Tins::UDP& embedded_inner_udp = embedded_packet.rfind_pdu<Tins::UDP>();
     embedded_inner_udp.inner_pdu(Tins::RawPDU(payload));
     Tins::PDU::serialization_type serialized_embedded_packet =
         embedded_packet.serialize();
@@ -330,14 +335,109 @@ TEST(NodeReplyTest, IcmpTimeExceededUdp)
     {
         SUCCEED();
         EXPECT_EQ(std::string(e.what()),
-                  "NodeReply has no type that would require ICMP echo reply information.");
+                  "NodeReply has no type that would require ICMP echo reply "
+                  "information.");
     }
 
     std::ostringstream test_output;
     test_output << reply;
-    EXPECT_EQ(test_output.str(), "REPLY ICMP_TIME_EXCEEDED_UDP: fd00::1 (52:54:00:b2:fa:7f) -> fd00::2 (52:54:00:b2:fa:7e) Hoplimit=55 LENGTH=10");
+    EXPECT_EQ(test_output.str(),
+              "REPLY ICMP_TIME_EXCEEDED_UDP: fd00::1 (52:54:00:b2:fa:7f) -> "
+              "fd00::2 (52:54:00:b2:fa:7e) Hoplimit=55 LENGTH=10");
 
     EXPECT_EQ(actual_packet, expected_packet);
-    EXPECT_EQ(reply.get_type(),
-              NodeReplyType::ICMP_TIME_EXCEEDED_UDP);
+    EXPECT_EQ(reply.get_type(), NodeReplyType::ICMP_TIME_EXCEEDED_UDP);
+}
+
+TEST(NodeReplyTest, IcmpNdp)
+{
+    const Tins::HWAddress<6> source_mac("52:54:00:b2:fa:7f");
+    const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7e");
+    const Tins::IPv6Address source_address("fd00::1");
+    const Tins::IPv6Address destination_address("fd00::2");
+
+    /* Reply */
+    NodeReply reply(NodeReplyType::ICMP_NDP,
+                    destination_mac,
+                    destination_address,
+                    source_mac,
+                    source_address);
+    const std::string actual_packet = reply.to_packet();
+
+    /* Expected packet */
+    Tins::EthernetII packet =
+        Tins::EthernetII(destination_mac, source_mac) /
+        Tins::IPv6(destination_address, source_address) /
+        Tins::ICMPv6(Tins::ICMPv6::Types::NEIGHBOUR_ADVERT);
+    Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
+    inner_ipv6.hop_limit(255);
+    Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
+    inner_icmpv6.target_addr(source_address);
+    inner_icmpv6.solicited(Tins::small_uint<1>(1));
+    inner_icmpv6.router(Tins::small_uint<1>(1));
+    inner_icmpv6.override(Tins::small_uint<1>(1));
+    const Tins::ICMPv6::option address_option(
+        Tins::ICMPv6::OptionTypes::TARGET_ADDRESS,
+        source_mac.size(),
+        &(*source_mac.begin()));
+    inner_icmpv6.add_option(address_option);
+
+    const Tins::PDU::serialization_type serialized_packet = packet.serialize();
+    const std::string expected_packet(serialized_packet.begin(),
+                                      serialized_packet.end());
+
+    /* Tests */
+    try
+    {
+        reply.set_hoplimit(120);
+    }
+    catch (const std::exception& e)
+    {
+        SUCCEED();
+        EXPECT_EQ(std::string(e.what()),
+                  "ICMP NDP responses always have a hop limit of 255.");
+    }
+
+    try
+    {
+        reply.icmp_echo_reply(3, 5, {});
+    }
+    catch (const std::exception& e)
+    {
+        SUCCEED();
+        EXPECT_EQ(std::string(e.what()),
+                  "NodeReply has no type that would require ICMP echo reply "
+                  "information.");
+    }
+
+    try
+    {
+        reply.udp_response({}, 33434, 45834);
+    }
+    catch (const std::exception& e)
+    {
+        SUCCEED();
+        EXPECT_EQ(std::string(e.what()),
+                  "NodeReply has no type that would require UDP information.");
+    }
+
+    try
+    {
+        reply.packet_reassembly(Tins::IPv6Address("fd00::"));
+    }
+    catch (const std::exception& e)
+    {
+        SUCCEED();
+        EXPECT_EQ(std::string(e.what()),
+                  "NodeReply has no type that would require original "
+                  "destionation address information.");
+    }
+
+    std::ostringstream test_output;
+    test_output << reply;
+    EXPECT_EQ(test_output.str(),
+              "REPLY ICMP_NDP: fd00::1 (52:54:00:b2:fa:7f) -> fd00::2 (52:54:00:b2:fa:7e)");
+
+    EXPECT_EQ(actual_packet, expected_packet);
+    EXPECT_EQ(reply.get_type(), NodeReplyType::ICMP_NDP);
 }
