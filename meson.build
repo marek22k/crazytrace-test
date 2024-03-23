@@ -42,7 +42,8 @@ tests_sources = files(
     'tests/nodeinfo_test.cpp',
     'tests/nodeinfo_children_test.cpp',
     'tests/nodereply_test.cpp',
-    'tests/noderequest_test.cpp'
+    'tests/noderequest_test.cpp',
+    'tests/randomgenerator_test.cpp'
 )
 
 cpp_compiler = meson.get_compiler('cpp')
