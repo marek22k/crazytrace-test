@@ -31,16 +31,14 @@ class NodeReply
                            Tins::HWAddress<6> source_mac,
                            Tins::IPv6Address source_address);
 
-        void set_hoplimit(int hoplimit) noexcept;
-        void
-            icmp_echo_reply(int icmp_identifier,
-                            int icmp_sequence,
-                            const Tins::RawPDU::payload_type& payload) noexcept;
-        void packet_reassembly(
-            Tins::IPv6Address original_destination_address) noexcept;
+        void set_hoplimit(int hoplimit);
+        void icmp_echo_reply(int icmp_identifier,
+                             int icmp_sequence,
+                             const Tins::RawPDU::payload_type& payload);
         void udp_response(const Tins::RawPDU::payload_type& payload,
                           int udp_dport,
-                          int udp_sport) noexcept;
+                          int udp_sport);
+        void packet_reassembly(Tins::IPv6Address original_destination_address);
 
         [[nodiscard]] std::string to_packet() const;
         [[nodiscard]] NodeReplyType get_type() const noexcept;

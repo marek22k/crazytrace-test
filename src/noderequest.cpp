@@ -158,10 +158,11 @@ std::ostream& operator<<(std::ostream& os, NodeRequest const & noderequest)
         {
             os << ": ID=" << noderequest._icmp_identifier
                << " SEQ=" << noderequest._icmp_sequence
-               << " Payload:" << std::hex << std::setw(2);
+               << " Payload:" << std::hex;
             for (const auto& byte : noderequest._payload)
             {
-                os << " " << static_cast<int>(byte);
+                os << " " << std::setfill('0') << std::setw(2)
+                   << static_cast<int>(byte);
             }
             break;
         }

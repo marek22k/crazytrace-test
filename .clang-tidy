@@ -1,6 +1,6 @@
 ---
-Checks: 'boost-*,bugprone-*,-bugprone-easily-swappable-parameters,cert-*,clang-analyzer-*,clang-diagnostic-*,concurrency-*,cppcoreguidelines-*,-cppcoreguidelines-avoid-magic-numbers,misc-*,-misc-include-cleaner,-misc-no-recursion,modernize-*,-modernize-use-trailing-return-type,-modernize-use-auto,performance-*,-performance-avoid-endl,-performance-unnecessary-value-param,-performance-enum-size,portability-*,readability-*,-readability-braces-around-statements,-readability-magic-numbers,-readability-identifier-length,-readability-avoid-const-params-in-decls,-readability-named-parameter,-readability-convert-member-functions-to-static'
-WarningsAsErrors: '*,-readability-function-cognitive-complexity'
+Checks: 'boost-*,bugprone-*,-bugprone-easily-swappable-parameters,cert-*,clang-analyzer-*,clang-diagnostic-*,concurrency-*,cppcoreguidelines-*,-cppcoreguidelines-avoid-magic-numbers,misc-*,-misc-include-cleaner,-misc-no-recursion,modernize-*,-modernize-use-trailing-return-type,-modernize-use-auto,performance-*,-performance-avoid-endl,-performance-unnecessary-value-param,-performance-enum-size,portability-*,readability-*,-readability-braces-around-statements,-readability-magic-numbers,-readability-identifier-length,-readability-avoid-const-params-in-decls,-readability-named-parameter,-readability-convert-member-functions-to-static,-readability-function-cognitive-complexity'
+WarningsAsErrors: '*'
 HeaderFileExtensions:
   - hpp
 ImplementationFileExtensions:

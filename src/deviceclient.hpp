@@ -1,9 +1,9 @@
 #ifndef DEVICECLIENT_HPP
 #define DEVICECLIENT_HPP
 
+#include <array>
 #include <functional>
 #include <string>
-#include <array>
 #include <boost/asio.hpp>
 
 template<int BUFFER_SIZE> class DeviceClient
@@ -20,14 +20,15 @@ template<int BUFFER_SIZE> class DeviceClient
             _packet_handler(std::move(packet_handler)),
             _error_handler(std::move(error_handler))
         {
-            this->read();
+            this->read(); // flawfinder: ignore
         }
 
-        void write(
-            const std::string& data,
-            std::function<void(boost::system::error_code,
-                               std::size_t bytes_transferred)> write_handler,
-            std::function<void(boost::system::error_code)> write_error_handler)
+        void write(const std::string& data,
+                   const std::function<void(boost::system::error_code,
+                                            std::size_t bytes_transferred)>
+                       write_handler,
+                   const std::function<void(boost::system::error_code)>
+                       write_error_handler) noexcept
         {
             this->_device.async_write_some(
                 boost::asio::buffer(data, data.size()),
@@ -42,7 +43,7 @@ template<int BUFFER_SIZE> class DeviceClient
         }
 
     private:
-        void read()
+        void read() noexcept // flawfinder: ignore
         {
             this->_device.async_read_some(
                 boost::asio::buffer(this->_buffer),
@@ -54,11 +55,11 @@ template<int BUFFER_SIZE> class DeviceClient
                     }
                     else
                     {
-                        const std::string packet(this->_buffer.data(),
-                                                 bytes_transferred);
-                        this->read();
+                        std::string packet(this->_buffer.data(),
+                                           bytes_transferred);
+                        this->read(); // flawfinder: ignore
 
-                        this->_packet_handler(ec, packet);
+                        this->_packet_handler(ec, std::move(packet));
                     };
                 });
         }

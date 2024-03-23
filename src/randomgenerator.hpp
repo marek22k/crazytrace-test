@@ -1,5 +1,5 @@
-#ifndef RANDOM_HPP
-#define RANDOM_HPP
+#ifndef RANDOMGENERATOR_HPP
+#define RANDOMGENERATOR_HPP
 
 #include <random>
 #include <cstddef>

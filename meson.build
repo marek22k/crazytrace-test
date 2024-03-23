@@ -24,9 +24,26 @@ sources = files(
     'src/randomgenerator.cpp',
     'src/tun_tap.cpp'
 )
+headers = files(
+    'src/configuration.hpp',
+    'src/crazytrace.hpp',
+    'src/deviceclient.hpp',
+    'src/loglevel.hpp',
+    'src/postup_commands.hpp',
+    'src/nodecontainer.hpp',
+    'src/nodeinfo.hpp',
+    'src/nodereply.hpp',
+    'src/noderequest.hpp',
+    'src/randomgenerator.hpp',
+    'src/tun_tap.hpp'
+)
 tests_sources = files(
+    'tests/nodecontainer_test.cpp',
     'tests/nodeinfo_test.cpp',
-    'tests/nodeinfo_children_test.cpp'
+    'tests/nodeinfo_children_test.cpp',
+    'tests/nodereply_test.cpp',
+    'tests/noderequest_test.cpp',
+    'tests/randomgenerator_test.cpp'
 )
 
 cpp_compiler = meson.get_compiler('cpp')
@@ -70,7 +87,7 @@ if flawfinder.found()
     run_target('flawfinder', command: [
         flawfinder,
         '--error-level=0',
-        sources
+        sources + tests_sources + headers
     ])
 endif
 
