@@ -37,6 +37,11 @@ LogLevel::LogLevel(const std::string& log_level_string)
     }
 }
 
+const boost::log::trivial::severity_level& LogLevel::get_log_level() const noexcept
+{
+    return this->_log_level;
+}
+
 void LogLevel::apply() const
 {
     boost::log::core::get()->set_filter(boost::log::trivial::severity >=
