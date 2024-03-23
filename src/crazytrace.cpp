@@ -45,7 +45,7 @@ void Crazytrace::_handle_packet(const boost::system::error_code,
             {
                 BOOST_LOG_TRIVIAL(debug) << request;
                 BOOST_LOG_TRIVIAL(debug) << reply;
-                std::string reply_packet = reply.to_packet();
+                const std::string reply_packet = reply.to_packet();
                 this->_client.write(
                     reply_packet,
                     [](const boost::system::error_code&,

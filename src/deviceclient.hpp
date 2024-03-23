@@ -1,6 +1,11 @@
 #ifndef DEVICECLIENT_HPP
 #define DEVICECLIENT_HPP
 
+#include <functional>
+#include <string>
+#include <array>
+#include <boost/asio.hpp>
+
 template<int BUFFER_SIZE> class DeviceClient
 {
     public:
@@ -12,8 +17,8 @@ template<int BUFFER_SIZE> class DeviceClient
             std::function<void(boost::system::error_code)> error_handler) :
             _device(ex, native_handler),
             _buffer(),
-            _packet_handler(packet_handler),
-            _error_handler(error_handler)
+            _packet_handler(std::move(packet_handler)),
+            _error_handler(std::move(error_handler))
         {
             this->read();
         }

@@ -1,10 +1,8 @@
 #ifndef CRAZYTRACE_HPP
 #define CRAZYTRACE_HPP
 
-#include <array>
 #include <memory>
 #include <string>
-#include <utility>
 #include <cstdlib>
 #include <boost/asio.hpp>
 #include <boost/log/trivial.hpp>
