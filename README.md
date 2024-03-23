@@ -6,6 +6,10 @@ What happens if a traceroute with the same TTL/hop limit is received from two di
 
 crazytrace is a network simulation program that can be used to see how different ping and traceroute implementations react when the sender address is different than expected.
 
+## Building
+
+See [BUILDING.md](BUILDING.md).
+
 ## How it works?
 
 crazytrace uses several libraries and tricks to create a virtual TAP adapter behind which the simulated network is hidden.
