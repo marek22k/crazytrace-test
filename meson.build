@@ -56,6 +56,7 @@ if cppcheck.found()
 
         # Problems with detecting system libraries
         '--suppress=missingIncludeSystem',
+        '--suppress=unmatchedSuppression',
 
         '--enable=warning,style,information,missingInclude',
         '--error-exitcode=1',

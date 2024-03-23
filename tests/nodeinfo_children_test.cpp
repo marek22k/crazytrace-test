@@ -4,7 +4,7 @@
 #include <tins/tins.h>
 #include "nodeinfo.hpp"
 
-class nodeinfo_children_test : public testing::Test
+class NodeInfoChildrenTest : public testing::Test
 {
     protected:
         // cppcheck-suppress duplInheritedMember
@@ -64,17 +64,17 @@ class nodeinfo_children_test : public testing::Test
 };
 
 // NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables)
-std::unique_ptr<NodeInfo> nodeinfo_children_test::root_node;
-std::shared_ptr<NodeInfo> nodeinfo_children_test::child_node1;
-std::shared_ptr<NodeInfo> nodeinfo_children_test::child_node2;
-std::shared_ptr<NodeInfo> nodeinfo_children_test::child_node3;
-std::shared_ptr<NodeInfo> nodeinfo_children_test::child_node3_child1;
-std::shared_ptr<NodeInfo> nodeinfo_children_test::child_node3_child2;
-std::shared_ptr<NodeInfo> nodeinfo_children_test::child_node3_child2_child1;
+std::unique_ptr<NodeInfo> NodeInfoChildrenTest::root_node;
+std::shared_ptr<NodeInfo> NodeInfoChildrenTest::child_node1;
+std::shared_ptr<NodeInfo> NodeInfoChildrenTest::child_node2;
+std::shared_ptr<NodeInfo> NodeInfoChildrenTest::child_node3;
+std::shared_ptr<NodeInfo> NodeInfoChildrenTest::child_node3_child1;
+std::shared_ptr<NodeInfo> NodeInfoChildrenTest::child_node3_child2;
+std::shared_ptr<NodeInfo> NodeInfoChildrenTest::child_node3_child2_child1;
 
 // NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
 
-TEST_F(nodeinfo_children_test, print)
+TEST_F(NodeInfoChildrenTest, Print)
 {
     /* Testing the print function */
     std::ostringstream test_output;
@@ -100,14 +100,14 @@ TEST_F(nodeinfo_children_test, print)
               "hoplimit=64 fd00::3:2:1\n");
 }
 
-TEST_F(nodeinfo_children_test, max_depth)
+TEST_F(NodeInfoChildrenTest, MaxDepth)
 {
     EXPECT_EQ(root_node->max_depth(), 4);
     EXPECT_EQ(child_node3_child2->max_depth(), 2);
     EXPECT_EQ(child_node1->max_depth(), 1);
 }
 
-TEST_F(nodeinfo_children_test, get_route_to)
+TEST_F(NodeInfoChildrenTest, GetRouteTo)
 {
     auto route1 = child_node3->get_route_to(
         Tins::IPv6Address(std::string("fd00::3:2:1")));
