@@ -2,7 +2,6 @@
 #define CRAZYTRACE_HPP
 
 #include <array>
-#include <iostream>
 #include <memory>
 #include <string>
 #include <utility>
@@ -10,6 +9,7 @@
 #include <boost/asio.hpp>
 #include <boost/log/trivial.hpp>
 #include <tins/tins.h>
+#include "deviceclient.hpp"
 #include "nodecontainer.hpp"
 #include "noderequest.hpp"
 
@@ -21,14 +21,12 @@ class Crazytrace
                             std::shared_ptr<NodeContainer> nodecontainer);
 
     private:
-        void start();
         void _handle_error(const boost::system::error_code error);
         void _handle_packet(const boost::system::error_code error,
                             const std::string& packet_data);
 
-        boost::asio::posix::stream_descriptor _device;
         std::shared_ptr<NodeContainer> _nodecontainer;
-        std::array<char, 1520> _buffer;
+        DeviceClient<1520> _client;
 };
 
 #endif
