@@ -24,10 +24,7 @@ install: setup compile
 	meson install -C build
 
 debian:
-	sed "s/%VERSION%/$(shell date +%s)-$(shell git describe --long --always)/" -i debian/changelog
-	sed "s/%DATE%/$(shell date --rfc-email)/" -i debian/changelog
-	cat debian/changelog
-	dpkg-buildpackage --build=full
+	dpkg-buildpackage -b
 
 check: cppcheck flawfinder clangtidy
 
