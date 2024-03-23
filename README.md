@@ -7,6 +7,10 @@ What happens if a traceroute with the same TTL/hop limit is received from two di
 
 crazytrace is a network simulation program that can be used to see how different ping and traceroute implementations react when the sender address is different than expected.
 
+## And what the hell does crazytrace do now? Simply explained.
+
+When a network packet is used, it passes through several devices (also known as routers) on its journey to its destination. There are "traceroute" programs to determine these devices and thus the path that the packet takes. These usually query the path several times. What would happen if a certain device has two addresses on this path with which it responds? To see how the programs behave in this case, crazytrace simulates such a device (or several, depending on the configuration). This is achieved by creating a virtual Ethernet adapter behind which the simulated device or the simulated devices are located.
+
 ## Building
 
 See [BUILDING.md](BUILDING.md).
