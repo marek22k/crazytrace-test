@@ -115,6 +115,22 @@ void NodeInfo::print(std::ostream& os, int layer) const
     }
 }
 
+bool NodeInfo::operator==(const NodeInfo& other) const
+{
+    return this->_addresses == other._addresses &&
+           this->_mac_address == other._mac_address &&
+           this->_hoplimit == other._hoplimit &&
+           this->_nodes.size() == other._nodes.size() &&
+           std::equal(this->_nodes.begin(),
+                      this->_nodes.end(),
+                      other._nodes.begin(),
+                      [](const std::shared_ptr<NodeInfo>& node1,
+                         const std::shared_ptr<NodeInfo>& node2)
+                      {
+                          return *node1 == *node2;
+                      });
+}
+
 std::ostream& operator<<(std::ostream& os, NodeInfo const & nodeinfo)
 {
     os << "NodeInfo: hoplimit=" << nodeinfo._hoplimit;

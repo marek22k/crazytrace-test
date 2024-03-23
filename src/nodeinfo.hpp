@@ -30,6 +30,7 @@ class NodeInfo
         [[nodiscard]] std::size_t max_depth();
         void print(std::ostream& os, int layer = 0) const;
 
+        bool operator==(const NodeInfo& other) const;
         friend std::ostream& operator<<(std::ostream& os,
                                         NodeInfo const & nodeinfo);
 

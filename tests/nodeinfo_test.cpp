@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 #include <sstream>
+#include <memory>
 #include <tins/tins.h>
 #include "nodeinfo.hpp"
 
 TEST(NodeInfoTest, MacAddress)
-
 {
     const Tins::HWAddress<6> mac_address(std::string("52:54:00:b2:fa:7f"));
     NodeInfo nodeinfo;
@@ -61,6 +61,46 @@ TEST(NodeInfoTest, HasAddress)
     nodeinfo.add_address(address2);
     EXPECT_TRUE(nodeinfo.has_address(address1));
     EXPECT_TRUE(nodeinfo.has_address(address2));
+}
+
+TEST(NodeInfoTest, Comparisons)
+{
+    NodeInfo nodeinfo1;
+    nodeinfo1.set_hoplimit(10);
+
+    NodeInfo nodeinfo2;
+    nodeinfo2.set_hoplimit(20);
+
+    EXPECT_FALSE(nodeinfo1 == nodeinfo2);
+    nodeinfo2.set_hoplimit(10);
+    EXPECT_TRUE(nodeinfo1 == nodeinfo2);
+
+    const Tins::IPv6Address address1(std::string("fd00::1"));
+    const Tins::IPv6Address address2(std::string("fd00::2"));
+    nodeinfo1.add_address(address1);
+    nodeinfo1.add_address(address2);
+    EXPECT_FALSE(nodeinfo1 == nodeinfo2);
+    nodeinfo2.add_address(address1);
+    EXPECT_FALSE(nodeinfo1 == nodeinfo2);
+    nodeinfo2.add_address(address2);
+    EXPECT_TRUE(nodeinfo1 == nodeinfo2);
+
+    nodeinfo1.set_mac_address(
+        Tins::HWAddress<6>(std::string("52:54:00:b2:fa:7f")));
+    EXPECT_FALSE(nodeinfo1 == nodeinfo2);
+    nodeinfo2.set_mac_address(
+        Tins::HWAddress<6>(std::string("52:54:00:b2:fa:7f")));
+    EXPECT_TRUE(nodeinfo1 == nodeinfo2);
+
+    std::shared_ptr<NodeInfo> nodeinfo3 = std::make_shared<NodeInfo>();
+    nodeinfo3->set_hoplimit(50);
+    nodeinfo1.add_node(nodeinfo3);
+    EXPECT_FALSE(nodeinfo1 == nodeinfo2);
+
+    std::shared_ptr<NodeInfo> nodeinfo4 = std::make_shared<NodeInfo>();
+    nodeinfo4->set_hoplimit(50);
+    nodeinfo2.add_node(nodeinfo4);
+    EXPECT_TRUE(nodeinfo1 == nodeinfo2);
 }
 
 TEST(NodeInfoTest, Output)
