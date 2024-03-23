@@ -101,7 +101,6 @@ std::unique_ptr<NodeContainer> NodeContainerTest::container3;
 
 TEST_F(NodeContainerTest, Print)
 {
-    /* Testing the print function */
     std::ostringstream test_output;
 
     container1->print(test_output);
@@ -124,7 +123,6 @@ TEST_F(NodeContainerTest, Print)
 
 TEST_F(NodeContainerTest, Output)
 {
-    /* Testing the print function */
     std::ostringstream test_output;
 
     test_output << *container1;
@@ -138,3 +136,12 @@ TEST_F(NodeContainerTest, Output)
     test_output << *container3;
     EXPECT_EQ(test_output.str(), "NodeContainer: 0 childnodes");
 }
+
+TEST_F(NodeContainerTest, MaxDepth)
+{
+    EXPECT_EQ(container1->max_depth(), 3);
+    EXPECT_EQ(container2->max_depth(), 1);
+    EXPECT_EQ(container3->max_depth(), 0);
+}
+
+/* Missing get reply */
