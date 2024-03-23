@@ -207,7 +207,73 @@ TEST(NodeReplyTest, IcmpTimeExceededIcmpEchoRequest)
               NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST);
 }
 
-/* Port unreachable test */
+TEST(NodeReplyTest, IcmpPortUnreachable)
+{
+    const Tins::HWAddress<6> source_mac("52:54:00:b2:fa:7f");
+    const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7e");
+    const Tins::IPv6Address source_address("fd00::1");
+    const Tins::IPv6Address destination_address("fd00::2");
+    const Tins::IPv6Address original_destination_address("fd00::3");
+    constexpr int hoplimit = 55;
+    constexpr int udp_sport = 46432;
+    constexpr int udp_dport = 34344;
+    const Tins::RawPDU::payload_type payload = {8, 4, 5, 9, 255, 0, 0, 0, 0, 0};
+
+    /* Reply */
+    NodeReply reply(NodeReplyType::ICMP_PORT_UNREACHABLE,
+                    destination_mac,
+                    destination_address,
+                    source_mac,
+                    source_address);
+    reply.set_hoplimit(hoplimit);
+    reply.udp_response(payload, udp_dport, udp_sport);
+    reply.packet_reassembly(original_destination_address);
+    const std::string actual_packet = reply.to_packet();
+
+    /* Expected packet */
+    Tins::IPv6 embedded_packet =
+        Tins::IPv6(original_destination_address, destination_address) /
+        Tins::UDP(udp_dport, udp_sport);
+    embedded_packet.hop_limit(1);
+    Tins::UDP& embedded_inner_udp =
+        embedded_packet.rfind_pdu<Tins::UDP>();
+    embedded_inner_udp.inner_pdu(Tins::RawPDU(payload));
+    Tins::PDU::serialization_type serialized_embedded_packet =
+        embedded_packet.serialize();
+
+    Tins::EthernetII packet = Tins::EthernetII(destination_mac, source_mac) /
+                              Tins::IPv6(destination_address, source_address) /
+                              Tins::ICMPv6(Tins::ICMPv6::Types::DEST_UNREACHABLE);
+    Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
+    inner_ipv6.hop_limit(hoplimit);
+    Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
+    inner_icmpv6.code(4);
+    inner_icmpv6.inner_pdu(Tins::RawPDU(serialized_embedded_packet));
+
+    const Tins::PDU::serialization_type serialized_packet = packet.serialize();
+    const std::string expected_packet(serialized_packet.begin(),
+                                      serialized_packet.end());
+
+    /* Tests */
+    try
+    {
+        reply.icmp_echo_reply(78, 1, {});
+    }
+    catch (const std::exception& e)
+    {
+        SUCCEED();
+        EXPECT_EQ(std::string(e.what()),
+                  "NodeReply has no type that would require ICMP echo reply information.");
+    }
+
+    std::ostringstream test_output;
+    test_output << reply;
+    EXPECT_EQ(test_output.str(), "REPLY ICMP_PORT_UNREACHABLE: fd00::1 (52:54:00:b2:fa:7f) -> fd00::2 (52:54:00:b2:fa:7e) Hoplimit=55: DPORT=34344 SPORT=46432 LENGTH=10");
+
+    EXPECT_EQ(actual_packet, expected_packet);
+    EXPECT_EQ(reply.get_type(),
+              NodeReplyType::ICMP_PORT_UNREACHABLE);
+}
 
 TEST(NodeReplyTest, IcmpTimeExceededUdp)
 {
