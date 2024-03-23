@@ -12,7 +12,7 @@ leaksanitizer: setup
 	meson setup --reconfigure --debug -Db_sanitize=leak build
 
 undefinedsanitizer: setup
-	meson setup --reconfigure --debug -Db_sanitize=leak build
+	meson setup --reconfigure --debug -Db_sanitize=undefined build
 
 clean: setup
 	meson compile --clean -C build
