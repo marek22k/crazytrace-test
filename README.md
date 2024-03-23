@@ -73,8 +73,27 @@ nodes:
 This would generate the following topology:
 ![Topology](topology.png)
 
-If a node has several IPv6 addresses, it listens to all of them and responds randomly with one.
-If no hop limit is specified, 64 is used.
+The log level can have one of the following values:
+- `trace`
+- `debug`
+- `info`
+- `warning`
+- `error`
+- `fatal`
+
+For production, `info` or lower is empheolen.
+
+The device name is the name of the TAP interface that crazytrace creates.
+
+The post-up commands are a series of commands that are executed by the command processor of the operating system after the TAP interface has been created. These commands are executed with the same rights as crazytrace. They receive no input. Their output is ignored. crazytrace aborts if one of the commands has not been successfully completed.
+
+A list of nodes then appears in the configuration file. These can have the following attributes:
+- `mac`: The nodes in the first level must have a MAC address. crazytrace acts as if these nodes were directly on the TAP interface. All child nodes of these are behind them, so that no MAC address is required for communication.
+- `addresses`: A list of IP addresses that the node should have. It responds to all of them and replies with a random one.
+- `hoplimit`: Hop limit with which the response is to be sent. ICMP NDP packets are always sent with a hop limit of 255. If no hop limit is specified, a hop limit of 64 is used.
+- `nodes`: A list of nodes (which are structured in the same way) which are behind the current one in the simulated network.
+
+The configuration is written in YAML.
 
 ### Which MAC addresses can I use without any problems?
 
@@ -87,6 +106,8 @@ xE-xx-xx-xx-xx-xx
 ```
 
 ## How do I start crazytrace?
+
+crazytrace is configured via a configuration file. The path to this file is given as the first (and only) argument.
 
 ```
 # /path/to/crazytrace /path/to/config.yaml
