@@ -25,11 +25,11 @@ TEST(NodeRequestTest, EchoRequest)
 
     /* Serializing the package is necessary to automatically calculate checksums
      * and other fields. */
-    Tins::PDU::serialization_type serialized_packet = packet.serialize();
-    Tins::EthernetII final_packet(serialized_packet.data(),
+    const Tins::PDU::serialization_type serialized_packet = packet.serialize();
+    const Tins::EthernetII final_packet(serialized_packet.data(),
                                   serialized_packet.size());
 
-    NodeRequest request(final_packet);
+    const NodeRequest request(final_packet);
 
     EXPECT_EQ(request.get_type(), NodeRequestType::ICMP_ECHO_REQUEST);
     EXPECT_EQ(request.get_source_mac(), source_mac);
@@ -71,11 +71,11 @@ TEST(NodeRequestTest, NdpRequest)
 
     /* Serializing the package is necessary to automatically calculate checksums
      * and other fields. */
-    Tins::PDU::serialization_type serialized_packet = packet.serialize();
-    Tins::EthernetII final_packet(serialized_packet.data(),
+    const Tins::PDU::serialization_type serialized_packet = packet.serialize();
+    const Tins::EthernetII final_packet(serialized_packet.data(),
                                   serialized_packet.size());
 
-    NodeRequest request(final_packet);
+    const NodeRequest request(final_packet);
 
     EXPECT_EQ(request.get_type(), NodeRequestType::ICMP_NDP);
     EXPECT_EQ(request.get_source_mac(), source_mac);
@@ -117,11 +117,11 @@ TEST(NodeRequestTest, UdpRequest)
 
     /* Serializing the package is necessary to automatically calculate checksums
      * and other fields. */
-    Tins::PDU::serialization_type serialized_packet = packet.serialize();
-    Tins::EthernetII final_packet(serialized_packet.data(),
+    const Tins::PDU::serialization_type serialized_packet = packet.serialize();
+    const Tins::EthernetII final_packet(serialized_packet.data(),
                                   serialized_packet.size());
 
-    NodeRequest request(final_packet);
+    const NodeRequest request(final_packet);
 
     EXPECT_EQ(request.get_type(), NodeRequestType::UDP);
     EXPECT_EQ(request.get_source_mac(), source_mac);
@@ -160,11 +160,11 @@ TEST(NodeRequestTest, UnknownRequest)
 
     /* Serializing the package is necessary to automatically calculate checksums
      * and other fields. */
-    Tins::PDU::serialization_type serialized_packet = packet.serialize();
-    Tins::EthernetII final_packet(serialized_packet.data(),
+    const Tins::PDU::serialization_type serialized_packet = packet.serialize();
+    const Tins::EthernetII final_packet(serialized_packet.data(),
                                   serialized_packet.size());
 
-    NodeRequest request(final_packet);
+    const NodeRequest request(final_packet);
 
     EXPECT_EQ(request.get_type(), NodeRequestType::UNKNOWN);
     EXPECT_EQ(request.get_source_mac(), source_mac);
