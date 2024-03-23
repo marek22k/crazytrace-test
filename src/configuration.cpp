@@ -38,7 +38,7 @@ void Configuration::load(const std::string& filename)
     }
 }
 
-void Configuration::validate_node_depth()
+void Configuration::validate_node_depth() const
 {
     const std::size_t max_depth = this->_node_container->max_depth();
     if (max_depth > 255)
@@ -99,14 +99,11 @@ void Configuration::load_nodes(const YAML::Node& nodes_config,
             if (!node_config["addresses"].IsSequence())
                 throw std::runtime_error("Failed to load configuration file: "
                                          "Addresses is not a sequence.");
-            if (mac)
-            {
-                if (!node_config["mac"].IsDefined())
-                    throw std::runtime_error("Failed to load configuration "
-                                             "file: Missing mac attribute.");
-            }
+            if (mac && !node_config["mac"].IsDefined())
+                throw std::runtime_error("Failed to load configuration "
+                                         "file: Missing mac attribute.");
 
-            const std::shared_ptr<NodeInfo> node = std::make_shared<NodeInfo>();
+            const auto node = std::make_shared<NodeInfo>();
 
             if (mac)
             {
@@ -114,13 +111,13 @@ void Configuration::load_nodes(const YAML::Node& nodes_config,
                     Tins::HWAddress<6>(node_config["mac"].as<std::string>()));
             }
 
-            const YAML::Node addresses_config = node_config["addresses"];
-            for (const auto& address_config : addresses_config)
+            for (const YAML::Node addresses_config = node_config["addresses"];
+                 const auto& address_config : addresses_config)
                 node->add_address(
                     Tins::IPv6Address(address_config.as<std::string>()));
 
-            const YAML::Node hoplimit_config = node_config["hoplimit"];
-            if (hoplimit_config.IsDefined())
+            if (const YAML::Node hoplimit_config = node_config["hoplimit"];
+                hoplimit_config.IsDefined())
                 node->set_hoplimit(hoplimit_config.as<int>());
 
             load_nodes(node_config["nodes"], node, false);

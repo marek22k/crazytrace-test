@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <sstream>
 #include <memory>
+#include <sstream>
 #include <tins/tins.h>
 #include "nodeinfo.hpp"
 

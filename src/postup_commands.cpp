@@ -1,6 +1,6 @@
 #include "postup_commands.hpp"
 
-void PostupCommands::add_postup_command(std::string command)
+void PostupCommands::add_postup_command(const std::string& command)
 {
     this->_postup_commands.push_back(command);
 }

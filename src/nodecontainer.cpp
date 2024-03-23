@@ -17,8 +17,8 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
             const Tins::HWAddress<6> source_mac =
                 route.back()->get_mac_address();
 
-            const int hoplimit = request.get_hoplimit();
-            if (static_cast<std::size_t>(hoplimit) >= route.size())
+            if (const int hoplimit = request.get_hoplimit();
+                static_cast<std::size_t>(hoplimit) >= route.size())
             {
                 /* target reached */
                 const std::shared_ptr<NodeInfo>& reached_node = route[0];
@@ -130,14 +130,15 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
             /* Only the first level of nodes can have MAC addresses, as all
                other child nodes are "hidden" behind them and routing to them
                should be simulated. */
-            const auto found_node = std::find_if(
-                this->_nodes.begin(),
-                this->_nodes.end(),
-                [&](const std::shared_ptr<NodeInfo>& node)
-                {
-                    return node->has_address(request.get_destination_address());
-                });
-            if (found_node != this->_nodes.end())
+            if (const auto found_node =
+                    std::find_if(this->_nodes.begin(),
+                                 this->_nodes.end(),
+                                 [&](const std::shared_ptr<NodeInfo>& node)
+                                 {
+                                     return node->has_address(
+                                         request.get_destination_address());
+                                 });
+                found_node != this->_nodes.end())
             {
                 /* We have found a node with the corresponding MAC address.
                     Other nodes with the same MAC address must not exist. */
@@ -162,7 +163,7 @@ void NodeContainer::add_node(std::shared_ptr<NodeInfo> node) noexcept
     this->_nodes.insert(node);
 }
 
-std::size_t NodeContainer::max_depth()
+std::size_t NodeContainer::max_depth() const
 {
     std::size_t max = 0;
     for (const auto& node : this->_nodes)
@@ -173,8 +174,8 @@ std::size_t NodeContainer::max_depth()
     return max;
 }
 
-std::vector<std::shared_ptr<NodeInfo>>
-    NodeContainer::get_route_to(const Tins::IPv6Address& destination_address)
+std::vector<std::shared_ptr<NodeInfo>> NodeContainer::get_route_to(
+    const Tins::IPv6Address& destination_address) const
 {
     for (const auto& node : this->_nodes)
     {

@@ -35,7 +35,7 @@ class Configuration
         void load_nodes(const YAML::Node& nodes_config,
                         std::shared_ptr<T> nodes,
                         bool mac = true);
-        void validate_node_depth();
+        void validate_node_depth() const;
 
         std::string _device_name;
         std::shared_ptr<NodeContainer> _node_container;

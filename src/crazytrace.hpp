@@ -19,7 +19,7 @@ class Crazytrace
                             std::shared_ptr<NodeContainer> nodecontainer);
 
     private:
-        void _handle_error(const boost::system::error_code error);
+        void _handle_error(const boost::system::error_code error) const;
         void _handle_packet(const boost::system::error_code error,
                             const std::string& packet_data);
 
