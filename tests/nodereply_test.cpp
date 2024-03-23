@@ -171,7 +171,7 @@ TEST(NodeReplyTest, IcmpTimeExceededIcmpEchoRequest)
     embedded_inner_icmpv6.identifier(icmp_identifier);
     embedded_inner_icmpv6.sequence(icmp_sequence);
     embedded_inner_icmpv6.inner_pdu(Tins::RawPDU(payload));
-    Tins::PDU::serialization_type serialized_embedded_packet =
+    const Tins::PDU::serialization_type serialized_embedded_packet =
         embedded_packet.serialize();
 
     Tins::EthernetII packet = Tins::EthernetII(destination_mac, source_mac) /
@@ -240,7 +240,7 @@ TEST(NodeReplyTest, IcmpPortUnreachable)
     embedded_packet.hop_limit(1);
     Tins::UDP& embedded_inner_udp = embedded_packet.rfind_pdu<Tins::UDP>();
     embedded_inner_udp.inner_pdu(Tins::RawPDU(payload));
-    Tins::PDU::serialization_type serialized_embedded_packet =
+    const Tins::PDU::serialization_type serialized_embedded_packet =
         embedded_packet.serialize();
 
     Tins::EthernetII packet =
@@ -311,7 +311,7 @@ TEST(NodeReplyTest, IcmpTimeExceededUdp)
     embedded_packet.hop_limit(1);
     Tins::UDP& embedded_inner_udp = embedded_packet.rfind_pdu<Tins::UDP>();
     embedded_inner_udp.inner_pdu(Tins::RawPDU(payload));
-    Tins::PDU::serialization_type serialized_embedded_packet =
+    const Tins::PDU::serialization_type serialized_embedded_packet =
         embedded_packet.serialize();
 
     Tins::EthernetII packet = Tins::EthernetII(destination_mac, source_mac) /
@@ -436,7 +436,8 @@ TEST(NodeReplyTest, IcmpNdp)
     std::ostringstream test_output;
     test_output << reply;
     EXPECT_EQ(test_output.str(),
-              "REPLY ICMP_NDP: fd00::1 (52:54:00:b2:fa:7f) -> fd00::2 (52:54:00:b2:fa:7e)");
+              "REPLY ICMP_NDP: fd00::1 (52:54:00:b2:fa:7f) -> fd00::2 "
+              "(52:54:00:b2:fa:7e)");
 
     EXPECT_EQ(actual_packet, expected_packet);
     EXPECT_EQ(reply.get_type(), NodeReplyType::ICMP_NDP);
