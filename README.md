@@ -1,6 +1,7 @@
 # Crazy traceroute
 
 [![pipeline badge](https://ci.codeberg.org/api/badges/13147/status.svg)](https://ci.codeberg.org/repos/13147)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/8694/badge)](https://www.bestpractices.dev/projects/8694)
 
 What happens if a traceroute with the same TTL/hop limit is received from two different source addresses? How will they react?
 
