@@ -15,6 +15,10 @@ When a network packet is used, it passes through several devices (also known as 
 
 See [BUILDING.md](BUILDING.md).
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## How it works?
 
 crazytrace uses several libraries and tricks to create a virtual TAP adapter behind which the simulated network is hidden.
