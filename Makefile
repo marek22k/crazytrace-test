@@ -3,16 +3,16 @@
 all: setup compile
 
 setup:
-	test -d build || meson setup . build
+	test -d build || meson setup build
 
 addresssanitizer: setup
-	meson setup --reconfigure --debug -Db_sanitize=address . build
+	meson setup --reconfigure --debug -Db_sanitize=address build
 
 leaksanitizer: setup
-	meson setup --reconfigure --debug -Db_sanitize=leak . build
+	meson setup --reconfigure --debug -Db_sanitize=leak build
 
 undefinedsanitizer: setup
-	meson setup --reconfigure --debug -Db_sanitize=leak . build
+	meson setup --reconfigure --debug -Db_sanitize=leak build
 
 clean: setup
 	meson compile --clean -C build
