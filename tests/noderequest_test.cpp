@@ -27,7 +27,7 @@ TEST(NodeRequestTest, EchoRequest)
      * and other fields. */
     const Tins::PDU::serialization_type serialized_packet = packet.serialize();
     const Tins::EthernetII final_packet(serialized_packet.data(),
-                                  serialized_packet.size());
+                                        serialized_packet.size());
 
     const NodeRequest request(final_packet);
 
@@ -73,7 +73,7 @@ TEST(NodeRequestTest, NdpRequest)
      * and other fields. */
     const Tins::PDU::serialization_type serialized_packet = packet.serialize();
     const Tins::EthernetII final_packet(serialized_packet.data(),
-                                  serialized_packet.size());
+                                        serialized_packet.size());
 
     const NodeRequest request(final_packet);
 
@@ -119,7 +119,7 @@ TEST(NodeRequestTest, UdpRequest)
      * and other fields. */
     const Tins::PDU::serialization_type serialized_packet = packet.serialize();
     const Tins::EthernetII final_packet(serialized_packet.data(),
-                                  serialized_packet.size());
+                                        serialized_packet.size());
 
     const NodeRequest request(final_packet);
 
@@ -162,7 +162,7 @@ TEST(NodeRequestTest, UnknownRequest)
      * and other fields. */
     const Tins::PDU::serialization_type serialized_packet = packet.serialize();
     const Tins::EthernetII final_packet(serialized_packet.data(),
-                                  serialized_packet.size());
+                                        serialized_packet.size());
 
     const NodeRequest request(final_packet);
 
