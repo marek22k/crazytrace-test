@@ -19,7 +19,7 @@ Crazytrace::Crazytrace(boost::asio::any_io_executor ex,
 {
 }
 
-void Crazytrace::_handle_error(const boost::system::error_code error)
+void Crazytrace::_handle_error(const boost::system::error_code error) const
 {
     BOOST_LOG_TRIVIAL(fatal)
         << "Error in handle_packet: " << error.message() << std::endl;

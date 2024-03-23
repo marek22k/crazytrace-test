@@ -7,7 +7,7 @@
 class PostupCommands
 {
     public:
-        void add_postup_command(std::string command);
+        void add_postup_command(const std::string& command);
         void execute_commands() const;
 
     private:

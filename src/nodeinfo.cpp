@@ -65,7 +65,7 @@ const Tins::IPv6Address& NodeInfo::get_address()
     return this->_addresses[address_number];
 }
 
-std::size_t NodeInfo::max_depth()
+std::size_t NodeInfo::max_depth() const
 {
     std::size_t max = 0;
     for (const auto& node : this->_nodes)
@@ -77,7 +77,7 @@ std::size_t NodeInfo::max_depth()
 }
 
 std::vector<std::shared_ptr<NodeInfo>>
-    NodeInfo::get_route_to(const Tins::IPv6Address& destination_address)
+    NodeInfo::get_route_to(const Tins::IPv6Address& destination_address) const
 {
     for (const auto& node : this->_nodes)
     {

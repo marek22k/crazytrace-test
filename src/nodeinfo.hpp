@@ -17,7 +17,7 @@ class NodeInfo
     public:
         explicit NodeInfo();
         std::vector<std::shared_ptr<NodeInfo>>
-            get_route_to(const Tins::IPv6Address& destination_address);
+            get_route_to(const Tins::IPv6Address& destination_address) const;
         void set_hoplimit(int hoplimit);
         void set_mac_address(Tins::HWAddress<6> mac_address) noexcept;
         void add_node(std::shared_ptr<NodeInfo> node);
@@ -27,7 +27,7 @@ class NodeInfo
         [[nodiscard]] const Tins::HWAddress<6>&
             get_mac_address() const noexcept;
         [[nodiscard]] const Tins::IPv6Address& get_address();
-        [[nodiscard]] std::size_t max_depth();
+        [[nodiscard]] std::size_t max_depth() const;
         void print(std::ostream& os, int layer = 0) const;
 
         bool operator==(const NodeInfo& other) const;

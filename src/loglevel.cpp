@@ -5,7 +5,7 @@ LogLevel::LogLevel(boost::log::trivial::severity_level log_level) :
 {
 }
 
-LogLevel::LogLevel(const std::string& log_level_string)
+LogLevel::LogLevel(const std::string_view log_level_string)
 {
     if (log_level_string == "trace")
     {
@@ -37,7 +37,8 @@ LogLevel::LogLevel(const std::string& log_level_string)
     }
 }
 
-const boost::log::trivial::severity_level& LogLevel::get_log_level() const noexcept
+const boost::log::trivial::severity_level&
+    LogLevel::get_log_level() const noexcept
 {
     return this->_log_level;
 }

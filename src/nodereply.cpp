@@ -103,16 +103,15 @@ std::string NodeReply::to_packet() const
         case NodeReplyType::ICMP_PORT_UNREACHABLE:
         {
             /* Recreation of the receiving packet */
-            Tins::IPv6 receiving_ipv6 =
-                Tins::IPv6(this->_original_destination_address,
-                           this->_destination_address);
+            Tins::IPv6 receiving_ipv6(this->_original_destination_address,
+                                      this->_destination_address);
             receiving_ipv6.hop_limit(1);
             switch (this->_type)
             {
                 case NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST:
                 {
-                    Tins::ICMPv6 receiving_icmpv6 =
-                        Tins::ICMPv6(Tins::ICMPv6::Types::ECHO_REQUEST);
+                    Tins::ICMPv6 receiving_icmpv6(
+                        Tins::ICMPv6::Types::ECHO_REQUEST);
                     receiving_icmpv6.identifier(this->_icmp_identifier);
                     receiving_icmpv6.sequence(this->_icmp_sequence);
                     receiving_icmpv6.inner_pdu(Tins::RawPDU(this->_payload));
@@ -122,8 +121,7 @@ std::string NodeReply::to_packet() const
                 case NodeReplyType::ICMP_TIME_EXCEEDED_UDP:
                 case NodeReplyType::ICMP_PORT_UNREACHABLE:
                 {
-                    Tins::UDP receiving_udp =
-                        Tins::UDP(this->_udp_dport, this->_udp_sport);
+                    Tins::UDP receiving_udp(this->_udp_dport, this->_udp_sport);
                     receiving_udp.inner_pdu(Tins::RawPDU(this->_payload));
                     receiving_ipv6.inner_pdu(receiving_udp);
                     break;
@@ -206,7 +204,7 @@ std::string NodeReply::to_packet() const
             const Tins::ICMPv6::option address_option(
                 Tins::ICMPv6::OptionTypes::TARGET_ADDRESS,
                 this->_source_mac.size(),
-                &(*this->_source_mac.begin()));
+                this->_source_mac.begin());
             inner_icmpv6.add_option(address_option);
 
             const Tins::PDU::serialization_type serialized_packet =

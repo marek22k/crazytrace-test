@@ -10,8 +10,9 @@ class LogLevel
 {
     public:
         explicit LogLevel(boost::log::trivial::severity_level log_level);
-        explicit LogLevel(const std::string& log_level_string);
-        [[nodiscard]] const boost::log::trivial::severity_level& get_log_level() const noexcept;
+        explicit LogLevel(const std::string_view log_level_string);
+        [[nodiscard]] const boost::log::trivial::severity_level&
+            get_log_level() const noexcept;
         void apply() const;
 
     private:

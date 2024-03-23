@@ -60,7 +60,7 @@ template<int BUFFER_SIZE> class DeviceClient
                         this->read(); // flawfinder: ignore
 
                         this->_packet_handler(ec, std::move(packet));
-                    };
+                    }
                 });
         }
 
