@@ -5,7 +5,7 @@ Crazytrace::Crazytrace(boost::asio::any_io_executor ex,
                        std::shared_ptr<NodeContainer> nodecontainer) :
     _nodecontainer(std::move(nodecontainer)),
     _client(
-        ex,
+        std::move(ex),
         native_handler,
         [this](const boost::system::error_code& error,
                const std::string& packet)

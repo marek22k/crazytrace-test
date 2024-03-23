@@ -1,6 +1,7 @@
 # Crazy traceroute
 
 [![pipeline badge](https://ci.codeberg.org/api/badges/13147/status.svg)](https://ci.codeberg.org/repos/13147)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/8694/badge)](https://www.bestpractices.dev/projects/8694)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c7441b6b4d6847558f113aa73d5e7f1e)](https://app.codacy.com/gh/marek22k/crazytrace-mirror/dashboard)
 [![Coverity Badge](https://scan.coverity.com/projects/29920/badge.svg)](https://scan.coverity.com/projects/crazytrace)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=marek22k_crazytrace-mirror&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=marek22k_crazytrace-mirror)
@@ -8,6 +9,22 @@
 What happens if a traceroute with the same TTL/hop limit is received from two different source addresses? How will they react?
 
 crazytrace is a network simulation program that can be used to see how different ping and traceroute implementations react when the sender address is different than expected.
+
+## And what the hell does crazytrace do now? Simply explained.
+
+When a network packet is used, it passes through several devices (also known as routers) on its journey to its destination. There are "traceroute" programs to determine these devices and thus the path that the packet takes. These usually query the path several times. What would happen if a certain device has two addresses on this path with which it responds? To see how the programs behave in this case, crazytrace simulates such a device (or several, depending on the configuration). This is achieved by creating a virtual Ethernet adapter behind which the simulated device or the simulated devices are located.
+
+## Building
+
+See [BUILDING.md](BUILDING.md).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Security
+
+See [SECURITY.md](SECURITY.md).
 
 ## How it works?
 
@@ -63,8 +80,27 @@ nodes:
 This would generate the following topology:
 ![Topology](topology.png)
 
-If a node has several IPv6 addresses, it listens to all of them and responds randomly with one.
-If no hop limit is specified, 64 is used.
+The log level can have one of the following values:
+- `trace`
+- `debug`
+- `info`
+- `warning`
+- `error`
+- `fatal`
+
+For production, `info` or lower is empheolen.
+
+The device name is the name of the TAP interface that crazytrace creates.
+
+The post-up commands are a series of commands that are executed by the command processor of the operating system after the TAP interface has been created. These commands are executed with the same rights as crazytrace. They receive no input. Their output is ignored. crazytrace aborts if one of the commands has not been successfully completed.
+
+A list of nodes then appears in the configuration file. These can have the following attributes:
+- `mac`: The nodes in the first level must have a MAC address. crazytrace acts as if these nodes were directly on the TAP interface. All child nodes of these are behind them, so that no MAC address is required for communication.
+- `addresses`: A list of IP addresses that the node should have. It responds to all of them and replies with a random one.
+- `hoplimit`: Hop limit with which the response is to be sent. ICMP NDP packets are always sent with a hop limit of 255. If no hop limit is specified, a hop limit of 64 is used.
+- `nodes`: A list of nodes (which are structured in the same way) which are behind the current one in the simulated network.
+
+The configuration is written in YAML.
 
 ### Which MAC addresses can I use without any problems?
 
@@ -78,6 +114,18 @@ xE-xx-xx-xx-xx-xx
 
 ## How do I start crazytrace?
 
+crazytrace is configured via a configuration file. The path to this file is given as the first (and only) argument.
+
 ```
 # /path/to/crazytrace /path/to/config.yaml
 ```
+
+## Notes for myself
+
+### Create a new release
+
+To create a new release the following is necessary:
+- Create a changelog entry
+- Create a changelog entry for the Debian package
+- Update the SECURITY.md
+- Create a new git tag

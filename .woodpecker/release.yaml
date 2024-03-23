@@ -1,0 +1,16 @@
+when:
+  - event: tag
+
+steps:
+  - name: release
+    image: codeberg.org/mark22k/ci:latest
+    pull: true
+    commands:
+      - make debian
+      - |
+        for FILE in ../crazytrace_*.deb; do
+          curl --user $CODEBERG_GIT_USERNAME:$CODEBERG_GIT_PASSWORD --upload-file $FILE https://codeberg.org/api/packages/mark22k/debian/pool/stable/main/upload
+        done
+    secrets:
+      - codeberg_git_username
+      - codeberg_git_password

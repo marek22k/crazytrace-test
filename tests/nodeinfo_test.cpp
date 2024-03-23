@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 #include <sstream>
+#include <memory>
 #include <tins/tins.h>
 #include "nodeinfo.hpp"
 
 TEST(NodeInfoTest, MacAddress)
-
 {
     const Tins::HWAddress<6> mac_address(std::string("52:54:00:b2:fa:7f"));
     NodeInfo nodeinfo;

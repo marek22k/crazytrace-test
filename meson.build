@@ -38,6 +38,7 @@ headers = files(
     'src/tun_tap.hpp'
 )
 tests_sources = files(
+    'tests/loglevel_test.cpp',
     'tests/nodecontainer_test.cpp',
     'tests/nodeinfo_test.cpp',
     'tests/nodeinfo_children_test.cpp',

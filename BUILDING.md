@@ -57,18 +57,21 @@ The following command can be used to clean up object files and the like:
 $ make clean
 ```
 
+### Tests
+
+```
+$ make test
+```
+
 ### Building with Sanitizer
 
 To build the project with a sanitizer, you can select this in `make` and compile the project again:
 ```
-$ make addresssanitizer
+$ make sanitizer
 $ make compile
 ```
 
-The following sanitizers are available:
-- `addresssanitizer`
-- `leaksanitizer`
-- `undefinedsanitizer`
+This activates the address and the undefined sanitizer.
 
 ### Install
 
@@ -106,3 +109,107 @@ To format the source code, the following command can be executed:
 $ make clangformat
 ```
 (To execute clangformat, `ninja-build` is required.)
+
+### Getting crazytrace
+
+The executable file is located at `./build/crazytrace`.
+
+## Building with meson and ninja
+
+It is also possible to build crazytrace without the Makefile wrapper.
+
+To do this, the Meson project can be set up first:
+```
+$ meson setup build
+```
+
+Then crazytrace can be built:
+```
+$ meson compile -C build
+```
+
+Alternatively, crazytrace can be compiled using the ninja build system:
+```
+$ ninja -C build
+```
+
+### Tests
+
+The tests can be executed with the following command:
+```
+$ meson test -C build
+```
+
+Or using the Ninja Build System:
+```
+$ ninja -C build test
+```
+
+### Building with Sanitizer
+
+To build crazytrace with Sanitizer, you can set up the project with the following command:
+```
+$ meson setup --reconfigure --debug -Db_sanitize=address,undefined build
+```
+
+All sanitizers supported by the compiler or Meson are available. The exact ones can be found in the documentation of meson and the compiler used.
+
+### Install
+
+crazytrace can be installed with the following command:
+```
+$ meson install -C build
+```
+
+Or using the Ninja Build System:
+```
+$ ninja -C build install
+```
+
+### Linting
+
+cppcheck:
+```
+$ meson compile -C build cppcheck
+```
+
+or via the ninja build system:
+```
+$ ninja -C build cppcheck
+```
+
+flawfinder:
+```
+$ meson compile -C build flawfinder
+```
+
+or via the ninja build system:
+```
+$ ninja -C build flawfinder
+```
+
+clang-tidy:
+```
+$ ninja -C build clang-tidy
+```
+I am currently not aware of any way to run clang-tidy via meson without ninja. A [demand](https://github.com/mesonbuild/meson/issues/2383#issuecomment-2002148039) has been created.
+
+### Format
+
+To format the source code, the following command can be executed:
+```
+$ ninja -C build clang-format
+```
+
+I am currently not aware of any way to run clang-format via meson without ninja.
+
+### Getting crazytrace
+
+The executable file is available under the name `crazytrace` in the build directory.
+
+## Building the Debian package without Makefile-wrapper
+
+To build the binary crazytrace Debian package, the following command can be executed:
+```
+$ dpkg-buildpackage -b
+```

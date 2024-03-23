@@ -28,7 +28,7 @@ template<int BUFFER_SIZE> class DeviceClient
                                             std::size_t bytes_transferred)>
                        write_handler,
                    const std::function<void(boost::system::error_code)>
-                       write_error_handler) noexcept
+                       write_error_handler)
         {
             this->_device.async_write_some(
                 boost::asio::buffer(data, data.size()),
@@ -43,7 +43,7 @@ template<int BUFFER_SIZE> class DeviceClient
         }
 
     private:
-        void read() noexcept // flawfinder: ignore
+        void read() // flawfinder: ignore
         {
             this->_device.async_read_some(
                 boost::asio::buffer(this->_buffer),
