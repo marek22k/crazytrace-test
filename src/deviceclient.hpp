@@ -1,20 +1,20 @@
 #ifndef DEVICECLIENT_HPP
 #define DEVICECLIENT_HPP
 
+#include <array>
 #include <functional>
 #include <string>
-#include <array>
 #include <boost/asio.hpp>
 
 template<int BUFFER_SIZE> class DeviceClient
 {
     public:
-        DeviceClient(
-            boost::asio::any_io_executor ex,
-            int native_handler,
-            const std::function<void(boost::system::error_code, std::string)>
-                packet_handler,
-            const std::function<void(boost::system::error_code)> error_handler) :
+        DeviceClient(boost::asio::any_io_executor ex,
+                     int native_handler,
+                     const std::function<void(boost::system::error_code,
+                                              std::string)> packet_handler,
+                     const std::function<void(boost::system::error_code)>
+                         error_handler) :
             _device(std::move(ex), native_handler),
             _buffer(),
             _packet_handler(std::move(packet_handler)),
@@ -23,11 +23,12 @@ template<int BUFFER_SIZE> class DeviceClient
             this->read(); // flawfinder: ignore
         }
 
-        void write(
-            const std::string& data,
-            const std::function<void(boost::system::error_code,
-                               std::size_t bytes_transferred)> write_handler,
-            const std::function<void(boost::system::error_code)> write_error_handler) noexcept
+        void write(const std::string& data,
+                   const std::function<void(boost::system::error_code,
+                                            std::size_t bytes_transferred)>
+                       write_handler,
+                   const std::function<void(boost::system::error_code)>
+                       write_error_handler) noexcept
         {
             this->_device.async_write_some(
                 boost::asio::buffer(data, data.size()),
