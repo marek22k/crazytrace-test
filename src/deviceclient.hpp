@@ -9,13 +9,13 @@
 template<int BUFFER_SIZE> class DeviceClient
 {
     public:
-        DeviceClient(boost::asio::any_io_executor ex,
-                     int native_handler,
-                     const std::function<void(boost::system::error_code,
-                                              std::string)> packet_handler,
-                     const std::function<void(boost::system::error_code)>
-                         error_handler) :
-            _device(std::move(ex), native_handler),
+        DeviceClient(
+            boost::asio::any_io_executor ex,
+            int native_handler,
+            std::function<void(boost::system::error_code, std::string)>
+                packet_handler,
+            std::function<void(boost::system::error_code)> error_handler) :
+            _device(ex, native_handler),
             _buffer(),
             _packet_handler(std::move(packet_handler)),
             _error_handler(std::move(error_handler))
@@ -55,20 +55,20 @@ template<int BUFFER_SIZE> class DeviceClient
                     }
                     else
                     {
-                        const std::string packet(this->_buffer.data(),
-                                                 bytes_transferred);
+                        std::string packet(this->_buffer.data(),
+                                           bytes_transferred);
                         this->read(); // flawfinder: ignore
 
-                        this->_packet_handler(ec, packet);
+                        this->_packet_handler(ec, std::move(packet));
                     };
                 });
         }
 
         boost::asio::posix::stream_descriptor _device;
         std::array<char, BUFFER_SIZE> _buffer;
-        const std::function<void(boost::system::error_code, std::string)>
+        std::function<void(boost::system::error_code, std::string)>
             _packet_handler;
-        const std::function<void(boost::system::error_code)> _error_handler;
+        std::function<void(boost::system::error_code)> _error_handler;
 };
 
 #endif
