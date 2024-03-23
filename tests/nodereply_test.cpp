@@ -30,6 +30,7 @@ TEST(NodeReplyTest, NoReply)
     try
     {
         reply.icmp_echo_reply(56, 1, {});
+        FAIL();
     }
     catch (const std::exception& e)
     {
@@ -42,6 +43,7 @@ TEST(NodeReplyTest, NoReply)
     try
     {
         reply.udp_response({}, 33434, 45834);
+        FAIL();
     }
     catch (const std::exception& e)
     {
@@ -53,6 +55,7 @@ TEST(NodeReplyTest, NoReply)
     try
     {
         reply.packet_reassembly(Tins::IPv6Address("fd00::"));
+        FAIL();
     }
     catch (const std::exception& e)
     {
@@ -107,6 +110,7 @@ TEST(NodeReplyTest, IcmpEchoReply)
     try
     {
         reply.udp_response({}, 33434, 45834);
+        FAIL();
     }
     catch (const std::exception& e)
     {
@@ -118,6 +122,7 @@ TEST(NodeReplyTest, IcmpEchoReply)
     try
     {
         reply.packet_reassembly(Tins::IPv6Address("fd00::"));
+        FAIL();
     }
     catch (const std::exception& e)
     {
@@ -190,6 +195,7 @@ TEST(NodeReplyTest, IcmpTimeExceededIcmpEchoRequest)
     try
     {
         reply.udp_response({}, 33434, 45834);
+        FAIL();
     }
     catch (const std::exception& e)
     {
@@ -261,6 +267,7 @@ TEST(NodeReplyTest, IcmpPortUnreachable)
     try
     {
         reply.icmp_echo_reply(78, 1, {});
+        FAIL();
     }
     catch (const std::exception& e)
     {
@@ -330,6 +337,7 @@ TEST(NodeReplyTest, IcmpTimeExceededUdp)
     try
     {
         reply.icmp_echo_reply(78, 1, {});
+        FAIL();
     }
     catch (const std::exception& e)
     {
@@ -390,6 +398,7 @@ TEST(NodeReplyTest, IcmpNdp)
     try
     {
         reply.set_hoplimit(120);
+        FAIL();
     }
     catch (const std::exception& e)
     {
@@ -401,6 +410,7 @@ TEST(NodeReplyTest, IcmpNdp)
     try
     {
         reply.icmp_echo_reply(3, 5, {});
+        FAIL();
     }
     catch (const std::exception& e)
     {
@@ -413,6 +423,7 @@ TEST(NodeReplyTest, IcmpNdp)
     try
     {
         reply.udp_response({}, 33434, 45834);
+        FAIL();
     }
     catch (const std::exception& e)
     {
@@ -424,6 +435,7 @@ TEST(NodeReplyTest, IcmpNdp)
     try
     {
         reply.packet_reassembly(Tins::IPv6Address("fd00::"));
+        FAIL();
     }
     catch (const std::exception& e)
     {
