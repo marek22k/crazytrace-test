@@ -283,7 +283,7 @@ TEST_F(NodeContainerTest, GetReplyForEchoRequest)
                             payload);
 
     const NodeRequest echo_request(request_packet);
-    NodeReply echo_reply = container1->get_reply(echo_request);
+    const NodeReply echo_reply = container1->get_reply(echo_request);
 
     NodeReply expected_reply(NodeReplyType::ICMP_ECHO_REPLY,
                              source_mac,
@@ -306,17 +306,18 @@ TEST_F(NodeContainerTest, GetReplyTimeExceededForEchoRequest)
     constexpr int icmp_sequence = 1;
     const Tins::RawPDU::payload_type payload = {8, 4, 5, 9, 255, 0, 0, 0, 0, 0};
 
-    Tins::EthernetII request_packet = create_echo_request(source_mac,
-                                                          destination_mac,
-                                                          source_address,
-                                                          destination_address,
-                                                          hoplimit,
-                                                          icmp_identifier,
-                                                          icmp_sequence,
-                                                          payload);
+    const Tins::EthernetII request_packet =
+        create_echo_request(source_mac,
+                            destination_mac,
+                            source_address,
+                            destination_address,
+                            hoplimit,
+                            icmp_identifier,
+                            icmp_sequence,
+                            payload);
 
     const NodeRequest echo_request(request_packet);
-    NodeReply echo_reply = container1->get_reply(echo_request);
+    const NodeReply echo_reply = container1->get_reply(echo_request);
 
     const Tins::IPv6Address time_exceeded_hop("fd00::3");
 
@@ -343,17 +344,18 @@ TEST_F(NodeContainerTest, GetReplyForUdpRequest)
     constexpr int udp_sport = 16383;
     const Tins::RawPDU::payload_type payload = {8, 4, 5, 9, 255, 0, 0, 0, 0, 0};
 
-    Tins::EthernetII request_packet = create_udp_request(source_mac,
-                                                         destination_mac,
-                                                         source_address,
-                                                         destination_address,
-                                                         hoplimit,
-                                                         udp_dport,
-                                                         udp_sport,
-                                                         payload);
+    const Tins::EthernetII request_packet =
+        create_udp_request(source_mac,
+                           destination_mac,
+                           source_address,
+                           destination_address,
+                           hoplimit,
+                           udp_dport,
+                           udp_sport,
+                           payload);
 
     const NodeRequest echo_request(request_packet);
-    NodeReply echo_reply = container1->get_reply(echo_request);
+    const NodeReply echo_reply = container1->get_reply(echo_request);
 
     NodeReply expected_reply(NodeReplyType::ICMP_PORT_UNREACHABLE,
                              source_mac,
@@ -377,17 +379,18 @@ TEST_F(NodeContainerTest, GetTimeExceededReplyForUdpRequest)
     constexpr int udp_sport = 16383;
     const Tins::RawPDU::payload_type payload = {8, 4, 5, 9, 255, 0, 0, 0, 0, 0};
 
-    Tins::EthernetII request_packet = create_udp_request(source_mac,
-                                                         destination_mac,
-                                                         source_address,
-                                                         destination_address,
-                                                         hoplimit,
-                                                         udp_dport,
-                                                         udp_sport,
-                                                         payload);
+    const Tins::EthernetII request_packet =
+        create_udp_request(source_mac,
+                           destination_mac,
+                           source_address,
+                           destination_address,
+                           hoplimit,
+                           udp_dport,
+                           udp_sport,
+                           payload);
 
     const NodeRequest echo_request(request_packet);
-    NodeReply echo_reply = container1->get_reply(echo_request);
+    const NodeReply echo_reply = container1->get_reply(echo_request);
 
     const Tins::IPv6Address time_exceeded_hop("fd00::3");
 
@@ -413,21 +416,22 @@ TEST_F(NodeContainerTest, GetNoReplyForNonExistAddress)
     constexpr int udp_sport = 16383;
     const Tins::RawPDU::payload_type payload = {8, 4, 5, 9, 255, 0, 0, 0, 0, 0};
 
-    Tins::EthernetII request_packet = create_udp_request(source_mac,
-                                                         destination_mac,
-                                                         source_address,
-                                                         destination_address,
-                                                         hoplimit,
-                                                         udp_dport,
-                                                         udp_sport,
-                                                         payload);
+    const Tins::EthernetII request_packet =
+        create_udp_request(source_mac,
+                           destination_mac,
+                           source_address,
+                           destination_address,
+                           hoplimit,
+                           udp_dport,
+                           udp_sport,
+                           payload);
 
     const NodeRequest echo_request(request_packet);
     NodeReply echo_reply = container2->get_reply(echo_request);
 
     const Tins::IPv6Address time_exceeded_hop("fd00::3");
 
-    NodeReply expected_reply(NodeReplyType::NOREPLY);
+    const NodeReply expected_reply(NodeReplyType::NOREPLY);
     EXPECT_EQ(echo_reply, expected_reply);
 }
 
@@ -446,9 +450,9 @@ TEST_F(NodeContainerTest, GetNoReplyForUnknownPacket)
                                         serialized_packet.size());
 
     const NodeRequest echo_request(final_packet);
-    NodeReply echo_reply = container1->get_reply(echo_request);
+    const NodeReply echo_reply = container1->get_reply(echo_request);
 
-    NodeReply expected_reply(NodeReplyType::NOREPLY);
+    const NodeReply expected_reply(NodeReplyType::NOREPLY);
     EXPECT_EQ(echo_reply, expected_reply);
 }
 
@@ -460,17 +464,17 @@ TEST_F(NodeContainerTest, GetReplyForNdpRequest)
     const Tins::IPv6Address target_address("fd00::3");
     constexpr int hoplimit = 5;
 
-    Tins::EthernetII request_packet = create_ndp_request(
+    const Tins::EthernetII request_packet = create_ndp_request(
         source_mac, source_address, target_address, hoplimit);
 
     const NodeRequest echo_request(request_packet);
-    NodeReply echo_reply = container1->get_reply(echo_request);
+    const NodeReply echo_reply = container1->get_reply(echo_request);
 
-    NodeReply expected_reply(NodeReplyType::ICMP_NDP,
-                             source_mac,
-                             source_address,
-                             target_mac,
-                             target_address);
+    const NodeReply expected_reply(NodeReplyType::ICMP_NDP,
+                                   source_mac,
+                                   source_address,
+                                   target_mac,
+                                   target_address);
     EXPECT_EQ(echo_reply, expected_reply);
 }
 
@@ -482,12 +486,12 @@ TEST_F(NodeContainerTest, GetNoReplyForNdpRequest)
     const Tins::IPv6Address target_address("fd00::3");
     constexpr int hoplimit = 0;
 
-    Tins::EthernetII request_packet = create_ndp_request(
+    const Tins::EthernetII request_packet = create_ndp_request(
         source_mac, source_address, target_address, hoplimit);
 
     const NodeRequest echo_request(request_packet);
-    NodeReply echo_reply = container1->get_reply(echo_request);
+    const NodeReply echo_reply = container1->get_reply(echo_request);
 
-    NodeReply expected_reply(NodeReplyType::NOREPLY);
+    const NodeReply expected_reply(NodeReplyType::NOREPLY);
     EXPECT_EQ(echo_reply, expected_reply);
 }
