@@ -25,7 +25,7 @@ class NodeContainer
                                         const NodeContainer& nodecontainer);
 
     private:
-        std::vector<std::shared_ptr<NodeInfo>>
+        [[nodiscard]] std::vector<std::shared_ptr<NodeInfo>>
             get_route_to(const Tins::IPv6Address& destination_address) const;
         std::vector<std::shared_ptr<NodeInfo>> _nodes;
 };

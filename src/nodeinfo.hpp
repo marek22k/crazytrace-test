@@ -15,7 +15,7 @@ class NodeInfo
 {
     public:
         explicit NodeInfo();
-        std::vector<std::shared_ptr<NodeInfo>>
+        [[nodiscard]] std::vector<std::shared_ptr<NodeInfo>>
             get_route_to(const Tins::IPv6Address& destination_address) const;
         void set_hoplimit(int hoplimit);
         void set_mac_address(Tins::HWAddress<6> mac_address) noexcept;

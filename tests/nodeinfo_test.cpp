@@ -77,7 +77,7 @@ TEST(NodeInfoTest, Comparison)
     nodeinfo2.set_hoplimit(10);
     EXPECT_EQ(nodeinfo1, nodeinfo2);
 
-    std::shared_ptr<NodeInfo> child1 = std::make_shared<NodeInfo>();
+    const std::shared_ptr<NodeInfo> child1 = std::make_shared<NodeInfo>();
     child1->set_hoplimit(1);
     nodeinfo1.add_node(child1);
     EXPECT_NE(nodeinfo1, nodeinfo2);
@@ -85,9 +85,9 @@ TEST(NodeInfoTest, Comparison)
     nodeinfo2.add_node(child1);
     EXPECT_EQ(nodeinfo1, nodeinfo2);
 
-    std::shared_ptr<NodeInfo> child2_1 = std::make_shared<NodeInfo>();
+    const std::shared_ptr<NodeInfo> child2_1 = std::make_shared<NodeInfo>();
     child1->set_hoplimit(2);
-    std::shared_ptr<NodeInfo> child2_2 = std::make_shared<NodeInfo>();
+    const std::shared_ptr<NodeInfo> child2_2 = std::make_shared<NodeInfo>();
     child1->set_hoplimit(2);
 
     nodeinfo1.add_node(child2_1);
