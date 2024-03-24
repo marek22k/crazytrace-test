@@ -54,7 +54,7 @@ TEST(NodeRequestTest, EchoRequest)
 TEST(NodeRequestTest, NdpRequest)
 {
     const Tins::HWAddress<6> source_mac("52:54:00:b2:fa:7f");
-    const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7e");
+    const Tins::HWAddress<6> destination_mac("33:33:ff:48:b2:ae");
     const Tins::IPv6Address source_address("fd00::1");
     const Tins::IPv6Address destination_address("ff02::1:ff48:b2ae");
     const Tins::IPv6Address target_address("fd00::2");
@@ -93,7 +93,7 @@ TEST(NodeRequestTest, NdpRequest)
     test_output << request;
     EXPECT_EQ(test_output.str(),
               "REQUEST ICMP_NDP: fd00::1 (52:54:00:b2:fa:7f) -> fd00::2 "
-              "(52:54:00:b2:fa:7e) Hoplimit=2: Looking for fd00::2");
+              "(33:33:ff:48:b2:ae) Hoplimit=2: Looking for fd00::2");
 }
 
 TEST(NodeRequestTest, UdpRequest)

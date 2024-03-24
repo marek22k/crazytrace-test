@@ -120,6 +120,31 @@ class NodeContainerTest : public testing::Test
             return final_packet;
         }
 
+        Tins::EthernetII
+            create_ndp_request(const Tins::HWAddress<6>& source_mac,
+                               const Tins::IPv6Address& source_address,
+                               const Tins::IPv6Address& target_address,
+                               const int hoplimit)
+        {
+            Tins::EthernetII packet =
+                Tins::EthernetII(Tins::HWAddress<6>("33:33:ff:48:b2:ae"),
+                                 source_mac) /
+                Tins::IPv6(Tins::IPv6Address("ff02::1:ff48:b2ae"),
+                           source_address) /
+                Tins::ICMPv6(Tins::ICMPv6::Types::NEIGHBOUR_SOLICIT);
+            Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
+            inner_ipv6.hop_limit(hoplimit);
+            Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
+            inner_icmpv6.target_addr(target_address);
+
+            const Tins::PDU::serialization_type serialized_packet =
+                packet.serialize();
+            const Tins::EthernetII final_packet(serialized_packet.data(),
+                                                serialized_packet.size());
+
+            return final_packet;
+        }
+
         // NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables)
         static std::unique_ptr<NodeContainer> container1;
         static std::shared_ptr<NodeInfo> c1_child_node1;
@@ -236,7 +261,7 @@ TEST_F(NodeContainerTest, Comparison)
     EXPECT_NE(*container3, container);
 }
 
-TEST_F(NodeContainerTest, GetReplyEchoRequest)
+TEST_F(NodeContainerTest, GetReplyForEchoRequest)
 {
     const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
     const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7d");
@@ -270,7 +295,7 @@ TEST_F(NodeContainerTest, GetReplyEchoRequest)
     EXPECT_EQ(echo_reply, expected_reply);
 }
 
-TEST_F(NodeContainerTest, GetReplyEchoRequestTimeExceeded)
+TEST_F(NodeContainerTest, GetReplyTimeExceededForEchoRequest)
 {
     const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
     const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7d");
@@ -307,7 +332,7 @@ TEST_F(NodeContainerTest, GetReplyEchoRequestTimeExceeded)
     EXPECT_EQ(echo_reply, expected_reply);
 }
 
-TEST_F(NodeContainerTest, GetReplyUdpRequest)
+TEST_F(NodeContainerTest, GetReplyForUdpRequest)
 {
     const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
     const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7d");
@@ -341,7 +366,7 @@ TEST_F(NodeContainerTest, GetReplyUdpRequest)
     EXPECT_EQ(echo_reply, expected_reply);
 }
 
-TEST_F(NodeContainerTest, GetReplyUdpRequestTimeExceeded)
+TEST_F(NodeContainerTest, GetTimeExceededReplyForUdpRequest)
 {
     const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
     const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7d");
@@ -377,7 +402,7 @@ TEST_F(NodeContainerTest, GetReplyUdpRequestTimeExceeded)
     EXPECT_EQ(echo_reply, expected_reply);
 }
 
-TEST_F(NodeContainerTest, GetNoReply)
+TEST_F(NodeContainerTest, GetNoReplyForNonExistAddress)
 {
     const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
     const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7d");
@@ -401,6 +426,67 @@ TEST_F(NodeContainerTest, GetNoReply)
     NodeReply echo_reply = container2->get_reply(echo_request);
 
     const Tins::IPv6Address time_exceeded_hop("fd00::3");
+
+    NodeReply expected_reply(NodeReplyType::NOREPLY);
+    EXPECT_EQ(echo_reply, expected_reply);
+}
+
+TEST_F(NodeContainerTest, GetNoReplyForUnknownPacket)
+{
+    const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
+    const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7d");
+    const Tins::IPv4Address source_address("10.10.10.10");
+    const Tins::IPv4Address destination_address("10.10.10.11");
+
+    Tins::EthernetII packet = Tins::EthernetII(destination_mac, source_mac) /
+                              Tins::IP(destination_address, source_address);
+
+    const Tins::PDU::serialization_type serialized_packet = packet.serialize();
+    const Tins::EthernetII final_packet(serialized_packet.data(),
+                                        serialized_packet.size());
+
+    const NodeRequest echo_request(final_packet);
+    NodeReply echo_reply = container1->get_reply(echo_request);
+
+    NodeReply expected_reply(NodeReplyType::NOREPLY);
+    EXPECT_EQ(echo_reply, expected_reply);
+}
+
+TEST_F(NodeContainerTest, GetReplyForNdpRequest)
+{
+    const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
+    const Tins::HWAddress<6> target_mac("52:54:00:b2:fa:7d");
+    const Tins::IPv6Address source_address("fd01::1");
+    const Tins::IPv6Address target_address("fd00::3");
+    constexpr int hoplimit = 5;
+
+    Tins::EthernetII request_packet = create_ndp_request(
+        source_mac, source_address, target_address, hoplimit);
+
+    const NodeRequest echo_request(request_packet);
+    NodeReply echo_reply = container1->get_reply(echo_request);
+
+    NodeReply expected_reply(NodeReplyType::ICMP_NDP,
+                             source_mac,
+                             source_address,
+                             target_mac,
+                             target_address);
+    EXPECT_EQ(echo_reply, expected_reply);
+}
+
+TEST_F(NodeContainerTest, GetNoReplyForNdpRequest)
+{
+    const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
+    const Tins::HWAddress<6> target_mac("52:54:00:b2:fa:7d");
+    const Tins::IPv6Address source_address("fd01::1");
+    const Tins::IPv6Address target_address("fd00::3");
+    constexpr int hoplimit = 0;
+
+    Tins::EthernetII request_packet = create_ndp_request(
+        source_mac, source_address, target_address, hoplimit);
+
+    const NodeRequest echo_request(request_packet);
+    NodeReply echo_reply = container1->get_reply(echo_request);
 
     NodeReply expected_reply(NodeReplyType::NOREPLY);
     EXPECT_EQ(echo_reply, expected_reply);
