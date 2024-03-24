@@ -338,7 +338,7 @@ TEST_F(NodeContainerTest, GetReplyForUdpRequest)
     const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
     const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7d");
     const Tins::IPv6Address source_address("fd01::1");
-    const Tins::IPv6Address destination_address("fd00::3:2:1");
+    const Tins::IPv6Address destination_address("fd00::3");
     constexpr int hoplimit = 5;
     constexpr int udp_dport = 33434;
     constexpr int udp_sport = 16383;
@@ -364,7 +364,7 @@ TEST_F(NodeContainerTest, GetReplyForUdpRequest)
                              destination_address);
     expected_reply.udp_response(payload, udp_dport, udp_sport);
     expected_reply.packet_reassembly(destination_address);
-    expected_reply.set_hoplimit(62);
+    expected_reply.set_hoplimit(64);
     EXPECT_EQ(echo_reply, expected_reply);
 }
 
@@ -478,7 +478,7 @@ TEST_F(NodeContainerTest, GetReplyForNdpRequest)
     EXPECT_EQ(echo_reply, expected_reply);
 }
 
-TEST_F(NodeContainerTest, GetNoReplyForNdpRequest)
+TEST_F(NodeContainerTest, GetNoReplyForNdpRequestDueToHoplimit)
 {
     const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
     const Tins::HWAddress<6> target_mac("52:54:00:b2:fa:7d");
@@ -491,6 +491,24 @@ TEST_F(NodeContainerTest, GetNoReplyForNdpRequest)
 
     const NodeRequest echo_request(request_packet);
     const NodeReply echo_reply = container1->get_reply(echo_request);
+
+    const NodeReply expected_reply(NodeReplyType::NOREPLY);
+    EXPECT_EQ(echo_reply, expected_reply);
+}
+
+TEST_F(NodeContainerTest, GetNoReplyForNdpRequestDueToNonExistTarget)
+{
+    const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
+    const Tins::HWAddress<6> target_mac("52:54:00:b2:fa:7d");
+    const Tins::IPv6Address source_address("fd01::1");
+    const Tins::IPv6Address target_address("fd00::3");
+    constexpr int hoplimit = 5;
+
+    const Tins::EthernetII request_packet = create_ndp_request(
+        source_mac, source_address, target_address, hoplimit);
+
+    const NodeRequest echo_request(request_packet);
+    const NodeReply echo_reply = container2->get_reply(echo_request);
 
     const NodeReply expected_reply(NodeReplyType::NOREPLY);
     EXPECT_EQ(echo_reply, expected_reply);
