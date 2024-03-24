@@ -338,7 +338,7 @@ TEST_F(NodeContainerTest, GetReplyForUdpRequest)
     const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
     const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7d");
     const Tins::IPv6Address source_address("fd01::1");
-    const Tins::IPv6Address destination_address("fd00::3:2:1");
+    const Tins::IPv6Address destination_address("fd00::3");
     constexpr int hoplimit = 5;
     constexpr int udp_dport = 33434;
     constexpr int udp_sport = 16383;
@@ -364,7 +364,7 @@ TEST_F(NodeContainerTest, GetReplyForUdpRequest)
                              destination_address);
     expected_reply.udp_response(payload, udp_dport, udp_sport);
     expected_reply.packet_reassembly(destination_address);
-    expected_reply.set_hoplimit(62);
+    expected_reply.set_hoplimit(64);
     EXPECT_EQ(echo_reply, expected_reply);
 }
 
