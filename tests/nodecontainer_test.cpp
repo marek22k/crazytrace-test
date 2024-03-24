@@ -97,13 +97,14 @@ TEST_F(NodeContainerTest, Print)
     std::ostringstream test_output;
 
     container1->print(test_output);
-    EXPECT_EQ(test_output.str(),
-              "NodeContainer: 3 childnodes\nChilds:\n\tNodeInfo: hoplimit=64 "
-              "fd00::3\n\tChilds:\n\t\tNodeInfo: hoplimit=64 "
-              "fd00::3:2\n\t\tChilds:\n\t\t\tNodeInfo: hoplimit=64 "
-              "fd00::3:2:1\n\t\tNodeInfo: hoplimit=64 fd00::3:1\n\tNodeInfo: "
-              "hoplimit=30 fd00::21 52:54:00:b2:fa:7d\n\tNodeInfo: hoplimit=20 "
-              "fd00::11 fd00::12 52:54:00:b2:fa:7f\n");
+    EXPECT_EQ(
+        test_output.str(),
+        "NodeContainer: 3 childnodes\nChilds:\n\tNodeInfo: hoplimit=20 "
+        "fd00::11 fd00::12 52:54:00:b2:fa:7f\n\tNodeInfo: hoplimit=30 fd00::21 "
+        "52:54:00:b2:fa:7d\n\tNodeInfo: hoplimit=64 "
+        "fd00::3\n\tChilds:\n\t\tNodeInfo: hoplimit=64 "
+        "fd00::3:1\n\t\tNodeInfo: hoplimit=64 "
+        "fd00::3:2\n\t\tChilds:\n\t\t\tNodeInfo: hoplimit=64 fd00::3:2:1\n");
     test_output.str("");
 
     container2->print(test_output);
@@ -137,6 +138,46 @@ TEST_F(NodeContainerTest, MaxDepth)
     EXPECT_EQ(container1->max_depth(), 3);
     EXPECT_EQ(container2->max_depth(), 1);
     EXPECT_EQ(container3->max_depth(), 0);
+}
+
+TEST_F(NodeContainerTest, Comparison)
+{
+    NodeContainer container;
+
+    auto c1_child_node1 = std::make_shared<NodeInfo>();
+    c1_child_node1->set_hoplimit(20);
+    c1_child_node1->set_mac_address(Tins::HWAddress<6>("52:54:00:b2:fa:7f"));
+    c1_child_node1->add_address(Tins::IPv6Address("fd00::11"));
+    c1_child_node1->add_address(Tins::IPv6Address("fd00::12"));
+    container.add_node(c1_child_node1);
+
+    auto c1_child_node2 = std::make_shared<NodeInfo>();
+    c1_child_node2->set_hoplimit(30);
+    c1_child_node2->set_mac_address(Tins::HWAddress<6>("52:54:00:b2:fa:7e"));
+    c1_child_node2->add_address(Tins::IPv6Address("fd00::21"));
+    container.add_node(c1_child_node2);
+
+    auto c1_child_node3 = std::make_shared<NodeInfo>();
+    c1_child_node2->set_mac_address(Tins::HWAddress<6>("52:54:00:b2:fa:7d"));
+    c1_child_node3->add_address(Tins::IPv6Address("fd00::3"));
+
+    auto c1_child_node3_child1 = std::make_shared<NodeInfo>();
+    c1_child_node3_child1->add_address(Tins::IPv6Address("fd00::3:1"));
+    c1_child_node3->add_node(c1_child_node3_child1);
+
+    auto c1_child_node3_child2 = std::make_shared<NodeInfo>();
+    c1_child_node3_child2->add_address(Tins::IPv6Address("fd00::3:2"));
+
+    auto c1_child_node3_child2_child1 = std::make_shared<NodeInfo>();
+    c1_child_node3_child2_child1->add_address(Tins::IPv6Address("fd00::3:2:1"));
+    c1_child_node3_child2->add_node(c1_child_node3_child2_child1);
+
+    c1_child_node3->add_node(c1_child_node3_child2);
+    container.add_node(c1_child_node3);
+
+    EXPECT_EQ(*container1, container);
+    EXPECT_NE(*container2, container);
+    EXPECT_NE(*container3, container);
 }
 
 /* Missing get reply */

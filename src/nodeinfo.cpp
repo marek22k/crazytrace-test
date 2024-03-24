@@ -115,15 +115,15 @@ void NodeInfo::print(std::ostream& os, int layer) const
     }
 }
 
-bool NodeInfo::operator==(const NodeInfo& nodeinfo) const
+bool NodeInfo::operator==(const NodeInfo& other) const
 {
-    return this->_addresses == nodeinfo._addresses &&
-           this->_mac_address == nodeinfo._mac_address &&
-           this->_hoplimit == nodeinfo._hoplimit &&
+    return this->_addresses == other._addresses &&
+           this->_mac_address == other._mac_address &&
+           this->_hoplimit == other._hoplimit &&
            std::equal(this->_nodes.begin(),
                       this->_nodes.end(),
-                      nodeinfo._nodes.begin(),
-                      nodeinfo._nodes.end(),
+                      other._nodes.begin(),
+                      other._nodes.end(),
                       [](const auto& a, const auto& b)
                       {
                           return *a == *b;
