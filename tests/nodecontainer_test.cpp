@@ -32,7 +32,7 @@ class NodeContainerTest : public testing::Test
             container1->add_node(c1_child_node2);
 
             c1_child_node3 = std::make_shared<NodeInfo>();
-            c1_child_node2->set_mac_address(
+            c1_child_node3->set_mac_address(
                 Tins::HWAddress<6>("52:54:00:b2:fa:7d"));
             c1_child_node3->add_address(Tins::IPv6Address("fd00::3"));
 
@@ -101,8 +101,8 @@ TEST_F(NodeContainerTest, Print)
         test_output.str(),
         "NodeContainer: 3 childnodes\nChilds:\n\tNodeInfo: hoplimit=20 "
         "fd00::11 fd00::12 52:54:00:b2:fa:7f\n\tNodeInfo: hoplimit=30 fd00::21 "
-        "52:54:00:b2:fa:7d\n\tNodeInfo: hoplimit=64 "
-        "fd00::3\n\tChilds:\n\t\tNodeInfo: hoplimit=64 "
+        "52:54:00:b2:fa:7e\n\tNodeInfo: hoplimit=64 fd00::3 "
+        "52:54:00:b2:fa:7d\n\tChilds:\n\t\tNodeInfo: hoplimit=64 "
         "fd00::3:1\n\t\tNodeInfo: hoplimit=64 "
         "fd00::3:2\n\t\tChilds:\n\t\t\tNodeInfo: hoplimit=64 fd00::3:2:1\n");
     test_output.str("");
@@ -158,7 +158,7 @@ TEST_F(NodeContainerTest, Comparison)
     container.add_node(c1_child_node2);
 
     auto c1_child_node3 = std::make_shared<NodeInfo>();
-    c1_child_node2->set_mac_address(Tins::HWAddress<6>("52:54:00:b2:fa:7d"));
+    c1_child_node3->set_mac_address(Tins::HWAddress<6>("52:54:00:b2:fa:7d"));
     c1_child_node3->add_address(Tins::IPv6Address("fd00::3"));
 
     auto c1_child_node3_child1 = std::make_shared<NodeInfo>();
@@ -180,4 +180,91 @@ TEST_F(NodeContainerTest, Comparison)
     EXPECT_NE(*container3, container);
 }
 
-/* Missing get reply */
+Tins::EthernetII
+    create_echo_request(const Tins::HWAddress<6>& source_mac,
+                        const Tins::HWAddress<6>& destination_mac,
+                        const Tins::IPv6Address& source_address,
+                        const Tins::IPv6Address& destination_address,
+                        const int hoplimit,
+                        const int icmp_identifier,
+                        const int icmp_sequence,
+                        const Tins::RawPDU::payload_type& payload)
+{
+    Tins::EthernetII packet = Tins::EthernetII(destination_mac, source_mac) /
+                              Tins::IPv6(destination_address, source_address) /
+                              Tins::ICMPv6(Tins::ICMPv6::Types::ECHO_REQUEST);
+    Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
+    inner_ipv6.hop_limit(hoplimit);
+    Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
+    inner_icmpv6.identifier(icmp_identifier);
+    inner_icmpv6.sequence(icmp_sequence);
+    inner_icmpv6.inner_pdu(Tins::RawPDU(payload));
+
+    const Tins::PDU::serialization_type serialized_packet = packet.serialize();
+    const Tins::EthernetII final_packet(serialized_packet.data(),
+                                        serialized_packet.size());
+
+    return final_packet;
+}
+
+std::string create_echo_reply(const Tins::HWAddress<6>& source_mac,
+                              const Tins::HWAddress<6>& destination_mac,
+                              const Tins::IPv6Address& source_address,
+                              const Tins::IPv6Address& destination_address,
+                              const int hoplimit,
+                              const int icmp_identifier,
+                              const int icmp_sequence,
+                              const Tins::RawPDU::payload_type& payload)
+{
+    Tins::EthernetII packet = Tins::EthernetII(destination_mac, source_mac) /
+                              Tins::IPv6(destination_address, source_address) /
+                              Tins::ICMPv6(Tins::ICMPv6::Types::ECHO_REPLY);
+    Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
+    inner_ipv6.hop_limit(hoplimit);
+    Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
+    inner_icmpv6.identifier(icmp_identifier);
+    inner_icmpv6.sequence(icmp_sequence);
+    inner_icmpv6.inner_pdu(Tins::RawPDU(payload));
+
+    const Tins::PDU::serialization_type serialized_packet = packet.serialize();
+    const std::string final_packet(serialized_packet.begin(),
+                                   serialized_packet.end());
+
+    return final_packet;
+}
+
+TEST_F(NodeContainerTest, GetReplyEchoRequest)
+{
+    const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
+    const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7d");
+    const Tins::IPv6Address source_address("fd01::1");
+    const Tins::IPv6Address destination_address("fd00::3:2:1");
+    constexpr int hoplimit = 55;
+    constexpr int icmp_identifier = 56;
+    constexpr int icmp_sequence = 1;
+    const Tins::RawPDU::payload_type payload = {8, 4, 5, 9, 255, 0, 0, 0, 0, 0};
+
+    const Tins::EthernetII request_packet =
+        create_echo_request(source_mac,
+                            destination_mac,
+                            source_address,
+                            destination_address,
+                            hoplimit,
+                            icmp_identifier,
+                            icmp_sequence,
+                            payload);
+
+    const NodeRequest echo_request(request_packet);
+
+    NodeReply echo_reply = container1->get_reply(echo_request);
+
+    const std::string reply_packet = create_echo_reply(destination_mac,
+                                                       source_mac,
+                                                       destination_address,
+                                                       source_address,
+                                                       62,
+                                                       icmp_identifier,
+                                                       icmp_sequence,
+                                                       payload);
+    EXPECT_EQ(echo_reply.to_packet(), reply_packet);
+}
