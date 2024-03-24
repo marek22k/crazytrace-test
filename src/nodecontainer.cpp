@@ -130,6 +130,9 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
             /* Only the first level of nodes can have MAC addresses, as all
                other child nodes are "hidden" behind them and routing to them
                should be simulated. */
+            if (request.get_hoplimit() < 1)
+                return NodeReply(NodeReplyType::NOREPLY);
+
             if (const auto found_node =
                     std::find_if(this->_nodes.begin(),
                                  this->_nodes.end(),
@@ -160,7 +163,7 @@ NodeReply NodeContainer::get_reply(const NodeRequest& request)
 
 void NodeContainer::add_node(std::shared_ptr<NodeInfo> node) noexcept
 {
-    this->_nodes.insert(node);
+    this->_nodes.push_back(node);
 }
 
 std::size_t NodeContainer::max_depth() const
@@ -209,6 +212,18 @@ void NodeContainer::print(std::ostream& os) const
             node->print(os, 1);
         }
     }
+}
+
+bool NodeContainer::operator==(const NodeContainer& other) const
+{
+    return std::equal(this->_nodes.begin(),
+                      this->_nodes.end(),
+                      other._nodes.begin(),
+                      other._nodes.end(),
+                      [](const auto& a, const auto& b)
+                      {
+                          return *a == *b;
+                      });
 }
 
 std::ostream& operator<<(std::ostream& os, const NodeContainer& nodecontainer)

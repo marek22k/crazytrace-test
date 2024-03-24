@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <memory>
 #include <sstream>
+#include <boost/functional/hash.hpp>
 #include <tins/tins.h>
 #include "nodeinfo.hpp"
 
@@ -61,6 +62,45 @@ TEST(NodeInfoTest, HasAddress)
     nodeinfo.add_address(address2);
     EXPECT_TRUE(nodeinfo.has_address(address1));
     EXPECT_TRUE(nodeinfo.has_address(address2));
+}
+
+TEST(NodeInfoTest, Comparison)
+{
+    NodeInfo nodeinfo1;
+    NodeInfo nodeinfo2;
+
+    EXPECT_EQ(nodeinfo1, nodeinfo2);
+
+    nodeinfo1.set_hoplimit(10);
+    EXPECT_NE(nodeinfo1, nodeinfo2);
+
+    nodeinfo2.set_hoplimit(10);
+    EXPECT_EQ(nodeinfo1, nodeinfo2);
+
+    const std::shared_ptr<NodeInfo> child1 = std::make_shared<NodeInfo>();
+    child1->set_hoplimit(1);
+    nodeinfo1.add_node(child1);
+    EXPECT_NE(nodeinfo1, nodeinfo2);
+
+    nodeinfo2.add_node(child1);
+    EXPECT_EQ(nodeinfo1, nodeinfo2);
+
+    const std::shared_ptr<NodeInfo> child2_1 = std::make_shared<NodeInfo>();
+    child1->set_hoplimit(2);
+    const std::shared_ptr<NodeInfo> child2_2 = std::make_shared<NodeInfo>();
+    child1->set_hoplimit(2);
+
+    nodeinfo1.add_node(child2_1);
+    EXPECT_NE(nodeinfo1, nodeinfo2);
+
+    nodeinfo2.add_node(child2_2);
+    EXPECT_EQ(nodeinfo1, nodeinfo2);
+
+    child2_1->add_address(Tins::IPv6Address("fd00::1"));
+    EXPECT_NE(nodeinfo1, nodeinfo2);
+
+    child2_2->add_address(Tins::IPv6Address("fd00::1"));
+    EXPECT_EQ(nodeinfo1, nodeinfo2);
 }
 
 TEST(NodeInfoTest, Output)

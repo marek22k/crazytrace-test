@@ -5,7 +5,6 @@
 #include <iostream>
 #include <memory>
 #include <ostream>
-#include <unordered_set>
 #include <vector>
 #include <boost/log/trivial.hpp>
 #include <tins/tins.h>
@@ -21,13 +20,14 @@ class NodeContainer
         [[nodiscard]] std::size_t max_depth() const;
 
         void print(std::ostream& os) const;
+        bool operator==(const NodeContainer& other) const;
         friend std::ostream& operator<<(std::ostream& os,
                                         const NodeContainer& nodecontainer);
 
     private:
-        std::vector<std::shared_ptr<NodeInfo>>
+        [[nodiscard]] std::vector<std::shared_ptr<NodeInfo>>
             get_route_to(const Tins::IPv6Address& destination_address) const;
-        std::unordered_set<std::shared_ptr<NodeInfo>> _nodes;
+        std::vector<std::shared_ptr<NodeInfo>> _nodes;
 };
 
 #endif

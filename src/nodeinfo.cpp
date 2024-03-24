@@ -35,7 +35,7 @@ void NodeInfo::set_hoplimit(int hoplimit)
 
 void NodeInfo::add_node(std::shared_ptr<NodeInfo> node)
 {
-    this->_nodes.insert(node);
+    this->_nodes.push_back(node);
 }
 
 void NodeInfo::add_address(Tins::IPv6Address address)
@@ -113,6 +113,21 @@ void NodeInfo::print(std::ostream& os, int layer) const
             node->print(os, layer + 1);
         }
     }
+}
+
+bool NodeInfo::operator==(const NodeInfo& other) const
+{
+    return this->_addresses == other._addresses &&
+           this->_mac_address == other._mac_address &&
+           this->_hoplimit == other._hoplimit &&
+           std::equal(this->_nodes.begin(),
+                      this->_nodes.end(),
+                      other._nodes.begin(),
+                      other._nodes.end(),
+                      [](const auto& a, const auto& b)
+                      {
+                          return *a == *b;
+                      });
 }
 
 std::ostream& operator<<(std::ostream& os, NodeInfo const & nodeinfo)

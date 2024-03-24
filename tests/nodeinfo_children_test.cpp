@@ -82,10 +82,10 @@ TEST_F(NodeInfoChildrenTest, Print)
     EXPECT_EQ(
         test_output.str(),
         "NodeInfo: hoplimit=64 fd00:: 52:54:00:b2:fa:7f\nChilds:\n\tNodeInfo: "
-        "hoplimit=64 fd00::3\n\tChilds:\n\t\tNodeInfo: hoplimit=64 "
-        "fd00::3:2\n\t\tChilds:\n\t\t\tNodeInfo: hoplimit=64 "
-        "fd00::3:2:1\n\t\tNodeInfo: hoplimit=64 fd00::3:1\n\tNodeInfo: "
-        "hoplimit=30 fd00::21\n\tNodeInfo: hoplimit=20 fd00::11 fd00::12\n");
+        "hoplimit=20 fd00::11 fd00::12\n\tNodeInfo: hoplimit=30 "
+        "fd00::21\n\tNodeInfo: hoplimit=64 fd00::3\n\tChilds:\n\t\tNodeInfo: "
+        "hoplimit=64 fd00::3:1\n\t\tNodeInfo: hoplimit=64 "
+        "fd00::3:2\n\t\tChilds:\n\t\t\tNodeInfo: hoplimit=64 fd00::3:2:1\n");
     test_output.str("");
 
     child_node3_child2->print(test_output);

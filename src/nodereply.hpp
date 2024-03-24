@@ -43,6 +43,7 @@ class NodeReply
         [[nodiscard]] std::string to_packet() const;
         [[nodiscard]] NodeReplyType get_type() const noexcept;
 
+        bool operator==(const NodeReply& other) const;
         friend std::ostream& operator<<(std::ostream& os,
                                         const NodeReply& nodereply);
 
