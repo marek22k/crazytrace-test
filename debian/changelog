@@ -1,3 +1,9 @@
+crazytrace (1.0.2-1) stable; urgency=medium
+
+  * New upstream version.
+
+ -- Marek Küthe <m.k@mk16.de>  Sun, 24 Mar 2024 20:38:12 +0000
+
 crazytrace (1.0.1-1) stable; urgency=medium
 
   * New upstream version.
