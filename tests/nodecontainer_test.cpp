@@ -427,7 +427,7 @@ TEST_F(NodeContainerTest, GetNoReplyForNonExistAddress)
                            payload);
 
     const NodeRequest echo_request(request_packet);
-    NodeReply echo_reply = container2->get_reply(echo_request);
+    const NodeReply echo_reply = container2->get_reply(echo_request);
 
     const Tins::IPv6Address time_exceeded_hop("fd00::3");
 
