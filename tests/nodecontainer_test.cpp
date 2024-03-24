@@ -93,62 +93,32 @@ class NodeContainerTest : public testing::Test
             return final_packet;
         }
 
-        std::string
-            create_echo_reply(const Tins::HWAddress<6>& source_mac,
-                              const Tins::HWAddress<6>& destination_mac,
-                              const Tins::IPv6Address& source_address,
-                              const Tins::IPv6Address& destination_address,
-                              const int hoplimit,
-                              const int icmp_identifier,
-                              const int icmp_sequence,
-                              const Tins::RawPDU::payload_type& payload)
+        Tins::EthernetII
+            create_udp_request(const Tins::HWAddress<6>& source_mac,
+                               const Tins::HWAddress<6>& destination_mac,
+                               const Tins::IPv6Address& source_address,
+                               const Tins::IPv6Address& destination_address,
+                               const int hoplimit,
+                               const int udp_dport,
+                               const int udp_sport,
+                               const Tins::RawPDU::payload_type& payload)
         {
             Tins::EthernetII packet =
                 Tins::EthernetII(destination_mac, source_mac) /
                 Tins::IPv6(destination_address, source_address) /
-                Tins::ICMPv6(Tins::ICMPv6::Types::ECHO_REPLY);
+                Tins::UDP(udp_dport, udp_sport);
             Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
             inner_ipv6.hop_limit(hoplimit);
-            Tins::ICMPv6& inner_icmpv6 = inner_ipv6.rfind_pdu<Tins::ICMPv6>();
-            inner_icmpv6.identifier(icmp_identifier);
-            inner_icmpv6.sequence(icmp_sequence);
-            inner_icmpv6.inner_pdu(Tins::RawPDU(payload));
+            Tins::UDP& inner_udp = inner_ipv6.rfind_pdu<Tins::UDP>();
+            inner_udp.inner_pdu(Tins::RawPDU(payload));
 
             const Tins::PDU::serialization_type serialized_packet =
                 packet.serialize();
-            const std::string final_packet(serialized_packet.begin(),
-                                           serialized_packet.end());
+            const Tins::EthernetII final_packet(serialized_packet.data(),
+                                                serialized_packet.size());
 
             return final_packet;
         }
-
-        std::string create_time_exceeded_echo_request(const Tins::HWAddress<6>& source_mac,
-                              const Tins::HWAddress<6>& destination_mac,
-                              const Tins::IPv6Address& source_address,
-                              const Tins::IPv6Address& destination_address,
-                              const int hoplimit,
-                              Tins::EthernetII& echo_request)
-                              {
-                    Tins::EthernetII packet =
-                        Tins::EthernetII(destination_mac,
-                                         source_mac) /
-                        Tins::IPv6(destination_address,
-                                   source_address) /
-                        Tins::ICMPv6(Tins::ICMPv6::Types::TIME_EXCEEDED);
-                    Tins::IPv6& inner_ipv6 = packet.rfind_pdu<Tins::IPv6>();
-                    inner_ipv6.hop_limit(hoplimit);
-                    Tins::ICMPv6& inner_icmpv6 =
-                        inner_ipv6.rfind_pdu<Tins::ICMPv6>();
-                    inner_icmpv6.inner_pdu(
-                        Tins::RawPDU(echo_request.rfind_pdu<Tins::IPv6>().serialize()));
-
-            const Tins::PDU::serialization_type serialized_packet =
-                packet.serialize();
-            const std::string final_packet(serialized_packet.begin(),
-                                           serialized_packet.end());
-
-            return final_packet;
-                              }
 
         // NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables)
         static std::unique_ptr<NodeContainer> container1;
@@ -290,16 +260,14 @@ TEST_F(NodeContainerTest, GetReplyEchoRequest)
     const NodeRequest echo_request(request_packet);
     NodeReply echo_reply = container1->get_reply(echo_request);
 
-    const std::string reply_packet = create_echo_reply(destination_mac,
-                                                       source_mac,
-                                                       destination_address,
-                                                       source_address,
-                                                       62,
-                                                       icmp_identifier,
-                                                       icmp_sequence,
-                                                       payload);
-    ASSERT_EQ(echo_reply.get_type(), NodeReplyType::ICMP_ECHO_REPLY);
-    EXPECT_EQ(echo_reply.to_packet(), reply_packet);
+    NodeReply expected_reply(NodeReplyType::ICMP_ECHO_REPLY,
+                             source_mac,
+                             source_address,
+                             destination_mac,
+                             destination_address);
+    expected_reply.icmp_echo_reply(icmp_identifier, icmp_sequence, payload);
+    expected_reply.set_hoplimit(62);
+    EXPECT_EQ(echo_reply, expected_reply);
 }
 
 TEST_F(NodeContainerTest, GetReplyEchoRequestTimeExceeded)
@@ -313,26 +281,127 @@ TEST_F(NodeContainerTest, GetReplyEchoRequestTimeExceeded)
     constexpr int icmp_sequence = 1;
     const Tins::RawPDU::payload_type payload = {8, 4, 5, 9, 255, 0, 0, 0, 0, 0};
 
-    Tins::EthernetII request_packet =
-        create_echo_request(source_mac,
-                            destination_mac,
-                            source_address,
-                            destination_address,
-                            hoplimit,
-                            icmp_identifier,
-                            icmp_sequence,
-                            payload);
+    Tins::EthernetII request_packet = create_echo_request(source_mac,
+                                                          destination_mac,
+                                                          source_address,
+                                                          destination_address,
+                                                          hoplimit,
+                                                          icmp_identifier,
+                                                          icmp_sequence,
+                                                          payload);
 
     const NodeRequest echo_request(request_packet);
     NodeReply echo_reply = container1->get_reply(echo_request);
 
     const Tins::IPv6Address time_exceeded_hop("fd00::3");
-    const std::string reply_packet = create_time_exceeded_echo_request(destination_mac,
-                                                       source_mac,
-                                                       time_exceeded_hop,
-                                                       source_address,
-                                                       64,
-                                                       request_packet);
-    ASSERT_EQ(echo_reply.get_type(), NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST);
-    EXPECT_EQ(echo_reply.to_packet(), reply_packet);
+
+    NodeReply expected_reply(
+        NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST,
+        source_mac,
+        source_address,
+        destination_mac,
+        time_exceeded_hop);
+    expected_reply.icmp_echo_reply(icmp_identifier, icmp_sequence, payload);
+    expected_reply.packet_reassembly(destination_address);
+    expected_reply.set_hoplimit(64);
+    EXPECT_EQ(echo_reply, expected_reply);
+}
+
+TEST_F(NodeContainerTest, GetReplyUdpRequest)
+{
+    const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
+    const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7d");
+    const Tins::IPv6Address source_address("fd01::1");
+    const Tins::IPv6Address destination_address("fd00::3:2:1");
+    constexpr int hoplimit = 5;
+    constexpr int udp_dport = 33434;
+    constexpr int udp_sport = 16383;
+    const Tins::RawPDU::payload_type payload = {8, 4, 5, 9, 255, 0, 0, 0, 0, 0};
+
+    Tins::EthernetII request_packet = create_udp_request(source_mac,
+                                                         destination_mac,
+                                                         source_address,
+                                                         destination_address,
+                                                         hoplimit,
+                                                         udp_dport,
+                                                         udp_sport,
+                                                         payload);
+
+    const NodeRequest echo_request(request_packet);
+    NodeReply echo_reply = container1->get_reply(echo_request);
+
+    NodeReply expected_reply(NodeReplyType::ICMP_PORT_UNREACHABLE,
+                             source_mac,
+                             source_address,
+                             destination_mac,
+                             destination_address);
+    expected_reply.udp_response(payload, udp_dport, udp_sport);
+    expected_reply.packet_reassembly(destination_address);
+    expected_reply.set_hoplimit(62);
+    EXPECT_EQ(echo_reply, expected_reply);
+}
+
+TEST_F(NodeContainerTest, GetReplyUdpRequestTimeExceeded)
+{
+    const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
+    const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7d");
+    const Tins::IPv6Address source_address("fd01::1");
+    const Tins::IPv6Address destination_address("fd00::3:2:1");
+    constexpr int hoplimit = 1;
+    constexpr int udp_dport = 33434;
+    constexpr int udp_sport = 16383;
+    const Tins::RawPDU::payload_type payload = {8, 4, 5, 9, 255, 0, 0, 0, 0, 0};
+
+    Tins::EthernetII request_packet = create_udp_request(source_mac,
+                                                         destination_mac,
+                                                         source_address,
+                                                         destination_address,
+                                                         hoplimit,
+                                                         udp_dport,
+                                                         udp_sport,
+                                                         payload);
+
+    const NodeRequest echo_request(request_packet);
+    NodeReply echo_reply = container1->get_reply(echo_request);
+
+    const Tins::IPv6Address time_exceeded_hop("fd00::3");
+
+    NodeReply expected_reply(NodeReplyType::ICMP_TIME_EXCEEDED_UDP,
+                             source_mac,
+                             source_address,
+                             destination_mac,
+                             time_exceeded_hop);
+    expected_reply.udp_response(payload, udp_dport, udp_sport);
+    expected_reply.packet_reassembly(destination_address);
+    expected_reply.set_hoplimit(64);
+    EXPECT_EQ(echo_reply, expected_reply);
+}
+
+TEST_F(NodeContainerTest, GetNoReply)
+{
+    const Tins::HWAddress<6> source_mac("52:54:01:b2:fa:7f");
+    const Tins::HWAddress<6> destination_mac("52:54:00:b2:fa:7d");
+    const Tins::IPv6Address source_address("fd01::1");
+    const Tins::IPv6Address destination_address("fd00::3:2:1");
+    constexpr int hoplimit = 1;
+    constexpr int udp_dport = 33434;
+    constexpr int udp_sport = 16383;
+    const Tins::RawPDU::payload_type payload = {8, 4, 5, 9, 255, 0, 0, 0, 0, 0};
+
+    Tins::EthernetII request_packet = create_udp_request(source_mac,
+                                                         destination_mac,
+                                                         source_address,
+                                                         destination_address,
+                                                         hoplimit,
+                                                         udp_dport,
+                                                         udp_sport,
+                                                         payload);
+
+    const NodeRequest echo_request(request_packet);
+    NodeReply echo_reply = container2->get_reply(echo_request);
+
+    const Tins::IPv6Address time_exceeded_hop("fd00::3");
+
+    NodeReply expected_reply(NodeReplyType::NOREPLY);
+    EXPECT_EQ(echo_reply, expected_reply);
 }

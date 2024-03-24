@@ -209,7 +209,7 @@ TEST(NodeReplyTest, IcmpTimeExceededIcmpEchoRequest)
     EXPECT_EQ(test_output.str(),
               "REPLY ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST: fd00::1 "
               "(52:54:00:b2:fa:7f) -> fd00::2 (52:54:00:b2:fa:7e) Hoplimit=55 "
-              "LENGTH=10");
+              "REQUEST_ADDRESS=fd00::3 LENGTH=10");
 
     EXPECT_EQ(actual_packet, expected_packet);
     EXPECT_EQ(reply.get_type(),
@@ -279,10 +279,10 @@ TEST(NodeReplyTest, IcmpPortUnreachable)
 
     std::ostringstream test_output;
     test_output << reply;
-    EXPECT_EQ(
-        test_output.str(),
-        "REPLY ICMP_PORT_UNREACHABLE: fd00::1 (52:54:00:b2:fa:7f) -> fd00::2 "
-        "(52:54:00:b2:fa:7e) Hoplimit=55: DPORT=34344 SPORT=46432 LENGTH=10");
+    EXPECT_EQ(test_output.str(),
+              "REPLY ICMP_PORT_UNREACHABLE: fd00::1 (52:54:00:b2:fa:7f) -> "
+              "fd00::2 (52:54:00:b2:fa:7e) Hoplimit=55: DPORT=34344 "
+              "SPORT=46432 REQUEST_ADDRESS=fd00::3 LENGTH=10");
 
     EXPECT_EQ(actual_packet, expected_packet);
     EXPECT_EQ(reply.get_type(), NodeReplyType::ICMP_PORT_UNREACHABLE);
@@ -349,9 +349,10 @@ TEST(NodeReplyTest, IcmpTimeExceededUdp)
 
     std::ostringstream test_output;
     test_output << reply;
-    EXPECT_EQ(test_output.str(),
-              "REPLY ICMP_TIME_EXCEEDED_UDP: fd00::1 (52:54:00:b2:fa:7f) -> "
-              "fd00::2 (52:54:00:b2:fa:7e) Hoplimit=55 LENGTH=10");
+    EXPECT_EQ(
+        test_output.str(),
+        "REPLY ICMP_TIME_EXCEEDED_UDP: fd00::1 (52:54:00:b2:fa:7f) -> fd00::2 "
+        "(52:54:00:b2:fa:7e) Hoplimit=55 REQUEST_ADDRESS=fd00::3 LENGTH=10");
 
     EXPECT_EQ(actual_packet, expected_packet);
     EXPECT_EQ(reply.get_type(), NodeReplyType::ICMP_TIME_EXCEEDED_UDP);

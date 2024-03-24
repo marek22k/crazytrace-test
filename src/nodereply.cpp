@@ -224,6 +224,23 @@ NodeReplyType NodeReply::get_type() const noexcept
     return this->_type;
 }
 
+bool NodeReply::operator==(const NodeReply& other) const
+{
+    return this->_type == other._type &&
+           this->_destination_mac == other._destination_mac &&
+           this->_destination_address == other._destination_address &&
+           this->_source_mac == other._source_mac &&
+           this->_source_address == other._source_address &&
+           this->_hoplimit == other._hoplimit &&
+           this->_icmp_identifier == other._icmp_identifier &&
+           this->_icmp_sequence == other._icmp_sequence &&
+           this->_payload == other._payload &&
+           this->_udp_dport == other._udp_dport &&
+           this->_udp_sport == other._udp_sport &&
+           this->_original_destination_address ==
+               other._original_destination_address;
+}
+
 std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
 {
     if (nodereply._type == NodeReplyType::NOREPLY)
@@ -278,11 +295,13 @@ std::ostream& operator<<(std::ostream& os, NodeReply const & nodereply)
             os << " Hoplimit=" << nodereply._hoplimit
                << ": DPORT=" << nodereply._udp_dport
                << " SPORT=" << nodereply._udp_sport
+               << " REQUEST_ADDRESS=" << nodereply._original_destination_address
                << " LENGTH=" << nodereply._payload.size();
             break;
         case NodeReplyType::ICMP_TIME_EXCEEDED_ICMP_ECHO_REQUEST:
         case NodeReplyType::ICMP_TIME_EXCEEDED_UDP:
             os << " Hoplimit=" << nodereply._hoplimit
+               << " REQUEST_ADDRESS=" << nodereply._original_destination_address
                << " LENGTH=" << nodereply._payload.size();
             break;
         default:
