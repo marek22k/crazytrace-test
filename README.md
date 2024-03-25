@@ -5,6 +5,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c7441b6b4d6847558f113aa73d5e7f1e)](https://app.codacy.com/gh/marek22k/crazytrace-mirror/dashboard)
 [![Coverity Badge](https://scan.coverity.com/projects/29920/badge.svg)](https://scan.coverity.com/projects/crazytrace)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=marek22k_crazytrace-mirror&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=marek22k_crazytrace-mirror)
+[![DeepSource](https://app.deepsource.com/gh/marek22k/crazytrace-mirror.svg/?label=active+issues&show_trend=false&token=bx6f_515yJagPHFghh6ufhp6)](https://app.deepsource.com/gh/marek22k/crazytrace-mirror/)
 [![codecov](https://codecov.io/gh/marek22k/crazytrace-mirror/graph/badge.svg?token=5F4KFK4X41)](https://codecov.io/gh/marek22k/crazytrace-mirror)
 
 What happens if a traceroute with the same TTL/hop limit is received from two different source addresses? How will they react?
