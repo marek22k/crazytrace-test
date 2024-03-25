@@ -5,3 +5,6 @@ name = "cxx"
 enabled = true
 [analyzers.meta]
   misra_compliance = false
+[[analyzers]]
+name = "test-coverage"
+enabled = true
