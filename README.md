@@ -85,7 +85,7 @@ The log level can have one of the following values:
 - `error`
 - `fatal`
 
-For production, `info` or lower is empheolen.
+For production, "info" or lower is recommended.
 
 The device name is the name of the TAP interface that crazytrace creates.
 
